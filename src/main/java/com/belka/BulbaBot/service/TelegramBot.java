@@ -5,9 +5,12 @@ import com.belka.BulbaBot.model.Ads;
 import com.belka.BulbaBot.model.User;
 import com.belka.BulbaBot.repository.AdsRepository;
 import com.belka.BulbaBot.repository.UserRepository;
+import com.belka.ServiceStackOverFlow;
+import com.belka.StackOverFlow;
 import com.vdurmont.emoji.EmojiParser;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -37,12 +40,15 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final BotConfig botConfig;
     private final UserRepository userRepository;
     private final AdsRepository adsRepository;
+    @Setter
+    private StackOverFlow serviceStackOverFlow;
     private static final String TEXT_HELP = "This bot was created like demo";
     private static final String YES_BUTTON = "YES_BUTTON";
     private static final String NO_BUTTON = "NO_BUTTON";
     private static final String ERROR_TEXT = "Error occurred: ";
 
 
+    @Autowired
     public TelegramBot(BotConfig botConfig, UserRepository userRepository, AdsRepository adsRepository) {
         this.botConfig = botConfig;
         this.userRepository = userRepository;
@@ -95,6 +101,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                     case "/register":
                         register(chatId);
                         break;
+                    case "/stack":
+                        serviceStackOverFlow.fuu();
                     default:
                         prepareAndSendMessage(chatId, "sorry, but command was not recognized");
                 }
@@ -217,7 +225,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     @Scheduled(cron = "0 * * * * *")
-    protected void sendAds() {
+    protected void send () {
         Iterable<Ads> ads = adsRepository.findAll();
         Iterable<User> users = userRepository.findAll();
 
