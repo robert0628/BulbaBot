@@ -1,17 +1,13 @@
 package com.belka.BulbaBot.service;
 
 import com.belka.BulbaBot.config.BotConfig;
-import com.belka.BulbaBot.model.Ads;
 import com.belka.BulbaBot.model.User;
 import com.belka.BulbaBot.repository.AdsRepository;
 import com.belka.BulbaBot.repository.UserRepository;
-import com.belka.ServiceStackOverFlow;
-import com.belka.StackOverFlow;
+import com.belka.wearther.service.WeatherService;
 import com.vdurmont.emoji.EmojiParser;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
@@ -39,9 +35,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final BotConfig botConfig;
     private final UserRepository userRepository;
+    //todo remove asdrepo
     private final AdsRepository adsRepository;
-    @Setter
-    private StackOverFlow serviceStackOverFlow;
+    private final WeatherService weatherService;
     private static final String TEXT_HELP = "This bot was created like demo";
     private static final String YES_BUTTON = "YES_BUTTON";
     private static final String NO_BUTTON = "NO_BUTTON";
@@ -49,10 +45,11 @@ public class TelegramBot extends TelegramLongPollingBot {
 
 
     @Autowired
-    public TelegramBot(BotConfig botConfig, UserRepository userRepository, AdsRepository adsRepository) {
+    public TelegramBot(BotConfig botConfig, UserRepository userRepository, AdsRepository adsRepository, WeatherService weatherService) {
         this.botConfig = botConfig;
         this.userRepository = userRepository;
         this.adsRepository = adsRepository;
+        this.weatherService = weatherService;
         List<BotCommand> listOfCommands = new ArrayList<>();
         listOfCommands.add(new BotCommand("/start", "get a welcome message"));
         listOfCommands.add(new BotCommand("/mydata", "get your data stored"));
@@ -91,20 +88,14 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
             } else {
                 switch (messageText) {
-                    case "/start":
+                    case "/start" -> {
                         registerUser(update.getMessage());
                         startCommandReceived(chatId, update.getMessage().getChat().getFirstName());
-                        break;
-                    case "/help":
-                        prepareAndSendMessage(chatId, TEXT_HELP);
-                        break;
-                    case "/register":
-                        register(chatId);
-                        break;
-                    case "/stack":
-                        serviceStackOverFlow.fuu();
-                    default:
-                        prepareAndSendMessage(chatId, "sorry, but command was not recognized");
+                    }
+                    case "/help" -> prepareAndSendMessage(chatId, TEXT_HELP);
+                    case "/register" -> register(chatId);
+                    case "/weather" -> sendMessage(chatId, weatherService.getWeather(weatherService.findCity()));
+                    default -> prepareAndSendMessage(chatId, "sorry, but command was not recognized");
                 }
             }
         } else if (update.hasCallbackQuery()) {
@@ -224,7 +215,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         executeMessage(message);
     }
 
-    @Scheduled(cron = "0 * * * * *")
+/*    @Scheduled(cron = "0 * * * * *")
     protected void send () {
         Iterable<Ads> ads = adsRepository.findAll();
         Iterable<User> users = userRepository.findAll();
@@ -234,5 +225,5 @@ public class TelegramBot extends TelegramLongPollingBot {
                 prepareAndSendMessage(user.getId(), ad.getAd());
             }
         }
-    }
+    }*/
 }

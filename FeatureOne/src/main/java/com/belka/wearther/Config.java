@@ -1,4 +1,4 @@
-package com.belka;
+package com.belka.wearther;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
