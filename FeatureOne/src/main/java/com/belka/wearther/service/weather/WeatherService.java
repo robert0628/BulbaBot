@@ -1,4 +1,4 @@
-package com.belka.wearther.service;
+package com.belka.wearther.service.weather;
 
 public interface WeatherService {
     String getWeather(String city);

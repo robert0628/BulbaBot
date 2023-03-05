@@ -1,4 +1,4 @@
-package com.belka.wearther.models;
+package com.belka.wearther.models.weather;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

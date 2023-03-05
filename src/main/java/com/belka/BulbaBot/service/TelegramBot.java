@@ -4,7 +4,7 @@ import com.belka.BulbaBot.config.BotConfig;
 import com.belka.BulbaBot.model.User;
 import com.belka.BulbaBot.repository.AdsRepository;
 import com.belka.BulbaBot.repository.UserRepository;
-import com.belka.wearther.service.WeatherService;
+import com.belka.wearther.service.weather.WeatherService;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +56,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         listOfCommands.add(new BotCommand("/deletedata", "delete my data"));
         listOfCommands.add(new BotCommand("/help", "info how to use this bot"));
         listOfCommands.add(new BotCommand("/settings", "set your preferences"));
+        listOfCommands.add(new BotCommand("/weather", "get weather"));
+
         try {
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
@@ -94,7 +96,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                     }
                     case "/help" -> prepareAndSendMessage(chatId, TEXT_HELP);
                     case "/register" -> register(chatId);
-                    case "/weather" -> sendMessage(chatId, weatherService.getWeather(weatherService.findCity()));
+                    case "/weather" ->
+                            sendMessage(chatId, weatherService.getWeather(weatherService.findCity()));
                     default -> prepareAndSendMessage(chatId, "sorry, but command was not recognized");
                 }
             }
