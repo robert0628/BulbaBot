@@ -1,11 +1,16 @@
 package com.belka.wearther.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+/**
+ * DTO for extract user's geolocation from external API
+ */
 @Data
 public class Geo {
 
-    private String query;
+    @JsonProperty("query")
+    private String ip;
     private String country;
     private String countryCode;
     private String city;

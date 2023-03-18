@@ -8,6 +8,9 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
+/**
+ * bot user
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,7 +20,7 @@ import java.sql.Timestamp;
 public class User {
     @Id
     @Column(name = "id")
-    private long id;
+    private Long id;
     private String firstname;
     private String lastname;
     private String username;

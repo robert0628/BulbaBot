@@ -2,7 +2,6 @@ package com.belka.BulbaBot.service;
 
 import com.belka.BulbaBot.config.BotConfig;
 import com.belka.BulbaBot.model.User;
-import com.belka.BulbaBot.repository.AdsRepository;
 import com.belka.BulbaBot.repository.UserRepository;
 import com.belka.wearther.service.weather.WeatherService;
 import com.vdurmont.emoji.EmojiParser;
@@ -29,26 +28,25 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * building and sending messages, receiving and processing {@link Update updates}
+ */
 @Slf4j
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final BotConfig botConfig;
     private final UserRepository userRepository;
-    //todo remove asdrepo
-    private final AdsRepository adsRepository;
     private final WeatherService weatherService;
     private static final String TEXT_HELP = "This bot was created like demo";
     private static final String YES_BUTTON = "YES_BUTTON";
     private static final String NO_BUTTON = "NO_BUTTON";
     private static final String ERROR_TEXT = "Error occurred: ";
 
-
     @Autowired
-    public TelegramBot(BotConfig botConfig, UserRepository userRepository, AdsRepository adsRepository, WeatherService weatherService) {
+    public TelegramBot(BotConfig botConfig, UserRepository userRepository, WeatherService weatherService) {
         this.botConfig = botConfig;
         this.userRepository = userRepository;
-        this.adsRepository = adsRepository;
         this.weatherService = weatherService;
         List<BotCommand> listOfCommands = new ArrayList<>();
         listOfCommands.add(new BotCommand("/start", "get a welcome message"));
@@ -75,6 +73,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         return botConfig.getToken();
     }
 
+    /**
+     * process user {@link Update telegram update} and send receive
+     * @param update {@link Update telegram update}
+     */
+    //todo refactor this
     @Override
     @Transactional
     public void onUpdateReceived(Update update) {
@@ -118,11 +121,21 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * get greeting receive
+     * @param chatId user's telegram id
+     * @param name user's name
+     */
     private void startCommandReceived(Long chatId, String name) {
         String answer = EmojiParser.parseToUnicode("Hi, " + name + " nice to meet you" + " :blush:");
         sendMessage(chatId, answer);
     }
 
+    /**
+     * send message
+     * @param chatId user's telegram id
+     * @param textToSend message text
+     */
     private void sendMessage(Long chatId, String textToSend) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
@@ -131,6 +144,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         executeMessage(message);
     }
 
+    /**
+     * make buttons
+     * @return buttons
+     */
     private ReplyKeyboardMarkup makeReplyKeyboardMarkup() {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRows = new ArrayList<>();
@@ -152,6 +169,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         return keyboardMarkup;
     }
 
+    /**
+     * register user
+     * @param message {@link Message user's message}
+     */
     private void registerUser(Message message) {
         if (!userRepository.existsById(message.getChatId())) {
             User user = new User(message.getChatId(),
@@ -163,6 +184,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * make buttons for register
+     * @param chatId user's telegram id
+     */
     private void register(Long chatId) {
         SendMessage message = SendMessage.builder()
                 .chatId(chatId)
@@ -189,7 +214,13 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         executeMessage(message);
     }
-
+// TODO: 18.03.23 fill javadoc 
+    /**
+     *
+     * @param text message text
+     * @param chatId user's telegram id
+     * @param messageId message id
+     */
     private void executeEditMessageText(String text, Long chatId, long messageId) {
         EditMessageText message = EditMessageText.builder()
                 .chatId(chatId)
@@ -203,6 +234,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * send message
+     * @param message {@link SendMessage message for user}
+     */
     private void executeMessage(SendMessage message) {
         try {
             execute(message);
@@ -211,22 +246,15 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * prepare and send message to user
+     * @param chatId user's telegram id
+     * @param textToSend text to send to the user
+     */
     private void prepareAndSendMessage(Long chatId, String textToSend) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(textToSend);
         executeMessage(message);
     }
-
-/*    @Scheduled(cron = "0 * * * * *")
-    protected void send () {
-        Iterable<Ads> ads = adsRepository.findAll();
-        Iterable<User> users = userRepository.findAll();
-
-        for (Ads ad: ads){
-            for(User user: users){
-                prepareAndSendMessage(user.getId(), ad.getAd());
-            }
-        }
-    }*/
 }
