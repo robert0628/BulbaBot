@@ -1,10 +1,10 @@
-package com.belka.wearther.models.weather;
+package com.belka.weather.dto.weather;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class Main {
+public class WeatherInfo {
     private Integer temp;
 
     @JsonProperty("feels_like")

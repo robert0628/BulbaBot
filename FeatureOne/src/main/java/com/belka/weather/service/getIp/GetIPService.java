@@ -1,4 +1,4 @@
-package com.belka.wearther.service.getIp;
+package com.belka.weather.service.getIp;
 
 /**
  * get user's IP

@@ -1,7 +1,7 @@
-package com.belka.wearther.service.geo;
+package com.belka.weather.service.geo;
 
-import com.belka.wearther.models.Geo;
-import com.belka.wearther.service.getIp.GetIPService;
+import com.belka.weather.dto.Geo;
+import com.belka.weather.service.getIp.GetIPService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
