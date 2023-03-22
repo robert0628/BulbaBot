@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -22,7 +23,7 @@ import java.time.LocalDate;
 @ComponentScan ("com.belka")
 public class WeatherServiceImpl implements WeatherService {
 
-    private final static String CRON_EVERY_DAY = "0 12 * * * *";
+    private final static String CRON_EVERY_DAY = "1 * * * * *";
     private static final String ERROR_TEXT = "Error occurred: ";
     @Value("${weather.key}")
     private String key;
@@ -32,14 +33,11 @@ public class WeatherServiceImpl implements WeatherService {
     private String cityForEveryDay;
     private final RestTemplate restTemplate;
     private final GeoFromIPService geoFromIPService;
-    @Autowired
     private WeatherRepository repository;
 
     @Autowired
-    public WeatherServiceImpl(RestTemplate restTemplate, GeoFromIPService geoFromIPService /*WeatherRepository repository*/) {
-        this.restTemplate = restTemplate;
-        this.geoFromIPService = geoFromIPService;
-    //    this.repository = repository;
+    public void setRepository(@Lazy WeatherRepository repository) {
+        this.repository = repository;
     }
 
     public String getWeatherResponse(String city) {
@@ -70,13 +68,14 @@ public class WeatherServiceImpl implements WeatherService {
     @Scheduled(cron = CRON_EVERY_DAY)
     private void saveWeatherEveryDay() {
         WeatherNow weatherNow = getWeather(cityForEveryDay);
-       /* WeatherHistory weatherHistory =
+        WeatherHistory weatherHistory =
                 WeatherHistory.builder()
                         .temp(weatherNow.getWeatherInfo().getTemp())
                         .city(cityForEveryDay)
                         .date(LocalDate.now())
-                        .build();*/
-     //   repository.save(weatherHistory);
+                        .build();
+        repository.save(weatherHistory);
+        log.info("we saved it");
     }
 
 

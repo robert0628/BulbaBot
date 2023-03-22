@@ -3,7 +3,7 @@ package com.belka.BulbaBot.service;
 import com.belka.BulbaBot.config.BotConfig;
 import com.belka.BulbaBot.model.User;
 import com.belka.BulbaBot.repository.UserRepository;
-import com.belka.wearther.service.weather.WeatherService;
+import com.belka.weather.service.weather.WeatherService;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,7 +100,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     case "/help" -> prepareAndSendMessage(chatId, TEXT_HELP);
                     case "/register" -> register(chatId);
                     case "/weather" ->
-                            sendMessage(chatId, weatherService.getWeather(weatherService.findCity()));
+                            sendMessage(chatId, weatherService.getWeatherResponse(weatherService.findCity()));
                     default -> prepareAndSendMessage(chatId, "sorry, but command was not recognized");
                 }
             }
