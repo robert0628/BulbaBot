@@ -19,7 +19,7 @@ import java.sql.Timestamp;
 @Entity
 public class User {
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
     private String firstname;
     private String lastname;

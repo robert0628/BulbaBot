@@ -75,6 +75,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * process user {@link Update telegram update} and send receive
+     *
      * @param update {@link Update telegram update}
      */
     //todo refactor this
@@ -123,8 +124,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * get greeting receive
+     *
      * @param chatId user's telegram id
-     * @param name user's name
+     * @param name   user's name
      */
     private void startCommandReceived(Long chatId, String name) {
         String answer = EmojiParser.parseToUnicode("Hi, " + name + " nice to meet you" + " :blush:");
@@ -133,7 +135,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * send message
-     * @param chatId user's telegram id
+     *
+     * @param chatId     user's telegram id
      * @param textToSend message text
      */
     private void sendMessage(Long chatId, String textToSend) {
@@ -146,6 +149,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * make buttons
+     *
      * @return buttons
      */
     private ReplyKeyboardMarkup makeReplyKeyboardMarkup() {
@@ -171,6 +175,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * register user
+     *
      * @param message {@link Message user's message}
      */
     private void registerUser(Message message) {
@@ -186,6 +191,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * make buttons for register
+     *
      * @param chatId user's telegram id
      */
     private void register(Long chatId) {
@@ -215,10 +221,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         executeMessage(message);
     }
 // TODO: 18.03.23 fill javadoc 
+
     /**
-     *
-     * @param text message text
-     * @param chatId user's telegram id
+     * @param text      message text
+     * @param chatId    user's telegram id
      * @param messageId message id
      */
     private void executeEditMessageText(String text, Long chatId, long messageId) {
@@ -236,6 +242,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * send message
+     *
      * @param message {@link SendMessage message for user}
      */
     private void executeMessage(SendMessage message) {
@@ -248,7 +255,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * prepare and send message to user
-     * @param chatId user's telegram id
+     *
+     * @param chatId     user's telegram id
      * @param textToSend text to send to the user
      */
     private void prepareAndSendMessage(Long chatId, String textToSend) {
