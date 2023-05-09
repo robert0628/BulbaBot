@@ -3,6 +3,7 @@ package com.belka.BulbaBot.service;
 import com.belka.BulbaBot.config.BotConfig;
 import com.belka.BulbaBot.model.User;
 import com.belka.BulbaBot.repository.UserRepository;
+import com.belka.QR.Serices.QRService;
 import com.belka.weather.service.weather.WeatherService;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +12,10 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
@@ -38,16 +41,18 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final BotConfig botConfig;
     private final UserRepository userRepository;
     private final WeatherService weatherService;
+    private final QRService qrService;
     private static final String TEXT_HELP = "This bot was created like demo";
     private static final String YES_BUTTON = "YES_BUTTON";
     private static final String NO_BUTTON = "NO_BUTTON";
     private static final String ERROR_TEXT = "Error occurred: ";
 
     @Autowired
-    public TelegramBot(BotConfig botConfig, UserRepository userRepository, WeatherService weatherService) {
+    public TelegramBot(BotConfig botConfig, UserRepository userRepository, WeatherService weatherService, QRService qrService) {
         this.botConfig = botConfig;
         this.userRepository = userRepository;
         this.weatherService = weatherService;
+        this.qrService = qrService;
         List<BotCommand> listOfCommands = new ArrayList<>();
         listOfCommands.add(new BotCommand("/start", "get a welcome message"));
         listOfCommands.add(new BotCommand("/mydata", "get your data stored"));
@@ -86,13 +91,17 @@ public class TelegramBot extends TelegramLongPollingBot {
             String messageText = update.getMessage().getText();
             Long chatId = update.getMessage().getChatId();
 
-            if (messageText.contains("/send") && botConfig.getBotOwner().equals(chatId)) {
+            if (messageText.startsWith("/send") && botConfig.getBotOwner().equals(chatId)) {
                 String textToSend = EmojiParser.parseToUnicode(messageText.substring(messageText.indexOf(" ")));
                 Iterable<User> users = userRepository.findAll();
                 for (User user : users) {
                     prepareAndSendMessage(user.getId(), textToSend);
                 }
             } else {
+                if (messageText.startsWith("/QR - ")) {
+                    sendImageFromUrl(qrService.getQRLink(messageText), chatId);
+                    return;
+                }
                 switch (messageText) {
                     case "/start" -> {
                         registerUser(update.getMessage());
@@ -264,5 +273,26 @@ public class TelegramBot extends TelegramLongPollingBot {
         message.setChatId(chatId);
         message.setText(textToSend);
         executeMessage(message);
+    }
+
+    /**
+     * takes a picture from the url and sends it to the user
+     *
+     * @param url link for the picture
+     * @param chatId user's chatId
+     */
+    private void sendImageFromUrl(String url, Long chatId) {
+        // Create send method
+        SendPhoto sendPhotoRequest = new SendPhoto();
+        // Set destination chat id
+        sendPhotoRequest.setChatId(chatId);
+        // Set the photo url as a simple photo
+        sendPhotoRequest.setPhoto(new InputFile(url));
+        try {
+            // Execute the method
+            execute(sendPhotoRequest);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 }
