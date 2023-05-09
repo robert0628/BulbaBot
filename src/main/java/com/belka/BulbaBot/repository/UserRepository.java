@@ -1,7 +1,10 @@
 package com.belka.BulbaBot.repository;
 
 import com.belka.BulbaBot.model.User;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends CrudRepository<User, Long> {
+/**
+ * repository for {@link User user}
+ */
+public interface UserRepository extends JpaRepository<User, Long> {
 }
