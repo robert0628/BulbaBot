@@ -1,4 +1,4 @@
-package com.belka.weather.model;
+package com.belka.weather.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,23 +12,16 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Table(name = "weather_history")
 @Entity
-public class WeatherHistory {
+public class WeatherHistoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
     private Integer temp;
     private LocalDate date;
     private String city;
 
-    public WeatherHistory(Integer temp, LocalDate date, String city) {
-        this.temp = temp;
-        this.date = date;
-        this.city = city;
-    }
-
-    public WeatherHistory(Long id, Integer temp, LocalDate date, String city) {
-        this.id = id;
+    public WeatherHistoryEntity(Integer temp, LocalDate date, String city) {
         this.temp = temp;
         this.date = date;
         this.city = city;
@@ -58,8 +51,8 @@ public class WeatherHistory {
             return this;
         }
 
-        public WeatherHistory build() {
-            return new WeatherHistory(temp, date, city);
+        public WeatherHistoryEntity build() {
+            return new WeatherHistoryEntity(temp, date, city);
         }
     }
 }

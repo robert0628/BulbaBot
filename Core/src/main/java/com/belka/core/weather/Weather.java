@@ -1,4 +1,4 @@
-package com.belka.weather.dto.weather;
+package com.belka.core.weather;
 
 import lombok.Data;
 

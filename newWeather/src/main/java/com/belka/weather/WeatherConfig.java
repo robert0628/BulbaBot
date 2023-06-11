@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
-@EntityScan("com.belka.weather.model")
-@EnableJpaRepositories("com.belka.weather.repository")
-public class Config {
+@EntityScan("com.belka.weather")
+@EnableJpaRepositories("com.belka.weather")
+public class WeatherConfig {
 
 }

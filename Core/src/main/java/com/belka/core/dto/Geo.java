@@ -1,4 +1,4 @@
-package com.belka.weather.dto;
+package com.belka.core.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
