@@ -18,14 +18,14 @@ public class KafkaService {
     private final RestTemplate restTemplate;
     private final KafkaProducer producer;
 
+    @Value("${weather.link}")
+    private String link;
+
     @Autowired
     public KafkaService(RestTemplate restTemplate, KafkaProducer producer) {
         this.restTemplate = restTemplate;
         this.producer = producer;
     }
-
-    @Value("${weather.link}")
-    private String link;
 
     private String getWeatherLink(String city) {
         return String.format(link, city);
@@ -40,13 +40,13 @@ public class KafkaService {
     }
 
     @Scheduled(cron = CRON_EVERY_MINUTE)
-    private void saveWeatherEveryDay() {
+    private void saveWeatherEveryMinute() {
         WeatherNow weatherNow = getWeather("Minsk");
         WeatherHistory weatherHistory = WeatherHistory.builder()
-                        .temp(weatherNow.getWeatherInfo().getTemp())
-                        .city("Minsk")
-                        .date(LocalDate.now())
-                        .build();
+                .temp(weatherNow.getWeatherInfo().getTemp())
+                .city("Minsk")
+                .date(LocalDate.now())
+                .build();
         producer.sendMessage(weatherHistory);
         log.info("we saved it");
     }
