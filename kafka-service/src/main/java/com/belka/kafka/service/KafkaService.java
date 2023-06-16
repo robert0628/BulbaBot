@@ -42,8 +42,7 @@ public class KafkaService {
     @Scheduled(cron = CRON_EVERY_MINUTE)
     private void saveWeatherEveryDay() {
         WeatherNow weatherNow = getWeather("Minsk");
-        WeatherHistory weatherHistory =
-                WeatherHistory.builder()
+        WeatherHistory weatherHistory = WeatherHistory.builder()
                         .temp(weatherNow.getWeatherInfo().getTemp())
                         .city("Minsk")
                         .date(LocalDate.now())
