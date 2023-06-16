@@ -3,8 +3,8 @@ package com.belka.BulbaBot.service;
 import com.belka.BulbaBot.config.BotConfig;
 import com.belka.BulbaBot.model.User;
 import com.belka.BulbaBot.repository.UserRepository;
-import com.belka.QR.Serices.QRService;
-import com.belka.newDiary.DiaryService;
+import com.belka.QR.Services.QRService;
+import com.belka.newDiary.service.DiaryService;
 import com.belka.weather.service.weather.WeatherService;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
@@ -236,7 +236,6 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         executeMessage(message);
     }
-// TODO: 18.03.23 fill javadoc 
 
     /**
      * @param text      message text

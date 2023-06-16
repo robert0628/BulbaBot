@@ -1,7 +1,8 @@
 package com.belka.weather.service.weather;
 
-import com.belka.core.weather.WeatherInfo;
-import com.belka.core.weather.WeatherNow;
+import com.belka.core.converter.ConverterService;
+import com.belka.core.weather_core.weather.WeatherInfo;
+import com.belka.core.weather_core.weather.WeatherNow;
 import com.belka.weather.entity.WeatherHistoryEntity;
 import com.belka.weather.json.JsonWeatherHistory;
 import com.belka.weather.repository.WeatherRepository;
@@ -16,12 +17,9 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDate;
-
 @Service
 @Slf4j
 @Data
-//@ComponentScan ("com.belka")
 public class WeatherServiceImpl implements WeatherService {
 
     private final static String CRON_EVERY_DAY = "1 * * * * *";
@@ -32,6 +30,12 @@ public class WeatherServiceImpl implements WeatherService {
     private final RestTemplate restTemplate;
     private final GeoFromIPService geoFromIPService;
     private WeatherRepository repository;
+    private ConverterService converterService;
+
+    @Autowired
+    public void setConverterService(ConverterService converterService) {
+        this.converterService = converterService;
+    }
 
     @Autowired
     public void setRepository(WeatherRepository repository) {
@@ -63,28 +67,19 @@ public class WeatherServiceImpl implements WeatherService {
         return geoFromIPService.getCityName();
     }
 
-    @KafkaListener(topics = "diaryNotes", groupId = "myGroup")
+    @KafkaListener(topics = "weather", groupId = "myGroup")
     public void consume(String input) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             JsonWeatherHistory jsonWeatherHistory = mapper.readValue(input, JsonWeatherHistory.class);
-            int[]inputDate = jsonWeatherHistory.getDate();
-            LocalDate date = LocalDate.of(inputDate[0], inputDate[1], inputDate[2]);
-            WeatherHistoryEntity entity = WeatherHistoryEntity.builder()
-                    .temp(jsonWeatherHistory.getTemp())
-                    .date(date)
-                    .city(jsonWeatherHistory.getCity())
-                    .build();
-
+            WeatherHistoryEntity entity = converterService.ConvertTo(WeatherHistoryEntity.class, jsonWeatherHistory);
+            System.out.println(entity);
             repository.save(entity);
             log.info(String.format("Message received -> %s", entity));
-    } catch(
-    JsonProcessingException e)
-
-    {
-        throw new RuntimeException(e);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
-}
 
 
 }

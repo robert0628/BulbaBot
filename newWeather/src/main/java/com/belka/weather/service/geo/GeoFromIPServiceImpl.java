@@ -1,6 +1,6 @@
 package com.belka.weather.service.geo;
 
-import com.belka.core.dto.Geo;
+import com.belka.core.weather_core.dto.Geo;
 import com.belka.weather.service.getIp.GetIPService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

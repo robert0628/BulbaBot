@@ -8,5 +8,4 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan("com.belka.weather")
 @EnableJpaRepositories("com.belka.weather")
 public class WeatherConfig {
-
 }

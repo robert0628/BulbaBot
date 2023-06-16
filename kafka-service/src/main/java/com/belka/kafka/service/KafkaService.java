@@ -1,8 +1,8 @@
 package com.belka.kafka.service;
 
-import com.belka.core.model.WeatherHistory;
-import com.belka.core.weather.WeatherNow;
-import com.belka.kafka.producer.DiaryKafkaProducer;
+import com.belka.core.weather_core.model.WeatherHistory;
+import com.belka.core.weather_core.weather.WeatherNow;
+import com.belka.kafka.producer.KafkaProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,10 +16,10 @@ import java.time.LocalDate;
 public class KafkaService {
     private final static String CRON_EVERY_MINUTE = "1 * * * * *";
     private final RestTemplate restTemplate;
-    private final DiaryKafkaProducer producer;
+    private final KafkaProducer producer;
 
     @Autowired
-    public KafkaService(RestTemplate restTemplate, DiaryKafkaProducer producer) {
+    public KafkaService(RestTemplate restTemplate, KafkaProducer producer) {
         this.restTemplate = restTemplate;
         this.producer = producer;
     }

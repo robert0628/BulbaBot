@@ -1,4 +1,4 @@
-package com.belka.newDiary;
+package com.belka.newDiary.entity;
 
 import lombok.*;
 import javax.persistence.*;

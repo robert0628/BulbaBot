@@ -1,11 +1,11 @@
-package com.belka.core.model;
+package com.belka.core.weather_core.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-
+//todo do we need to have the weather models in the Core module?
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,13 +16,6 @@ public class WeatherHistory {
     private String city;
 
     public WeatherHistory(Integer temp, LocalDate date, String city) {
-        this.temp = temp;
-        this.date = date;
-        this.city = city;
-    }
-
-    public WeatherHistory(Long id, Integer temp, LocalDate date, String city) {
-        this.id = id;
         this.temp = temp;
         this.date = date;
         this.city = city;

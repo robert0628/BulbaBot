@@ -1,5 +1,6 @@
-package com.belka.newDiary;
+package com.belka.newDiary.repository;
 
+import com.belka.newDiary.entity.DiaryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;

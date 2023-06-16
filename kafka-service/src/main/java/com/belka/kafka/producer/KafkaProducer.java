@@ -1,6 +1,6 @@
 package com.belka.kafka.producer;
 
-import com.belka.core.model.WeatherHistory;
+import com.belka.core.weather_core.model.WeatherHistory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class DiaryKafkaProducer {
+public class KafkaProducer {
 
     @Value("${spring.kafka.topic.name}")
     private String topic;
 
     private final KafkaTemplate<String, WeatherHistory> kafkaTemplate;
 
-    public DiaryKafkaProducer(KafkaTemplate<String, WeatherHistory> kafkaTemplate) {
+    public KafkaProducer(KafkaTemplate<String, WeatherHistory> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 

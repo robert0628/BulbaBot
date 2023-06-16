@@ -1,6 +1,8 @@
-package com.belka.newDiary;
+package com.belka.newDiary.service;
 
 
+import com.belka.newDiary.entity.DiaryEntity;
+import com.belka.newDiary.repository.DiaryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
