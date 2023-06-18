@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.util.Collection;
 
 @org.springframework.stereotype.Service
 @Slf4j
@@ -17,7 +18,8 @@ public class KafkaService {
     private final static String CRON_EVERY_MINUTE = "1 * * * * *";
     private final RestTemplate restTemplate;
     private final KafkaProducer producer;
-
+    @Value("${cities.list:}#{T(java.util.Collections).emptyList()}")
+    private Collection<String> cities;
     @Value("${weather.link}")
     private String link;
 
@@ -41,13 +43,15 @@ public class KafkaService {
 
     @Scheduled(cron = CRON_EVERY_MINUTE)
     private void saveWeatherEveryMinute() {
-        WeatherNow weatherNow = getWeather("Minsk");
-        WeatherHistory weatherHistory = WeatherHistory.builder()
-                .temp(weatherNow.getWeatherInfo().getTemp())
-                .city("Minsk")
-                .date(LocalDate.now())
-                .build();
-        producer.sendMessage(weatherHistory);
-        log.info("we saved it");
+        for (String city : cities) {
+            WeatherNow weatherNow = getWeather(city);
+            WeatherHistory weatherHistory = WeatherHistory.builder()
+                    .temp(weatherNow.getWeatherInfo().getTemp())
+                    .city(city)
+                    .date(LocalDate.now())
+                    .build();
+            producer.sendMessage(weatherHistory);
+            log.info("we saved it");
+        }
     }
 }

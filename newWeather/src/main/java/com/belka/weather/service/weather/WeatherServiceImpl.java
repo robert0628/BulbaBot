@@ -13,7 +13,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -67,13 +66,26 @@ public class WeatherServiceImpl implements WeatherService {
         return geoFromIPService.getCityName();
     }
 
-    @KafkaListener(topics = "weather", groupId = "myGroup")
+   /*@KafkaListener(topics = "weather", groupId = "myGroup")
     public void consume(String input) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             JsonWeatherHistory jsonWeatherHistory = mapper.readValue(input, JsonWeatherHistory.class);
             WeatherHistoryEntity entity = converterService.ConvertTo(WeatherHistoryEntity.class, jsonWeatherHistory);
             System.out.println(entity);
+            repository.save(entity);
+            log.info(String.format("Message received -> %s", entity));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }*/
+
+    @Override
+    public void saveBatch(String weather){
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JsonWeatherHistory jsonWeatherHistory = mapper.readValue(weather, JsonWeatherHistory.class);
+            WeatherHistoryEntity entity = converterService.ConvertTo(WeatherHistoryEntity.class, jsonWeatherHistory);
             repository.save(entity);
             log.info(String.format("Message received -> %s", entity));
         } catch (JsonProcessingException e) {

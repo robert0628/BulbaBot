@@ -14,4 +14,10 @@ public interface WeatherService {
      * get user's city
      */
     String findCity();
+
+    /**
+     * todo javadoc
+     * @param weather
+     */
+    void saveBatch(String weather);
 }
