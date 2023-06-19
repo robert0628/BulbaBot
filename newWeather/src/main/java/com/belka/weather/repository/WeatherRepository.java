@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  * repository for {@link WeatherHistoryEntity WeatherHistory}
  */
-public interface WeatherRepository extends JpaRepository<WeatherHistoryEntity, Long> {
+public interface WeatherRepository extends JpaRepository<WeatherHistoryEntity, Long>, WeatherSQLRepository {
 }

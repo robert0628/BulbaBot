@@ -16,7 +16,7 @@ public class KafkaConfig {
     private String topic;
 
     @Bean
-    public NewTopic diaryNotesTopic() {
+    public NewTopic weatherTopic() {
         return TopicBuilder.name(topic)
                 .build();
     }

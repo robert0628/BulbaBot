@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 @Component
-public class WeatherHistoryToWeatherHistoryEntityConverter implements BelConverter<JsonWeatherHistory, WeatherHistoryEntity> {
+public class JsonWeatherHistoryToWeatherHistoryEntityConverter implements BelConverter<JsonWeatherHistory, WeatherHistoryEntity> {
     @Override
     public WeatherHistoryEntity convert(JsonWeatherHistory value) {
         int[] inputDate = value.getDate();

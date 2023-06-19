@@ -7,14 +7,15 @@ import com.belka.weather.entity.WeatherHistoryEntity;
 import com.belka.weather.json.JsonWeatherHistory;
 import com.belka.weather.repository.WeatherRepository;
 import com.belka.weather.service.geo.GeoFromIPService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Service
 @Slf4j
@@ -66,31 +67,16 @@ public class WeatherServiceImpl implements WeatherService {
         return geoFromIPService.getCityName();
     }
 
-   /*@KafkaListener(topics = "weather", groupId = "myGroup")
-    public void consume(String input) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            JsonWeatherHistory jsonWeatherHistory = mapper.readValue(input, JsonWeatherHistory.class);
-            WeatherHistoryEntity entity = converterService.ConvertTo(WeatherHistoryEntity.class, jsonWeatherHistory);
-            System.out.println(entity);
-            repository.save(entity);
-            log.info(String.format("Message received -> %s", entity));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }*/
-
     @Override
-    public void saveBatch(String weather){
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            JsonWeatherHistory jsonWeatherHistory = mapper.readValue(weather, JsonWeatherHistory.class);
-            WeatherHistoryEntity entity = converterService.ConvertTo(WeatherHistoryEntity.class, jsonWeatherHistory);
-            repository.save(entity);
+    public void saveBatch(Collection<JsonWeatherHistory> weathers) {
+        Collection<WeatherHistoryEntity> entities = new ArrayList<>();
+        for (JsonWeatherHistory weather : weathers) {
+            WeatherHistoryEntity entity = converterService.ConvertTo(WeatherHistoryEntity.class, weather);
+            entities.add(entity);
             log.info(String.format("Message received -> %s", entity));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
         }
+        repository.batchSave(entities);
+        log.info("Messages saved");
     }
 
 
