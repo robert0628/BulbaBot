@@ -6,7 +6,7 @@ package com.belka.core.converter;
  * @param <I> input type
  * @param <O> output type
  */
-public interface BelConverter<I, O> {
+public interface BelkaConverter<I, O> {
     /**
      * converts input object to output type
      *

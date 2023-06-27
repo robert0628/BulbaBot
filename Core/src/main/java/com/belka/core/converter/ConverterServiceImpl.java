@@ -10,14 +10,14 @@ import java.util.Map;
 @Service
 public class ConverterServiceImpl implements ConverterService {
 
-    private final Map<Class<?>, Map<Class<?>, BelConverter<?, ?>>> converters = new HashMap<>();
+    private final Map<Class<?>, Map<Class<?>, BelkaConverter<?, ?>>> converters = new HashMap<>();
 
     @Autowired(required = false)
-    private void setConverters(Collection<BelConverter<?, ?>> converters) {
+    private void setConverters(Collection<BelkaConverter<?, ?>> converters) {
         if (converters == null) {
             return;
         }
-        for (BelConverter<?, ?> converter : converters) {
+        for (BelkaConverter<?, ?> converter : converters) {
             this.converters.computeIfAbsent(converter.getInputType(), v -> new HashMap<>())
                     .put(converter.getOutputType(), converter);
         }
@@ -34,11 +34,11 @@ public class ConverterServiceImpl implements ConverterService {
         if (to.isInstance(value)) {
             return (T) value;
         }
-        Map<Class<?>, BelConverter<?, ?>> inputTypeConverters = converters.get(value.getClass());
+        Map<Class<?>, BelkaConverter<?, ?>> inputTypeConverters = converters.get(value.getClass());
         if (inputTypeConverters == null) {
             throw new RuntimeException(String.format("there are not converters from %s to %s", value.getClass(), to));
         }
-        BelConverter<?, ?> converter = inputTypeConverters.get(to);
+        BelkaConverter<?, ?> converter = inputTypeConverters.get(to);
         if (converter == null) {
             throw new RuntimeException(String.format("there are not converters from %s to %s", value.getClass(), to));
         }

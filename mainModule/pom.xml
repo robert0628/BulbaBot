@@ -9,9 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.belka</groupId>
-    <artifactId>Core</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>com.belka.mainmodule</groupId>
+    <artifactId>mainModule</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -21,9 +20,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.telegram</groupId>
-            <artifactId>telegrambots</artifactId>
-            <version>${telegram.version}</version>
+            <groupId>com.belka</groupId>
+            <artifactId>Core</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

@@ -15,7 +15,6 @@ import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -31,6 +30,7 @@ import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * building and sending messages, receiving and processing {@link Update updates}
@@ -44,6 +44,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final WeatherService weatherService;
     private final QRService qrService;
     private final DiaryService diaryService;
+    @Autowired
+    private HandlerService handlerService;
     private static final String TEXT_HELP = "This bot was created like demo";
     private static final String YES_BUTTON = "YES_BUTTON";
     private static final String NO_BUTTON = "NO_BUTTON";
@@ -90,10 +92,20 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     @Transactional
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            String messageText = update.getMessage().getText();
-            Long chatId = update.getMessage().getChatId();
+       /* if (update.hasMessage() || update.hasCallbackQuery()) {
+            CompletableFuture.runAsync(
+                    () -> someService.tryNext(update)
+            );
+        }*/
 
+        if (update.hasMessage() || update.hasCallbackQuery()) {
+          /*  String messageText = update.getMessage().getText();
+            Long chatId = update.getMessage().getChatId();*/
+
+            handlerService.handle(update).stream().filter(Objects::nonNull).forEach(msg -> executeMessage((SendMessage) msg));
+
+
+/*
             if (messageText.startsWith("/send") && botConfig.getBotOwner().equals(chatId)) {
                 String textToSend = EmojiParser.parseToUnicode(messageText.substring(messageText.indexOf(" ")));
                 Iterable<User> users = userRepository.findAll();
@@ -104,7 +116,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 if (messageText.startsWith("/QR - ")) {
                     sendImageFromUrl(qrService.getQRLink(messageText), chatId);
                     return;
-                } else if (messageText.startsWith("/diary - ")){
+                } else if (messageText.startsWith("/diary - ")) {
                     diaryService.addNote(chatId, messageText);
                     sendMessage(chatId, "got it");
                     return;
@@ -122,6 +134,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
             }
         } else if (update.hasCallbackQuery()) {
+
+            someService.tryNext(update).stream().filter(Objects::nonNull).forEach(msg -> executeMessage((SendMessage) msg));
+
             CallbackQuery query = update.getCallbackQuery();
             String callbackData = query.getData();
             String answer;
@@ -134,7 +149,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             } else if (callbackData.equals(NO_BUTTON)) {
                 answer = "You pressed NO button";
                 executeEditMessageText(answer, chatId, messageId);
-            }
+            }*/
         }
     }
 
@@ -284,7 +299,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     /**
      * takes a picture from the url and sends it to the user
      *
-     * @param url link for the picture
+     * @param url    link for the picture
      * @param chatId user's chatId
      */
     private void sendImageFromUrl(String url, Long chatId) {
