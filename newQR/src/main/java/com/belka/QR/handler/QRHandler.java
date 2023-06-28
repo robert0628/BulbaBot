@@ -11,33 +11,32 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
 @AllArgsConstructor
 public class QRHandler implements BelkaHandler {
     private final static String CODE = "/QR";
+    private final static String EXIT_CODE = "/send QR";
     private final static String HEADER_1 = "write your text";
     private final PreviousService previousService;
     private final QRService qrService;
 
     @Override
     public PartialBotApiMethod<?> handle(BelkaEvent event) {
-        Update update = event.getUpdate();
-        if (update.hasMessage() && update.getMessage().hasText() && event.getMessage().equals(CODE)) {
+        if (event.isHasMessage() && event.isHasText() && event.getText().equals(CODE)) {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
-                    .userId(update.getMessage().getChatId())
+                    .userId(event.getChatId())
                     .build());
-            return sendMessage(update.getMessage().getChatId(), HEADER_1);
+            return sendMessage(event.getChatId(), HEADER_1);
         }
-        if (update.hasMessage() && update.getMessage().hasText() && event.getMessage().equals(CODE)) {
-                Long chatId = event.getChatId();
-                previousService.save(PreviousStepDto.builder()
-                        .previousStep(CODE)
-                        .userId(chatId)
-                        .build());
-                return sendImageFromUrl(qrService.getQRLink(event.getMessage()), chatId);
+        if (event.isHasMessage() && event.isHasText() && event.getPrevious_step().equals(CODE)) {
+            Long chatId = event.getChatId();
+            previousService.save(PreviousStepDto.builder()
+                    .previousStep(EXIT_CODE)
+                    .userId(chatId)
+                    .build());
+            return sendImageFromUrl(qrService.getQRLink(event.getText()), chatId);
         }
         return null;
     }
@@ -49,6 +48,12 @@ public class QRHandler implements BelkaHandler {
                 .build();
     }
 
+    /**
+     * takes a picture from the url and sends it to the user
+     *
+     * @param url    link for the picture
+     * @param chatId user's chatId
+     */
     private PartialBotApiMethod<?> sendImageFromUrl(String url, Long chatId) {
         // Create send method
         SendPhoto sendPhotoRequest = new SendPhoto();
@@ -57,11 +62,5 @@ public class QRHandler implements BelkaHandler {
         // Set the photo url as a simple photo
         sendPhotoRequest.setPhoto(new InputFile(url));
         return sendPhotoRequest;
-        /*try {
-            // Execute the method
-            execute(sendPhotoRequest);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }*/
     }
 }

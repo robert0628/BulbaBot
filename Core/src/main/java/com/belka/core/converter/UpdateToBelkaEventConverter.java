@@ -19,22 +19,29 @@ public class UpdateToBelkaEventConverter implements BelkaConverter<Update, Belka
 
     @Override
     public BelkaEvent convert(Update value) {
-        String message = null;
+        String text = null;
         String data = null;
         Long chatId = getChatId(value);
         String previousStep = previousService.getPreviousStep(chatId);
-        if (value.hasMessage()) {
-            message = value.getMessage().getText();
+        boolean hasMessage = value.hasMessage();
+        boolean hasText = hasMessage && value.getMessage().hasText();
+        boolean hasCallbackQuery = value.hasCallbackQuery();
+
+        if (hasText) {
+            text = value.getMessage().getText();
         }
-        if (value.hasCallbackQuery()) {
+        if (hasCallbackQuery) {
             data = value.getCallbackQuery().getData();
         }
         return BelkaEvent.builder()
                 .update(value)
                 .data(data)
                 .chatId(chatId)
-                .message(message)
+                .text(text)
                 .previous_step(previousStep)
+                .hasMessage(hasMessage)
+                .hasCallbackQuery(hasCallbackQuery)
+                .hasText(hasText)
                 .build();
     }
 
@@ -55,6 +62,6 @@ public class UpdateToBelkaEventConverter implements BelkaConverter<Update, Belka
         if (update.hasCallbackQuery()) {
             return update.getCallbackQuery().getMessage().getChatId();
         }
-        return null;
+        throw new RuntimeException("received an Update without an id");
     }
 }

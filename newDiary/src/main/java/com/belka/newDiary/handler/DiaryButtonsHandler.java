@@ -14,7 +14,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 public class DiaryButtonsHandler implements BelkaHandler {
     private final static String CODE = "/diary-buttons";
     private final static String WRITE_DIARY = "WRITE_DIARY";
-    private final static String HEADER_2 = "write some words";
+    private final static String HEADER = "write some words";
     private final PreviousService previousService;
     @Override
     public PartialBotApiMethod<?> handle(BelkaEvent event) {
@@ -32,7 +32,7 @@ public class DiaryButtonsHandler implements BelkaHandler {
     private SendMessage sendMessage(Long chatId) {
         return SendMessage.builder()
                 .chatId(chatId)
-                .text(HEADER_2)
+                .text(HEADER)
                 .build();
     }
 }

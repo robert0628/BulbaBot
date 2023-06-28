@@ -17,6 +17,7 @@ public class DiaryWriteHandler implements BelkaHandler {
 
     private final static String CODE = "WRITE_DIARY";
     private final static String PREVIOUS_CODE = "/diary-buttons";
+    private final static String ANSWER = "got it";
     private final PreviousService previousService;
     private final DiaryService diaryService;
 
@@ -31,7 +32,7 @@ public class DiaryWriteHandler implements BelkaHandler {
                     .previousStep(CODE)
                     .userId(chatId)
                     .build());
-            diaryService.addNote(chatId, event.getMessage());
+            diaryService.addNote(chatId, event.getText());
             return sendMessage(chatId);
         }
         return null;
@@ -40,7 +41,7 @@ public class DiaryWriteHandler implements BelkaHandler {
     private SendMessage sendMessage(Long chatId) {
         return SendMessage.builder()
                 .chatId(chatId)
-                .text("got it")
+                .text(ANSWER)
                 .build();
     }
 }

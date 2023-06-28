@@ -11,11 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
@@ -44,7 +46,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final WeatherService weatherService;
     private final QRService qrService;
     private final DiaryService diaryService;
-    @Autowired
     private HandlerService handlerService;
     private static final String TEXT_HELP = "This bot was created like demo";
     private static final String YES_BUTTON = "YES_BUTTON";
@@ -52,12 +53,14 @@ public class TelegramBot extends TelegramLongPollingBot {
     private static final String ERROR_TEXT = "Error occurred: ";
 
     @Autowired
-    public TelegramBot(BotConfig botConfig, UserRepository userRepository, WeatherService weatherService, QRService qrService, DiaryService diaryService) {
+    public TelegramBot(BotConfig botConfig, UserRepository userRepository, WeatherService weatherService,
+                       QRService qrService, DiaryService diaryService, HandlerService handlerService) {
         this.botConfig = botConfig;
         this.userRepository = userRepository;
         this.weatherService = weatherService;
         this.qrService = qrService;
         this.diaryService = diaryService;
+        this.handlerService = handlerService;
         List<BotCommand> listOfCommands = new ArrayList<>();
         listOfCommands.add(new BotCommand("/start", "get a welcome message"));
         listOfCommands.add(new BotCommand("/mydata", "get your data stored"));
@@ -102,7 +105,7 @@ public class TelegramBot extends TelegramLongPollingBot {
           /*  String messageText = update.getMessage().getText();
             Long chatId = update.getMessage().getChatId();*/
 
-            handlerService.handle(update).stream().filter(Objects::nonNull).forEach(msg -> executeMessage((SendMessage) msg));
+            handlerService.handle(update).stream().filter(Objects::nonNull).forEach(msg -> executeMessage(msg));
 
 
 /*
@@ -275,13 +278,20 @@ public class TelegramBot extends TelegramLongPollingBot {
      *
      * @param message {@link SendMessage message for user}
      */
-    private void executeMessage(SendMessage message) {
+    private void executeMessage(PartialBotApiMethod<?> message) {
         try {
-            execute(message);
+            if (message instanceof BotApiMethod) {
+                execute((BotApiMethod<?>) message);
+            } else if (message instanceof SendPhoto sendPhoto) {
+                execute(sendPhoto);
+            } else if (message instanceof SendDocument sendDocument) {
+                execute(sendDocument);
+            }
         } catch (TelegramApiException e) {
-            log.error(ERROR_TEXT + e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
+
 
     /**
      * prepare and send message to user
@@ -294,26 +304,5 @@ public class TelegramBot extends TelegramLongPollingBot {
         message.setChatId(chatId);
         message.setText(textToSend);
         executeMessage(message);
-    }
-
-    /**
-     * takes a picture from the url and sends it to the user
-     *
-     * @param url    link for the picture
-     * @param chatId user's chatId
-     */
-    private void sendImageFromUrl(String url, Long chatId) {
-        // Create send method
-        SendPhoto sendPhotoRequest = new SendPhoto();
-        // Set destination chat id
-        sendPhotoRequest.setChatId(chatId);
-        // Set the photo url as a simple photo
-        sendPhotoRequest.setPhoto(new InputFile(url));
-        try {
-            // Execute the method
-            execute(sendPhotoRequest);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -11,5 +11,8 @@ public class BelkaEvent {
     private final Long chatId;
     private final String previous_step;
     private final String data;
-    private final String message;
+    private final String text;
+    private final boolean hasMessage;
+    private final boolean hasText;
+    private final boolean hasCallbackQuery;
 }
