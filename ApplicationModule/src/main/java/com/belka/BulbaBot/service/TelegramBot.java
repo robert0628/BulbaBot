@@ -1,6 +1,7 @@
 package com.belka.BulbaBot.service;
 
 import com.belka.BulbaBot.config.BotConfig;
+import com.belka.BulbaBot.handler.HandlerService;
 import com.belka.BulbaBot.model.User;
 import com.belka.BulbaBot.repository.UserRepository;
 import com.belka.QR.Services.QRService;

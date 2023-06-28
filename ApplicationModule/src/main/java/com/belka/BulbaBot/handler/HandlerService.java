@@ -1,4 +1,4 @@
-package com.belka.BulbaBot.service;
+package com.belka.BulbaBot.handler;
 
 import com.belka.core.converter.ConverterService;
 import com.belka.core.handlers.BelkaEvent;
