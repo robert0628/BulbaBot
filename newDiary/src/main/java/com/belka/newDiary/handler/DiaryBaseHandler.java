@@ -31,7 +31,7 @@ public class DiaryBaseHandler implements BelkaHandler {
     @Override
     public PartialBotApiMethod<?> handle(BelkaEvent event) {
         Update update = event.getUpdate();
-        if (update.hasMessage() && update.getMessage().hasText() && event.getText().equals(CODE)) {
+        if (update.hasMessage() && update.getMessage().hasText() && event.getText().equalsIgnoreCase(CODE)) {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(update.getMessage().getChatId())
