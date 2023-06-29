@@ -1,7 +1,7 @@
 package com.belka.BulbaBot.handler;
 
-import com.belka.BulbaBot.model.User;
-import com.belka.BulbaBot.repository.UserRepository;
+import com.belka.BulbaBot.model.UserDto;
+import com.belka.BulbaBot.service.UserService;
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.PreviousService;
@@ -22,7 +22,7 @@ public class StartHandler implements BelkaHandler {
 
     private final static String CODE = "/start";
     private final PreviousService previousService;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public PartialBotApiMethod<?> handle(BelkaEvent event) {
@@ -39,16 +39,16 @@ public class StartHandler implements BelkaHandler {
     }
 
     private void registerUser(Message message) {
-        if (!userRepository.existsById(message.getChatId())) {
+        if (!userService.existsById(message.getChatId())) {
             Chat chat = message.getChat();
-            User user = User.builder()
+            UserDto userDto = UserDto.builder()
                     .id(chat.getId())
                     .firstname(chat.getFirstName())
                     .lastname(chat.getLastName())
                     .username(chat.getUserName())
                     .registeredAt(new Timestamp(System.currentTimeMillis()))
                     .build();
-            userRepository.save(user);
+            userService.save(userDto);
         }
     }
 
