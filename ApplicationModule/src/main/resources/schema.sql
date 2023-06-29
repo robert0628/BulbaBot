@@ -23,3 +23,10 @@ CREATE TABLE IF NOT EXISTS Diary
     note    text,
     date    date
 );
+
+CREATE TABLE IF NOT EXISTS previous_step
+(
+    user_id   bigint PRIMARY KEY,
+    previous_step text
+);
+

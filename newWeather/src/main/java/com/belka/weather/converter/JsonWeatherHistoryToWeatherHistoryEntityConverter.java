@@ -1,6 +1,6 @@
 package com.belka.weather.converter;
 
-import com.belka.core.converter.BelConverter;
+import com.belka.core.converter.BelkaConverter;
 import com.belka.weather.entity.WeatherHistoryEntity;
 import com.belka.weather.json.JsonWeatherHistory;
 import org.springframework.stereotype.Component;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 @Component
-public class JsonWeatherHistoryToWeatherHistoryEntityConverter implements BelConverter<JsonWeatherHistory, WeatherHistoryEntity> {
+public class JsonWeatherHistoryToWeatherHistoryEntityConverter implements BelkaConverter<JsonWeatherHistory, WeatherHistoryEntity> {
     @Override
     public WeatherHistoryEntity convert(JsonWeatherHistory value) {
         int[] inputDate = value.getDate();

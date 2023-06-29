@@ -9,6 +9,7 @@
 		<module>ApplicationModule</module>
         <module>newDiary</module>
         <module>kafka-service</module>
+        <module>mainModule</module>
     </modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>
@@ -39,6 +40,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.3.8</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 
