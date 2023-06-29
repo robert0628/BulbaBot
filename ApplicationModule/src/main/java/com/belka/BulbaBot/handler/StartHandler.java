@@ -26,7 +26,7 @@ public class StartHandler implements BelkaHandler {
 
     @Override
     public PartialBotApiMethod<?> handle(BelkaEvent event) {
-        if (event.isHasText() && event.getText().equals(CODE)) {
+        if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
             Long chatId = event.getChatId();
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)

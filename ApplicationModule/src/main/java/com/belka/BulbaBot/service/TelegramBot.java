@@ -293,7 +293,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-
     /**
      * prepare and send message to user
      *

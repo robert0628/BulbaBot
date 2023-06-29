@@ -23,7 +23,7 @@ public class QRHandler implements BelkaHandler {
 
     @Override
     public PartialBotApiMethod<?> handle(BelkaEvent event) {
-        if (event.isHasMessage() && event.isHasText() && event.getText().equals(CODE)) {
+        if (event.isHasMessage() && event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(event.getChatId())
