@@ -20,8 +20,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * building and sending messages, receiving and processing {@link Update updates}
@@ -73,12 +71,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Transactional
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() || update.hasCallbackQuery()) {
-            CompletableFuture.runAsync(
-                    () -> handlerService.handle(update)
-                            .stream()
-                            .filter(Objects::nonNull)
-                            .forEach(this::executeMessage)
-            );
+            handlerService.handle(update)
+                    .subscribe(this::executeMessage);
         }
     }
 

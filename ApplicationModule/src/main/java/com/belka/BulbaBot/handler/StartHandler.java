@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import reactor.core.publisher.Flux;
 
 import java.sql.Timestamp;
 
@@ -25,7 +26,7 @@ public class StartHandler implements BelkaHandler {
     private final UserService userService;
 
     @Override
-    public PartialBotApiMethod<?> handle(BelkaEvent event) {
+    public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
             Long chatId = event.getChatId();
             previousService.save(PreviousStepDto.builder()
@@ -33,7 +34,7 @@ public class StartHandler implements BelkaHandler {
                     .userId(chatId)
                     .build());
             registerUser(event.getUpdate().getMessage());
-            return startCommandReceived(chatId, event.getUpdate().getMessage().getChat().getFirstName());
+            return Flux.just(startCommandReceived(chatId, event.getUpdate().getMessage().getChat().getFirstName()));
         }
         return null;
     }

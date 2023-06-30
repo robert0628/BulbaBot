@@ -1,7 +1,8 @@
 package com.belka.core.handlers;
 
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
+import reactor.core.publisher.Flux;
 
 public interface BelkaHandler {
-    PartialBotApiMethod<?> handle(BelkaEvent event);
+    Flux<PartialBotApiMethod<?>> handle(BelkaEvent event);
 }

@@ -11,6 +11,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Component
 @AllArgsConstructor
@@ -22,7 +24,7 @@ public class SendingMessagesHandler implements BelkaHandler {
     private final BotConfig botConfig;
 
     @Override
-    public PartialBotApiMethod<?> handle(BelkaEvent event) {
+    public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         if (event.isHasText()
                 && event.getText().equalsIgnoreCase(CODE)
                 && botConfig.getBotOwner().equals(event.getChatId())) {
@@ -34,15 +36,16 @@ public class SendingMessagesHandler implements BelkaHandler {
                     .build());
 
             String textToSend = EmojiParser.parseToUnicode(event.getText());
-            userService.getAll().forEach(userDto -> sendMessage(userDto.getId(), textToSend));
+            return Flux.fromIterable(userService.getAll())
+                    .flatMap(userDto -> sendMessage(userDto.getId(), textToSend));
         }
         return null;
     }
 
-    private SendMessage sendMessage(Long chatId, String textToSend) {
+    private Mono<SendMessage> sendMessage(Long chatId, String textToSend) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(textToSend);
-        return message;
+        return Mono.just(message);
     }
 }

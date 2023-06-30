@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +30,14 @@ public class DiaryBaseHandler implements BelkaHandler {
     private final PreviousService previousService;
 
     @Override
-    public PartialBotApiMethod<?> handle(BelkaEvent event) {
+    public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         Update update = event.getUpdate();
         if (update.hasMessage() && update.getMessage().hasText() && event.getText().equalsIgnoreCase(CODE)) {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(update.getMessage().getChatId())
                     .build());
-            return getButtons(update.getMessage().getChatId());
+            return Flux.just(getButtons(update.getMessage().getChatId()));
         }
         return null;
     }
