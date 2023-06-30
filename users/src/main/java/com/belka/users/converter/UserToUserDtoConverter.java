@@ -1,8 +1,8 @@
-package com.belka.BulbaBot.converter;
+package com.belka.users.converter;
 
-import com.belka.BulbaBot.model.User;
-import com.belka.BulbaBot.model.UserDto;
 import com.belka.core.converter.BelkaConverter;
+import com.belka.users.model.User;
+import com.belka.users.model.UserDto;
 import org.springframework.stereotype.Component;
 
 @Component

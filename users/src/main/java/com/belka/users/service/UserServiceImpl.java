@@ -1,9 +1,9 @@
-package com.belka.BulbaBot.service;
+package com.belka.users.service;
 
-import com.belka.BulbaBot.model.User;
-import com.belka.BulbaBot.model.UserDto;
-import com.belka.BulbaBot.repository.UserRepository;
 import com.belka.core.converter.ConverterService;
+import com.belka.users.model.User;
+import com.belka.users.model.UserDto;
+import com.belka.users.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

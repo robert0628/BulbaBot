@@ -9,20 +9,25 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.belka.mainmodule</groupId>
-    <artifactId>mainModule</artifactId>
+    <groupId>com.belka.users</groupId>
+    <artifactId>users</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.belka</groupId>
             <artifactId>Core</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.vdurmont/emoji-java -->
+        <dependency>
+            <groupId>com.vdurmont</groupId>
+            <artifactId>emoji-java</artifactId>
+            <version>5.1.1</version>
         </dependency>
     </dependencies>
 

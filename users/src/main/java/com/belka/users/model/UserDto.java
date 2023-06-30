@@ -1,4 +1,4 @@
-package com.belka.BulbaBot.model;
+package com.belka.users.model;
 
 import lombok.Builder;
 import lombok.Data;

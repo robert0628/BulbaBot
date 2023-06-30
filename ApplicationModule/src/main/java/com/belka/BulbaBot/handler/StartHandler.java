@@ -1,11 +1,11 @@
 package com.belka.BulbaBot.handler;
 
-import com.belka.BulbaBot.model.UserDto;
-import com.belka.BulbaBot.service.UserService;
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.PreviousService;
 import com.belka.core.previous_step.dto.PreviousStepDto;
+import com.belka.users.model.UserDto;
+import com.belka.users.service.UserService;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

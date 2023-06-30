@@ -9,8 +9,8 @@
 		<module>ApplicationModule</module>
         <module>newDiary</module>
         <module>kafka-service</module>
-        <module>mainModule</module>
-    </modules>
+		<module>users</module>
+	</modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>

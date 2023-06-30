@@ -1,6 +1,6 @@
-package com.belka.BulbaBot.service;
+package com.belka.users.service;
 
-import com.belka.BulbaBot.model.UserDto;
+import com.belka.users.model.UserDto;
 
 import java.util.Collection;
 
