@@ -14,7 +14,7 @@ import reactor.core.publisher.Flux;
 @AllArgsConstructor
 public class HelpHandler implements BelkaHandler {
     private final static String CODE = "/help";
-    private static final String TEXT_HELP = "This bot was created like demo";
+    private static final String TEXT_HELP = "This bot can show you weather in your city, generate QR code for your and get your diary.";
     private final PreviousService previousService;
 
     @Override
