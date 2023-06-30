@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
+import reactor.core.publisher.Flux;
 
 @Component
 @AllArgsConstructor
@@ -22,13 +23,13 @@ public class QRHandler implements BelkaHandler {
     private final QRService qrService;
 
     @Override
-    public PartialBotApiMethod<?> handle(BelkaEvent event) {
+    public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         if (event.isHasMessage() && event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(event.getChatId())
                     .build());
-            return sendMessage(event.getChatId(), HEADER_1);
+            return Flux.just(sendMessage(event.getChatId()));
         }
         if (event.isHasMessage() && event.isHasText() && event.getPrevious_step().equals(CODE)) {
             Long chatId = event.getChatId();
@@ -36,15 +37,15 @@ public class QRHandler implements BelkaHandler {
                     .previousStep(EXIT_CODE)
                     .userId(chatId)
                     .build());
-            return sendImageFromUrl(qrService.getQRLink(event.getText()), chatId);
+            return Flux.just(sendImageFromUrl(qrService.getQRLink(event.getText()), chatId));
         }
         return null;
     }
 
-    private SendMessage sendMessage(Long chatId, String text) {
+    private SendMessage sendMessage(Long chatId) {
         return SendMessage.builder()
                 .chatId(chatId)
-                .text(text)
+                .text(HEADER_1)
                 .build();
     }
 

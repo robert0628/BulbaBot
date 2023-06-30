@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import reactor.core.publisher.Flux;
 
 @Component
 @AllArgsConstructor
@@ -17,14 +18,14 @@ public class HelpHandler implements BelkaHandler {
     private final PreviousService previousService;
 
     @Override
-    public PartialBotApiMethod<?> handle(BelkaEvent event) {
+    public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
             Long chatId = event.getChatId();
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(chatId)
                     .build());
-            return sendMessage(chatId);
+            return Flux.just(sendMessage(chatId));
         }
         return null;
     }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import reactor.core.publisher.Flux;
 
 @Data
 @Component
@@ -22,7 +23,7 @@ public class DiaryWriteHandler implements BelkaHandler {
     private final DiaryService diaryService;
 
     @Override
-    public PartialBotApiMethod<?> handle(BelkaEvent event) {
+    public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         Update update = event.getUpdate();
         if (update.hasMessage() &&
                 update.getMessage().hasText() &&
@@ -33,7 +34,7 @@ public class DiaryWriteHandler implements BelkaHandler {
                     .userId(chatId)
                     .build());
             diaryService.addNote(chatId, event.getText());
-            return sendMessage(chatId);
+            return Flux.just(sendMessage(chatId));
         }
         return null;
     }

@@ -10,6 +10,7 @@ public class UserDtoToUserConverter implements BelkaConverter<UserDto, User> {
     @Override
     public User convert(UserDto value) {
         return User.builder()
+                .id(value.getId())
                 .firstname(value.getFirstname())
                 .lastname(value.getLastname())
                 .username(value.getUsername())
