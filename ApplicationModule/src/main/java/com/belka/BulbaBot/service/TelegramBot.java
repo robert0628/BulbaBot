@@ -35,21 +35,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     public TelegramBot(BotConfig botConfig, HandlerService handlerService) {
         this.botConfig = botConfig;
         this.handlerService = handlerService;
-        List<BotCommand> listOfCommands = new ArrayList<>();
-        listOfCommands.add(new BotCommand("/start", "get a welcome message"));
-        listOfCommands.add(new BotCommand("/mydata", "get your data stored"));
-        listOfCommands.add(new BotCommand("/deletedata", "delete my data"));
-        listOfCommands.add(new BotCommand("/help", "info how to use this bot"));
-        listOfCommands.add(new BotCommand("/settings", "set your preferences"));
-        listOfCommands.add(new BotCommand("/weather", "get weather"));
-        listOfCommands.add(new BotCommand("/QR", "get QR code for your text"));
-        listOfCommands.add(new BotCommand("/diary", "make your own diary"));
-
-        try {
-            this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
-        } catch (TelegramApiException e) {
-            log.error("Error setting bot's command list: " + e.getMessage());
-        }
+        setCommands();
     }
 
     @Override
@@ -92,6 +78,20 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
         } catch (TelegramApiException e) {
             throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    private void setCommands() {
+        List<BotCommand> listOfCommands = new ArrayList<>();
+        listOfCommands.add(new BotCommand("/start", "get a welcome message"));
+        listOfCommands.add(new BotCommand("/help", "info how to use this bot"));
+        listOfCommands.add(new BotCommand("/weather", "get weather"));
+        listOfCommands.add(new BotCommand("/qr", "get QR code for your text"));
+        listOfCommands.add(new BotCommand("/diary", "make your own diary"));
+        try {
+            this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
+        } catch (TelegramApiException e) {
+            log.error("Error setting bot's command list: " + e.getMessage());
         }
     }
 }
