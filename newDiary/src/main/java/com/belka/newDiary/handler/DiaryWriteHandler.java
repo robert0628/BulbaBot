@@ -9,7 +9,6 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import reactor.core.publisher.Flux;
 
 @Data
@@ -24,10 +23,7 @@ public class DiaryWriteHandler implements BelkaHandler {
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        Update update = event.getUpdate();
-        if (update.hasMessage() &&
-                update.getMessage().hasText() &&
-                event.getPrevious_step().equals(PREVIOUS_CODE)) {
+        if (event.isHasText() && event.getPrevious_step().equals(PREVIOUS_CODE)) {
             Long chatId = event.getChatId();
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)

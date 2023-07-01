@@ -10,11 +10,12 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import reactor.core.publisher.Flux;
 
+import static com.belka.newDiary.handler.DiaryBaseHandler.WRITE_DIARY;
+
 @Component
 @AllArgsConstructor
-public class DiaryButtonsHandler implements BelkaHandler {
+public class DiaryButtonsWriteHandler implements BelkaHandler {
     private final static String CODE = "/diary-buttons";
-    private final static String WRITE_DIARY = "WRITE_DIARY";
     private final static String HEADER = "write some words";
     private final PreviousService previousService;
 

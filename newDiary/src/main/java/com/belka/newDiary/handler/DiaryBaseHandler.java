@@ -21,8 +21,8 @@ import java.util.List;
 public class DiaryBaseHandler implements BelkaHandler {
 
     private final static String CODE = "/diary";
-    private final static String GET_DIARY = "GET_DIARY";
-    private final static String WRITE_DIARY = "WRITE_DIARY";
+    public final static String GET_DIARY = "GET_DIARY";
+    public final static String WRITE_DIARY = "WRITE_DIARY";
     private final static String HEADER_1 = "what do you want?";
     private final static String HEADER_2 = "write some words";
     private final static String BUTTON_1 = "get diary";
@@ -32,7 +32,7 @@ public class DiaryBaseHandler implements BelkaHandler {
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         Update update = event.getUpdate();
-        if (update.hasMessage() && update.getMessage().hasText() && event.getText().equalsIgnoreCase(CODE)) {
+        if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(update.getMessage().getChatId())
