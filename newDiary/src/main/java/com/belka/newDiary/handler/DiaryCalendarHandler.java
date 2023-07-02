@@ -24,6 +24,7 @@ import static com.belka.newDiary.handler.DiaryBaseHandler.GET_DIARY;
 public class DiaryCalendarHandler implements BelkaHandler {
 
     private final static String CODE = "READ_DIARY";
+    private final static String CALENDAR = "Календарь";
     private final PreviousService previousService;
 
 
@@ -41,9 +42,24 @@ public class DiaryCalendarHandler implements BelkaHandler {
     }
 
     public SendMessage sendCalendarMessage(long chatId) {
-        Calendar calendar = Calendar.getInstance();
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        rows.add(addHeadersToCalendar());
+        rows.add(addDaysOfTheWeekToCalendar());
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, 1);
+        for (int i = 1; i <= 5; i++) {
+            List<InlineKeyboardButton> row = new ArrayList<>();
+            rows.add(addDaysToCalendar(row, calendar));
+        }
+        markup.setKeyboard(rows);
+        SendMessage message = new SendMessage(String.valueOf(chatId), CALENDAR);
+        message.setReplyMarkup(markup);
+        return message;
+    }
+
+    private List<InlineKeyboardButton> addHeadersToCalendar() {
+        Calendar calendar = Calendar.getInstance();
         List<InlineKeyboardButton> row = new ArrayList<>();
         row.add(InlineKeyboardButton.builder()
                 .text("<<")
@@ -57,8 +73,12 @@ public class DiaryCalendarHandler implements BelkaHandler {
                 .text(">>")
                 .callbackData("NEXT-MONTH")
                 .build());
-        rows.add(row);
-        row = new ArrayList<>();
+        return row;
+    }
+
+    private List<InlineKeyboardButton> addDaysOfTheWeekToCalendar() {
+        Calendar calendar = Calendar.getInstance();
+        List<InlineKeyboardButton> row = new ArrayList<>();
         for (int i = 1; i <= 7; i++) {
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
             inlineKeyboardButton.setText(calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US));
@@ -66,11 +86,10 @@ public class DiaryCalendarHandler implements BelkaHandler {
             row.add(inlineKeyboardButton);
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
-        rows.add(row);
-        calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, 1);
-        for (int i = 1; i <= 5; i++) {
-            row = new ArrayList<>();
+        return row;
+    }
+
+    private List<InlineKeyboardButton> addDaysToCalendar(List<InlineKeyboardButton> row, Calendar calendar) {
             for (int j = 1; j <= 7; j++) {
                 InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
                 inlineKeyboardButton.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
@@ -80,11 +99,6 @@ public class DiaryCalendarHandler implements BelkaHandler {
                 row.add(inlineKeyboardButton);
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
             }
-            rows.add(row);
-        }
-        markup.setKeyboard(rows);
-        SendMessage message = new SendMessage(String.valueOf(chatId), "Календарь");
-        message.setReplyMarkup(markup);
-        return message;
+        return row;
     }
 }
