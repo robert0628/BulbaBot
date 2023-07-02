@@ -68,12 +68,15 @@ public class DiaryCalendarHandler implements BelkaHandler {
         }
         rows.add(row);
         calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, 1);
         for (int i = 1; i <= 5; i++) {
             row = new ArrayList<>();
             for (int j = 1; j <= 7; j++) {
                 InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
                 inlineKeyboardButton.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
-                inlineKeyboardButton.setCallbackData("DAY-" + calendar.get(Calendar.DAY_OF_MONTH));
+                inlineKeyboardButton.setCallbackData("DAY-" + calendar.get(Calendar.YEAR)
+                        + "." + calendar.get(Calendar.MONTH)
+                        + "." + calendar.get(Calendar.DAY_OF_MONTH));
                 row.add(inlineKeyboardButton);
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
             }

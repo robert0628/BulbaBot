@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface PreviousStepRepository extends JpaRepository<PreviousStep, Long> {
-
     @Query(value = "SELECT previous_step FROM previous_step WHERE user_id = :userId", nativeQuery = true)
     String getPreviousStepByUserId(Long userId);
 }

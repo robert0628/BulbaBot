@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -18,7 +18,7 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Override
     public void addNote(Long chatID, String text) {
-        Date today = new Date();
+        LocalDate today = LocalDate.now();
         Optional<DiaryEntity> entity = repository.getByDateAndUserId(today, chatID);
         if (entity.isPresent()) {
             DiaryEntity entityForUpdate = entity.get();
@@ -35,6 +35,15 @@ public class DiaryServiceImpl implements DiaryService {
             repository.save(entityForSave);
             log.info("added a note to the diary");
         }
+    }
+
+    @Override
+    public String getNote(LocalDate date, Long chatID) {
+        Optional<String> entity = repository.findNoteByUserIdAndDate(chatID, date);
+        if(entity.isEmpty()){
+            throw new RuntimeException("sorry but there are no notes for this date");
+        }
+        return entity.get();
     }
 }
 

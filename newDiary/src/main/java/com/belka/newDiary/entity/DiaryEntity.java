@@ -1,9 +1,9 @@
 package com.belka.newDiary.entity;
 
 import lombok.*;
-import javax.persistence.*;
 
-import java.util.Date;
+import javax.persistence.*;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -15,10 +15,10 @@ import java.util.Date;
 public class DiaryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
     @Column(name = "user_id")
     private Long userId;
     private String note;
-    private Date date;
+    private LocalDate date;
 }
