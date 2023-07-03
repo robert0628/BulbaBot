@@ -36,12 +36,18 @@ public class CalendarService {
 
     private List<InlineKeyboardButton> addHeadersToCalendar(Calendar calendar, Integer year, Integer month) {
         List<InlineKeyboardButton> row = new ArrayList<>();
-/*        LocalDate date = LocalDate.calendar.getTime();
-        Integer YEAR = date.getYear();
-        Integer MONTH = date.getMonth().getValue();*/
+        Integer previousYear = year;
+        Integer previousMonth = month;
+        if(month.equals(0)){
+            previousYear--;
+            previousMonth = 11;
+        } else {
+            previousMonth--;
+        }
+
         row.add(InlineKeyboardButton.builder()
                 .text("<<")
-                .callbackData("PREV-MONTH." + year + "-" + (month - 1))
+                .callbackData("PREV-MONTH-" + previousYear + "-" + previousMonth)
                 .build());
         row.add(InlineKeyboardButton.builder()
                 .text(calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US) + " " + calendar.get(Calendar.YEAR))
@@ -49,7 +55,7 @@ public class CalendarService {
                 .build());
         row.add(InlineKeyboardButton.builder()
                 .text(">>")
-                .callbackData("NEXT-MONTH" + year + "-" + (month + 1))
+                .callbackData("NEXT-MONTH-" + year + "-" + (month + 1))
                 .build());
         return row;
     }
