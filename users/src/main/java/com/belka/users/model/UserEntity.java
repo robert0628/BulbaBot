@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 @Builder
 @Table(name = "users")
 @Entity
-public class User {
+public class UserEntity {
     @Id
     private Long id;
     private String firstname;

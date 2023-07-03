@@ -1,6 +1,6 @@
 package com.belka.weather.kafka;
 
-import com.belka.weather.json.JsonWeatherHistory;
+import com.belka.weather.json.WeatherHistoryDto;
 import com.belka.weather.service.weather.WeatherService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,7 +18,7 @@ public class WeatherConsumer {
     private final WeatherService service;
     private final String TOPIC = "weather";
     private final String GROUP_ID = "myGroup";
-    private final Collection<JsonWeatherHistory> inputs = new ArrayList<>();
+    private final Collection<WeatherHistoryDto> inputs = new ArrayList<>();
 
     @Autowired
     public WeatherConsumer(WeatherService service) {
@@ -35,15 +35,15 @@ public class WeatherConsumer {
         }
     }
 
-    private JsonWeatherHistory convertToWeatherHistory(String weather) {
+    private WeatherHistoryDto convertToWeatherHistory(String weather) {
         ObjectMapper mapper = new ObjectMapper();
-        JsonWeatherHistory jsonWeatherHistory;
+        WeatherHistoryDto weatherHistoryDto;
         try {
-            jsonWeatherHistory = mapper.readValue(weather, JsonWeatherHistory.class);
+            weatherHistoryDto = mapper.readValue(weather, WeatherHistoryDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        return jsonWeatherHistory;
+        return weatherHistoryDto;
 
     }
 }

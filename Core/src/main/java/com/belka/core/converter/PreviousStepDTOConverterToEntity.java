@@ -1,22 +1,22 @@
 package com.belka.core.converter;
 
 import com.belka.core.previous_step.dto.PreviousStepDto;
-import com.belka.core.previous_step.entity.PreviousStep;
+import com.belka.core.previous_step.entity.PreviousStepEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PreviousStepDTOConverterToEntity implements BelkaConverter<PreviousStepDto, PreviousStep> {
+public class PreviousStepDTOConverterToEntity implements BelkaConverter<PreviousStepDto, PreviousStepEntity> {
     @Override
-    public PreviousStep convert(PreviousStepDto value) {
-        return PreviousStep.builder()
+    public PreviousStepEntity convert(PreviousStepDto value) {
+        return PreviousStepEntity.builder()
                 .previousStep(value.getPreviousStep())
                 .userId(value.getUserId())
                 .build();
     }
 
     @Override
-    public Class<PreviousStep> getOutputType() {
-        return PreviousStep.class;
+    public Class<PreviousStepEntity> getOutputType() {
+        return PreviousStepEntity.class;
     }
 
     @Override

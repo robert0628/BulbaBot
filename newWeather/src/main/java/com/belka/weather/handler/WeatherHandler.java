@@ -2,8 +2,8 @@ package com.belka.weather.handler;
 
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;
-import com.belka.core.previous_step.PreviousService;
 import com.belka.core.previous_step.dto.PreviousStepDto;
+import com.belka.core.previous_step.service.PreviousService;
 import com.belka.weather.service.weather.WeatherService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -11,6 +11,9 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import reactor.core.publisher.Flux;
 
+/**
+ * the handler that processes the weather request
+ */
 @Component
 @AllArgsConstructor
 public class WeatherHandler implements BelkaHandler {

@@ -1,7 +1,7 @@
 package com.belka.users.service;
 
 import com.belka.core.converter.ConverterService;
-import com.belka.users.model.User;
+import com.belka.users.model.UserEntity;
 import com.belka.users.model.UserDto;
 import com.belka.users.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -20,18 +20,13 @@ public class UserServiceImpl implements UserService {
     public Collection<UserDto> getAll() {
         return userRepository.findAll()
                 .stream()
-                .map(user -> converterService.ConvertTo(UserDto.class, user))
+                .map(userEntity -> converterService.ConvertTo(UserDto.class, userEntity))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public UserDto getUser(Long chatId) {
-        return converterService.ConvertTo(UserDto.class, userRepository.findById(chatId));
-    }
-
-    @Override
     public void save(UserDto userDto) {
-        userRepository.save(converterService.ConvertTo(User.class, userDto));
+        userRepository.save(converterService.ConvertTo(UserEntity.class, userDto));
     }
 
     @Override

@@ -2,8 +2,8 @@ package com.belka.newDiary.handler;
 
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;
-import com.belka.core.previous_step.PreviousService;
 import com.belka.core.previous_step.dto.PreviousStepDto;
+import com.belka.core.previous_step.service.PreviousService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;

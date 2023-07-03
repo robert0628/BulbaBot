@@ -1,10 +1,10 @@
 package com.belka.users.repository;
 
-import com.belka.users.model.User;
+import com.belka.users.model.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * repository for {@link com.belka.users.model.User user}
+ * repository for {@link UserEntity user}
  */
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
 }

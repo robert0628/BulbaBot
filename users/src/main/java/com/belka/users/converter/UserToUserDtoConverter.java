@@ -1,14 +1,14 @@
 package com.belka.users.converter;
 
 import com.belka.core.converter.BelkaConverter;
-import com.belka.users.model.User;
+import com.belka.users.model.UserEntity;
 import com.belka.users.model.UserDto;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserToUserDtoConverter implements BelkaConverter<User, UserDto> {
+public class UserToUserDtoConverter implements BelkaConverter<UserEntity, UserDto> {
     @Override
-    public UserDto convert(User value) {
+    public UserDto convert(UserEntity value) {
         return UserDto.builder()
                 .id(value.getId())
                 .firstname(value.getFirstname())
@@ -24,7 +24,7 @@ public class UserToUserDtoConverter implements BelkaConverter<User, UserDto> {
     }
 
     @Override
-    public Class<User> getInputType() {
-        return User.class;
+    public Class<UserEntity> getInputType() {
+        return UserEntity.class;
     }
 }

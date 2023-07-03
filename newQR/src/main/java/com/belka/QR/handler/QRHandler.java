@@ -3,8 +3,8 @@ package com.belka.QR.handler;
 import com.belka.QR.Services.QRService;
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;
-import com.belka.core.previous_step.PreviousService;
 import com.belka.core.previous_step.dto.PreviousStepDto;
+import com.belka.core.previous_step.service.PreviousService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -13,6 +13,9 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import reactor.core.publisher.Flux;
 
+/**
+ * the handler that processes the user's request to create a QR code
+ */
 @Component
 @AllArgsConstructor
 public class QRHandler implements BelkaHandler {

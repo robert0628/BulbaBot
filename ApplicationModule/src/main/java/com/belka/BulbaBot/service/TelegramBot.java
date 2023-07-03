@@ -87,7 +87,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         listOfCommands.add(new BotCommand("/help", "info how to use this bot"));
         listOfCommands.add(new BotCommand("/weather", "get weather"));
         listOfCommands.add(new BotCommand("/qr", "get QR code for your text"));
-        listOfCommands.add(new BotCommand("/diary", "make your own diary"));
         try {
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {

@@ -1,7 +1,7 @@
 package com.belka.QR.Services;
 
 /**
- * Service for converting message to QR-code
+ * Service for converting text to QR-code
  */
 public interface QRService {
     /**

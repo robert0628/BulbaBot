@@ -2,7 +2,7 @@ package com.belka.weather.json;
 
 import lombok.Data;
 @Data
-public class JsonWeatherHistory {
+public class WeatherHistoryDto {
     private Long id;
     private Integer temp;
     private int[] date;

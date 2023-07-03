@@ -1,6 +1,6 @@
 package com.belka.weather.service.weather;
 
-import com.belka.weather.json.JsonWeatherHistory;
+import com.belka.weather.json.WeatherHistoryDto;
 
 import java.util.Collection;
 
@@ -20,8 +20,8 @@ public interface WeatherService {
     String findCity();
 
     /**
-     * save collection {@link JsonWeatherHistory} to DB
-     * @param weathers collection {@link JsonWeatherHistory} for saving
+     * save collection {@link WeatherHistoryDto} to DB
+     * @param weathers collection {@link WeatherHistoryDto} for saving
      */
-    void saveBatch(Collection<JsonWeatherHistory> weathers);
+    void saveBatch(Collection<WeatherHistoryDto> weathers);
 }

@@ -1,7 +1,7 @@
 package com.belka.core.converter;
 
 import com.belka.core.handlers.BelkaEvent;
-import com.belka.core.previous_step.PreviousService;
+import com.belka.core.previous_step.service.PreviousService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
