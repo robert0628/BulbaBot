@@ -10,6 +10,9 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import reactor.core.publisher.Flux;
 
+/**
+ * a handler that shows information about bot
+ */
 @Component
 @AllArgsConstructor
 public class HelpHandler implements BelkaHandler {

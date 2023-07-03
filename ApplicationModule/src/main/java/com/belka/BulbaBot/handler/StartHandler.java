@@ -17,6 +17,9 @@ import reactor.core.publisher.Flux;
 
 import java.sql.Timestamp;
 
+/**
+ * а handler that initializes the user in the system and starts the interaction
+ */
 @Component
 @AllArgsConstructor
 public class StartHandler implements BelkaHandler {

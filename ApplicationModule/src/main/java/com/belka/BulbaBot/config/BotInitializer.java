@@ -15,7 +15,6 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @Component
 @AllArgsConstructor
 public class BotInitializer {
-
     private final TelegramBot bot;
 
     @EventListener({ContextRefreshedEvent.class})
