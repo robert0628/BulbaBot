@@ -6,25 +6,22 @@ import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.users.UserConfig;
-import com.belka.users.service.UserService;
-import com.vdurmont.emoji.EmojiParser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 /**
- * the handler that processes the request to create a mailing list
+ * the handler that starts the process of sending messages
  */
 @Component
 @AllArgsConstructor
-public class SendingMessagesHandler implements BelkaHandler {
+public class PrepareToSendingMessagesHandler implements BelkaHandler {
 
     private final static String CODE = "/send";
+    private final static String HEADER = "write some text";
     private final PreviousService previousService;
-    private final UserService userService;
     private UserConfig userConfig;
 
     @Override
@@ -39,17 +36,15 @@ public class SendingMessagesHandler implements BelkaHandler {
                     .userId(chatId)
                     .build());
 
-            String textToSend = EmojiParser.parseToUnicode(event.getText());
-            return Flux.fromIterable(userService.getAll())
-                    .flatMap(userDto -> sendMessage(userDto.getId(), textToSend));
+            return Flux.just(sendMessage(chatId));
         }
         return null;
     }
 
-    private Mono<SendMessage> sendMessage(Long chatId, String textToSend) {
+    private SendMessage sendMessage(Long chatId) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
-        message.setText(textToSend);
-        return Mono.just(message);
+        message.setText(HEADER);
+        return message;
     }
 }
