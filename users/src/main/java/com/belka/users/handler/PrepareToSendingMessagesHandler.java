@@ -34,6 +34,7 @@ public class PrepareToSendingMessagesHandler implements BelkaHandler {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(chatId)
+                    .previousId(event.getUpdateId())
                     .build());
 
             return Flux.just(sendMessage(chatId));

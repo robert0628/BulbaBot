@@ -14,7 +14,7 @@ import java.util.Locale;
 public class CalendarService {
     private final static String CALENDAR = "Calendar";
 
-    public SendMessage sendCalendarMessage(long chatId, Integer year, Integer month) {
+    public SendMessage sendCalendarMessage(Long chatId, Integer year, Integer month) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, 1);
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
@@ -29,7 +29,7 @@ public class CalendarService {
             rows.add(addDaysToCalendar(row, calendar));
         }
         markup.setKeyboard(rows);
-        SendMessage message = new SendMessage(String.valueOf(chatId), CALENDAR);
+       SendMessage message = new SendMessage(String.valueOf(chatId), CALENDAR);
         message.setReplyMarkup(markup);
         return message;
     }

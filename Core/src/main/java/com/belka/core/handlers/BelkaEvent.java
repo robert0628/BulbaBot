@@ -19,6 +19,10 @@ public class BelkaEvent {
      */
     private final Long chatId;
     /**
+     * {@link Update update's } id
+     */
+    private final Integer updateId;
+    /**
      * previous handler's CODE
      */
     private final String previous_step;

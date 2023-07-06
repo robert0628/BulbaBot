@@ -31,6 +31,7 @@ public class QRHandler implements BelkaHandler {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(event.getChatId())
+                    .previousId(event.getUpdateId())
                     .build());
             return Flux.just(sendMessage(event.getChatId()));
         }
@@ -39,6 +40,7 @@ public class QRHandler implements BelkaHandler {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(EXIT_CODE)
                     .userId(chatId)
+                    .previousId(event.getUpdateId())
                     .build());
             return Flux.just(sendImageFromUrl(qrService.getQRLink(event.getText()), chatId));
         }

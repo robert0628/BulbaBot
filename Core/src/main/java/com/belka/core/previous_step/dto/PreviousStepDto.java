@@ -1,11 +1,12 @@
 package com.belka.core.previous_step.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
 public class PreviousStepDto {
     private Long userId;
     private String previousStep;
+    private Integer previousId;
 }

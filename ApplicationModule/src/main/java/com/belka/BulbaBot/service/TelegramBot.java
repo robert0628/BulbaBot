@@ -10,7 +10,6 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
@@ -65,7 +64,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     /**
      * send message
      *
-     * @param message {@link SendMessage message for user}
+     * @param message {@link PartialBotApiMethod message for user}
      */
     private void executeMessage(PartialBotApiMethod<?> message) {
         try {

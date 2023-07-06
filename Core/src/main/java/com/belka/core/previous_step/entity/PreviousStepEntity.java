@@ -20,4 +20,6 @@ public class PreviousStepEntity {
     private Long userId;
     @Column(name = "previous_step")
     private String previousStep;
+    @Column(name = "previous_id")
+    private Integer previousId;
 }

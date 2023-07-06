@@ -22,6 +22,7 @@ public class UpdateToBelkaEventConverter implements BelkaConverter<Update, Belka
         String text = null;
         String data = null;
         Long chatId = getChatId(value);
+        Integer updateId = value.getUpdateId();
         String previousStep = "";
         String previousStepFromDB = previousService.getPreviousStep(chatId);
         if (previousStepFromDB != null) {
@@ -39,6 +40,7 @@ public class UpdateToBelkaEventConverter implements BelkaConverter<Update, Belka
         }
         return BelkaEvent.builder()
                 .update(value)
+                .updateId(updateId)
                 .data(data)
                 .chatId(chatId)
                 .text(text)

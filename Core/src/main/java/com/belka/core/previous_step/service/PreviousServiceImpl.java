@@ -1,10 +1,9 @@
-package com.belka.core.previous_step;
+package com.belka.core.previous_step.service;
 
 import com.belka.core.converter.ConverterService;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.entity.PreviousStepEntity;
 import com.belka.core.previous_step.repositoty.PreviousStepRepository;
-import com.belka.core.previous_step.service.PreviousService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,5 +19,10 @@ public class PreviousServiceImpl implements PreviousService {
 
     public String getPreviousStep(Long chatId) {
         return repository.getPreviousStepByUserId(chatId);
+    }
+
+    @Override
+    public Integer getPreviousIdByUserId(Long chatId) {
+        return repository.getPreviousIdByUserId(chatId);
     }
 }

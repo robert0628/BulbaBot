@@ -35,6 +35,7 @@ public class StartHandler implements BelkaHandler {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(chatId)
+                    .previousId(event.getUpdateId())
                     .build());
             registerUser(event.getUpdate().getMessage());
             return Flux.just(startCommandReceived(chatId, event.getUpdate().getMessage().getChat().getFirstName()));

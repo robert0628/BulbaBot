@@ -8,7 +8,6 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import reactor.core.publisher.Flux;
@@ -31,13 +30,14 @@ public class DiaryBaseHandler implements BelkaHandler {
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        Update update = event.getUpdate();
         if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
+            Long chatId = event.getChatId();
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
-                    .userId(update.getMessage().getChatId())
+                    .userId(chatId)
+                    .previousId(event.getUpdateId())
                     .build());
-            return Flux.just(getButtons(update.getMessage().getChatId()));
+            return Flux.just(getButtons(chatId));
         }
         return null;
     }

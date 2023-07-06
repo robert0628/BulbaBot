@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS Diary
 CREATE TABLE IF NOT EXISTS previous_step
 (
     user_id   bigint PRIMARY KEY,
-    previous_step text
+    previous_step text,
+    previous_id int
 );
 

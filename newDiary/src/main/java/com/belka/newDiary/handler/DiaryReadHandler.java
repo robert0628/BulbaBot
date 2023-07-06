@@ -34,6 +34,7 @@ public class DiaryReadHandler implements BelkaHandler {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(event.getChatId())
+                    .previousId(event.getUpdateId())
                     .build());
 
             return Flux.just(sendMessage(event.getChatId(), diaryService.getNote(date, event.getChatId())));

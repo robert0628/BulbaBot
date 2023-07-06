@@ -8,6 +8,9 @@ import com.belka.newDiary.service.CalendarService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
@@ -31,10 +34,11 @@ public class DiaryCalendarHandler implements BelkaHandler {
             Long chatId = event.getChatId();
             LocalDate date = LocalDate.now();
             Integer YEAR = date.getYear();
-            Integer MONTH = date.getMonth().getValue()-1;
+            Integer MONTH = date.getMonth().getValue() - 1;
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(chatId)
+                    .previousId(event.getUpdateId())
                     .build());
             return Flux.just(calendarService.sendCalendarMessage(chatId, YEAR, MONTH));
         } else if (event.getUpdate().hasCallbackQuery() && (event.getData().startsWith(PREVIOUS) || event.getData().startsWith(NEXT))) {
@@ -43,14 +47,26 @@ public class DiaryCalendarHandler implements BelkaHandler {
             Integer YEAR = Integer.parseInt(dateArray[0]);
             Integer MONTH = Integer.parseInt(dateArray[1]);
             Long chatId = event.getChatId();
+            Integer updateId = event.getUpdateId();
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(chatId)
+                    .previousId(updateId)
                     .build());
-            return Flux.just(calendarService.sendCalendarMessage(chatId, YEAR, MONTH));
+            SendMessage message = calendarService.sendCalendarMessage(chatId, YEAR, MONTH);
+            return Flux.just(editMessage(message));
         }
 
         return null;
     }
 
+    private PartialBotApiMethod<?> editMessage(SendMessage message) {
+        new EditMessageText();
+        return EditMessageText.builder()
+                .chatId(message.getChatId())
+                .messageId(message.getReplyToMessageId())
+                .text("Calendar")
+                .replyMarkup((InlineKeyboardMarkup) message.getReplyMarkup())
+                .build();
+    }
 }
