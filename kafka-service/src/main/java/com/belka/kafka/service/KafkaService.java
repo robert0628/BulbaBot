@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 @org.springframework.stereotype.Service
@@ -48,7 +48,7 @@ public class KafkaService {
             WeatherHistory weatherHistory = WeatherHistory.builder()
                     .temp(weatherNow.getWeatherInfo().getTemp())
                     .city(city)
-                    .date(LocalDate.now())
+                    .date(LocalDateTime.now())
                     .build();
             producer.sendMessage(weatherHistory);
             log.info("we saved it");

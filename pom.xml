@@ -10,6 +10,7 @@
         <module>newDiary</module>
         <module>kafka-service</module>
 		<module>users</module>
+		<module>stats</module>
 	</modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>

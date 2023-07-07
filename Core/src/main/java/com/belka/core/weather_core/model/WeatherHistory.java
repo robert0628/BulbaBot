@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 //todo do we need to have the weather models in the Core module?
 @Getter
 @Setter
@@ -12,10 +13,10 @@ import java.time.LocalDate;
 public class WeatherHistory {
     private Long id;
     private Integer temp;
-    private LocalDate date;
+    private LocalDateTime date;
     private String city;
 
-    public WeatherHistory(Integer temp, LocalDate date, String city) {
+    public WeatherHistory(Integer temp, LocalDateTime date, String city) {
         this.temp = temp;
         this.date = date;
         this.city = city;
@@ -27,7 +28,7 @@ public class WeatherHistory {
 
     public static final class Builder {
         private Integer temp;
-        private LocalDate date;
+        private LocalDateTime date;
         private String city;
 
         public Builder temp(Integer temp) {
@@ -35,7 +36,7 @@ public class WeatherHistory {
             return this;
         }
 
-        public Builder date(LocalDate date) {
+        public Builder date(LocalDateTime date) {
             this.date = date;
             return this;
         }

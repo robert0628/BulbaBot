@@ -1,6 +1,6 @@
 package com.belka.weather.service.weather;
 
-import com.belka.weather.json.WeatherHistoryDto;
+import com.belka.weather.dto.WeatherHistoryDto;
 
 import java.util.Collection;
 

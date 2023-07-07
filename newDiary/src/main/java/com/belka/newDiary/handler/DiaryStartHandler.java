@@ -23,7 +23,6 @@ public class DiaryStartHandler implements BelkaHandler {
     public final static String GET_DIARY = "GET_DIARY";
     public final static String WRITE_DIARY = "WRITE_DIARY";
     private final static String HEADER_1 = "what do you want?";
-    private final static String HEADER_2 = "write some words";
     private final static String BUTTON_1 = "get diary";
     private final static String BUTTON_2 = "write diary";
     private final PreviousService previousService;

@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -18,10 +18,10 @@ public class WeatherHistoryEntity {
     @Column(name = "id")
     private Long id;
     private Integer temp;
-    private LocalDate date;
+    private LocalDateTime date;
     private String city;
 
-    public WeatherHistoryEntity(Integer temp, LocalDate date, String city) {
+    public WeatherHistoryEntity(Integer temp, LocalDateTime date, String city) {
         this.temp = temp;
         this.date = date;
         this.city = city;
@@ -33,7 +33,7 @@ public class WeatherHistoryEntity {
 
     public static final class Builder {
         private Integer temp;
-        private LocalDate date;
+        private LocalDateTime date;
         private String city;
 
         public Builder temp(Integer temp) {
@@ -41,7 +41,7 @@ public class WeatherHistoryEntity {
             return this;
         }
 
-        public Builder date(LocalDate date) {
+        public Builder date(LocalDateTime date) {
             this.date = date;
             return this;
         }

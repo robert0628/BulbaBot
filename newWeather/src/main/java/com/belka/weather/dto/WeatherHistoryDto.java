@@ -1,4 +1,4 @@
-package com.belka.weather.json;
+package com.belka.weather.dto;
 
 import lombok.Data;
 @Data

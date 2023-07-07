@@ -1,6 +1,6 @@
 package com.belka.weather.kafka;
 
-import com.belka.weather.json.WeatherHistoryDto;
+import com.belka.weather.dto.WeatherHistoryDto;
 import com.belka.weather.service.weather.WeatherService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
