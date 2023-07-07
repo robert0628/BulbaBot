@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import reactor.core.publisher.Flux;
 
-import static com.belka.newDiary.handler.DiaryBaseHandler.WRITE_DIARY;
+import static com.belka.newDiary.handler.DiaryStartHandler.WRITE_DIARY;
 
 @Component
 @AllArgsConstructor

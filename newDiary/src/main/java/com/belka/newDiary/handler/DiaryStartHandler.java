@@ -17,7 +17,7 @@ import java.util.List;
 
 @Component
 @Data
-public class DiaryBaseHandler implements BelkaHandler {
+public class DiaryStartHandler implements BelkaHandler {
 
     private final static String CODE = "/diary";
     public final static String GET_DIARY = "GET_DIARY";

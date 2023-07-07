@@ -15,7 +15,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
 
-import static com.belka.newDiary.handler.DiaryBaseHandler.GET_DIARY;
+import static com.belka.newDiary.handler.DiaryStartHandler.GET_DIARY;
 
 @Component
 @AllArgsConstructor

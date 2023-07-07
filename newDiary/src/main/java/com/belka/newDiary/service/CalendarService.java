@@ -29,7 +29,7 @@ public class CalendarService {
             rows.add(addDaysToCalendar(row, calendar));
         }
         markup.setKeyboard(rows);
-       SendMessage message = new SendMessage(String.valueOf(chatId), CALENDAR);
+        SendMessage message = new SendMessage(String.valueOf(chatId), CALENDAR);
         message.setReplyMarkup(markup);
         return message;
     }
@@ -38,7 +38,7 @@ public class CalendarService {
         List<InlineKeyboardButton> row = new ArrayList<>();
         Integer previousYear = year;
         Integer previousMonth = month;
-        if(month.equals(0)){
+        if (month.equals(0)) {
             previousYear--;
             previousMonth = 11;
         } else {
