@@ -4,6 +4,8 @@ import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
+import com.belka.stats.StatsDto;
+import com.belka.stats.StatsService;
 import com.belka.users.UserConfig;
 import com.belka.users.service.UserService;
 import com.vdurmont.emoji.EmojiParser;
@@ -13,6 +15,8 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.time.LocalDateTime;
 
 /**
  * the handler that processes the request to create a mailing list
@@ -25,7 +29,8 @@ public class SendingMessageHandler implements BelkaHandler {
     private final static String PREVIOUS_CODE = "/send";
     private final PreviousService previousService;
     private final UserService userService;
-    private UserConfig userConfig;
+    private final UserConfig userConfig;
+    private final StatsService statsService;
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
@@ -40,6 +45,12 @@ public class SendingMessageHandler implements BelkaHandler {
                     .build());
 
             String textToSend = EmojiParser.parseToUnicode(event.getText());
+
+            statsService.save(StatsDto.builder()
+                    .userId(event.getChatId())
+                    .handlerCode(CODE)
+                    .requestTime(LocalDateTime.now())
+                    .build());
             return Flux.fromIterable(userService.getAll())
                     .flatMap(userDto -> sendMessage(userDto.getId(), textToSend));
         }

@@ -5,6 +5,8 @@ import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.newDiary.service.CalendarService;
+import com.belka.stats.StatsDto;
+import com.belka.stats.StatsService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -14,6 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static com.belka.newDiary.handler.DiaryStartHandler.GET_DIARY;
 
@@ -26,7 +29,7 @@ public class DiaryCalendarHandler implements BelkaHandler {
     private final static String NEXT = "NEXT-MONTH";
     private final PreviousService previousService;
     private final CalendarService calendarService;
-
+    private final StatsService statsService;
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
@@ -39,6 +42,11 @@ public class DiaryCalendarHandler implements BelkaHandler {
                     .previousStep(CODE)
                     .userId(chatId)
                     .previousId(event.getUpdateId())
+                    .build());
+            statsService.save(StatsDto.builder()
+                    .userId(event.getChatId())
+                    .handlerCode(CODE)
+                    .requestTime(LocalDateTime.now())
                     .build());
             return Flux.just(calendarService.sendCalendarMessage(chatId, YEAR, MONTH));
         } else if (event.getUpdate().hasCallbackQuery() && (event.getData().startsWith(PREVIOUS) || event.getData().startsWith(NEXT))) {
@@ -54,6 +62,11 @@ public class DiaryCalendarHandler implements BelkaHandler {
                     .previousId(updateId)
                     .build());
             SendMessage message = calendarService.sendCalendarMessage(chatId, YEAR, MONTH);
+            statsService.save(StatsDto.builder()
+                    .userId(event.getChatId())
+                    .handlerCode(CODE)
+                    .requestTime(LocalDateTime.now())
+                    .build());
             return Flux.just(editMessage(message));
         }
 

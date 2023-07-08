@@ -4,6 +4,8 @@ import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
+import com.belka.stats.StatsDto;
+import com.belka.stats.StatsService;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -12,13 +14,13 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import reactor.core.publisher.Flux;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @Data
 public class DiaryStartHandler implements BelkaHandler {
-
     private final static String CODE = "/diary";
     public final static String GET_DIARY = "GET_DIARY";
     public final static String WRITE_DIARY = "WRITE_DIARY";
@@ -26,6 +28,7 @@ public class DiaryStartHandler implements BelkaHandler {
     private final static String BUTTON_1 = "get diary";
     private final static String BUTTON_2 = "write diary";
     private final PreviousService previousService;
+    private final StatsService statsService;
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
@@ -35,6 +38,11 @@ public class DiaryStartHandler implements BelkaHandler {
                     .previousStep(CODE)
                     .userId(chatId)
                     .previousId(event.getUpdateId())
+                    .build());
+            statsService.save(StatsDto.builder()
+                    .userId(event.getChatId())
+                    .handlerCode(CODE)
+                    .requestTime(LocalDateTime.now())
                     .build());
             return Flux.just(getButtons(chatId));
         }

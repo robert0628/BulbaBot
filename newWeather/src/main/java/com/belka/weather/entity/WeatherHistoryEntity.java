@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 public class WeatherHistoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
     private Long id;
     private Integer temp;
     private LocalDateTime date;

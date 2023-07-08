@@ -2,11 +2,8 @@ package com.belka.stats;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.sql.Timestamp;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -17,10 +14,12 @@ import java.sql.Timestamp;
 @Entity
 public class StatsEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     @Column(name = "user_id")
     private Long userId;
     @Column(name = "handler_code")
     private String handlerCode;
     @Column(name = "request_time")
-    private Timestamp requestTime;
+    private LocalDateTime requestTime;
 }
