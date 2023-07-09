@@ -5,7 +5,7 @@ import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
-import com.belka.stats.StatsService;
+import com.belka.stats.service.StatsService;
 import com.belka.weather.service.weather.WeatherService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

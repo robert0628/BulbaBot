@@ -6,7 +6,7 @@ import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.newDiary.service.DiaryService;
 import com.belka.stats.StatsDto;
-import com.belka.stats.StatsService;
+import com.belka.stats.service.StatsService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
