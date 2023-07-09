@@ -23,11 +23,11 @@ import java.util.List;
 @AllArgsConstructor
 public class StatsStartHandler implements BelkaHandler {
     private final static String CODE = "/stats";
-    private final static String BUTTON_1 = "get total requests";
-    private final static String BUTTON_2 = "get total requests by user";
-    private final static String BUTTON_3 = "get total Requests by code";
-    private final static String BUTTON_4 = "get most popular request";
-    private final static String BUTTON_5 = "get most popular request by user";
+    final static String BUTTON_1 = "get total requests";
+    final static String BUTTON_2 = "get total requests by user";
+    final static String BUTTON_3 = "get total Requests by code";
+    final static String BUTTON_4 = "get most popular request";
+    final static String BUTTON_5 = "get most popular request by user";
     private final PreviousService previousService;
     private final StatsService statsService;
 

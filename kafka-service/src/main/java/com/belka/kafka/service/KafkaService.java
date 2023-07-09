@@ -7,12 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-@org.springframework.stereotype.Service
+@Service
 @Slf4j
 public class KafkaService {
     private final static String CRON_EVERY_MINUTE = "1 * * * * *";

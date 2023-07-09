@@ -33,7 +33,7 @@ public class DiaryCalendarHandler implements BelkaHandler {
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        if (event.getUpdate().hasCallbackQuery() && event.getData().equals(GET_DIARY)) {
+        if (event.isHasCallbackQuery() && event.getData().equals(GET_DIARY)) {
             Long chatId = event.getChatId();
             LocalDate date = LocalDate.now();
             Integer YEAR = date.getYear();
