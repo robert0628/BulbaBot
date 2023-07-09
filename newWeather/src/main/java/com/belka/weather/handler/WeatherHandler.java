@@ -37,7 +37,7 @@ public class WeatherHandler implements BelkaHandler {
                     .previousId(event.getUpdateId())
                     .build());
             statsService.save(StatsDto.builder()
-                    .userId(event.getChatId())
+                    .userId(chatId)
                     .handlerCode(CODE)
                     .requestTime(LocalDateTime.now())
                     .build());

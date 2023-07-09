@@ -14,7 +14,7 @@ public interface StatsRepository extends JpaRepository<StatsEntity, Long> {
 
     @Query(value = "SELECT handler_code " +
             "FROM stats " +
-            "WHERE user_id = :userID " +
+            "WHERE user_id = :chatId " +
             "GROUP BY handler_code " +
             "ORDER BY COUNT(*) " +
             "DESC LIMIT 1",
