@@ -1,11 +1,12 @@
 package com.belka.users.service;
 
+import com.belka.users.entities.UserEntity;
 import com.belka.users.model.UserDto;
 
 import java.util.Collection;
 
 /**
- * service for interaction with {@link com.belka.users.model.UserEntity users}
+ * service for interaction with {@link UserEntity users}
  */
 public interface UserService {
     Collection<UserDto> getAll();

@@ -1,4 +1,4 @@
-package com.belka.users.model;
+package com.belka.users.entities;
 
 import lombok.*;
 
