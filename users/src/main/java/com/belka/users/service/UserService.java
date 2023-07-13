@@ -14,4 +14,10 @@ public interface UserService {
     void save(UserDto userDto);
 
     boolean existsById(Long chatId);
+
+    UserDto getUserById(Long chatId);
+
+    void toSubscribe(Long chatId, Long producerId);
+
+    Collection<UserDto> getAllById(Collection<Long> producersID);
 }

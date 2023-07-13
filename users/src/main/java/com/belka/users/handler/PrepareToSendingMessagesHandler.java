@@ -43,7 +43,7 @@ public class PrepareToSendingMessagesHandler implements BelkaHandler {
                     .build());
 
             statsService.save(StatsDto.builder()
-                    .userId(event.getChatId())
+                    .userId(chatId)
                     .handlerCode(CODE)
                     .requestTime(LocalDateTime.now())
                     .build());

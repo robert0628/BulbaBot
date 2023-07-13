@@ -24,5 +24,4 @@ public class UserEntity {
     private String lastname;
     private String username;
     private Timestamp registeredAt;
-
 }
