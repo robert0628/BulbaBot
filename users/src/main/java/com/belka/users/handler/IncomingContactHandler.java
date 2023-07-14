@@ -22,7 +22,6 @@ public class IncomingContactHandler implements BelkaHandler {
     private final static String CODE = "Subscription";
     private final static String SUCCESSFULLY_ANSWER = "subscription is issued";
     private final static String FAILED_ANSWER = "this user is not registered";
-
     private final PreviousService previousService;
     private final StatsService statsService;
     private final UserService userService;

@@ -15,9 +15,19 @@ public interface UserService {
 
     boolean existsById(Long chatId);
 
-    UserDto getUserById(Long chatId);
-
+    /**
+     * subscribe for users updates;
+     *
+     * @param chatId     {@link UserEntity follower}'s ID
+     * @param producerId {@link UserEntity producer}'s ID
+     */
     void toSubscribe(Long chatId, Long producerId);
 
-    Collection<UserDto> getAllById(Collection<Long> producersID);
+    /**
+     * get names of the people user subscribed to
+     *
+     * @param userId {@link UserEntity user}'s id
+     * @return list of the names
+     */
+    Collection<String> showSubscribes(Long userId);
 }

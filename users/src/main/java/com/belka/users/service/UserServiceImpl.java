@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,12 +42,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserById(Long chatId) {
-        UserEntity user = userRepository.findById(chatId).orElseThrow(RuntimeException::new);
-        return converterService.ConvertTo(UserDto.class, user);
-    }
-
-    @Override
     public void toSubscribe(Long chatId, Long producerId) {
         UserEntity subscriber = userRepository.findById(chatId).orElseThrow(RuntimeException::new);
         UserEntity producer = userRepository.findById(producerId).orElseThrow(RuntimeException::new);
@@ -57,10 +52,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<UserDto> getAllById(Collection<Long> producersID) {
-        return userRepository.findAllById(producersID)
-                .stream()
-                .map(user -> converterService.ConvertTo(UserDto.class, user))
-                .toList();
+    public Collection<String> showSubscribes(Long userId) {
+        List<Long> producersId = subscriptionsRepository.findAllProducersID(userId);
+        Collection<UserEntity> entities = userRepository.findAllById(producersId);
+        return entities.stream().map(this::getNameFromEntity).toList();
+    }
+
+    private String getNameFromEntity(UserEntity entity) {
+        if (entity.getUsername() == null) {
+            return entity.getFirstname();
+        }
+        return "@" + entity.getUsername();
     }
 }
