@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * get buttons to choose which stats you want to get
+ */
 @Component
 @AllArgsConstructor
 public class StatsStartHandler implements BelkaHandler {

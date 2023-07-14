@@ -18,6 +18,9 @@ import java.time.LocalDateTime;
 
 import static com.belka.stats.handler.StatsStartHandler.*;
 
+/**
+ * handle all the buttons selected to view the stats
+ */
 @Component
 @AllArgsConstructor
 @Setter

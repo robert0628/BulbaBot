@@ -14,6 +14,9 @@ import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 
+/**
+ * get total requests by code
+ */
 @Component
 @AllArgsConstructor
 public class TotalRequestsByCodeHandler implements BelkaHandler {
