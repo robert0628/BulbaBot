@@ -14,19 +14,20 @@ import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 
-import static com.belka.newDiary.handler.DiaryStartHandler.WRITE_DIARY;
+import static com.belka.newDiary.handler.DiaryStartHandler.BUTTON_2;
 
 @Component
 @AllArgsConstructor
 public class DiaryButtonsWriteHandler implements BelkaHandler {
     private final static String CODE = "/diary-buttons";
     private final static String HEADER = "write some words";
+    private final static String PREVIOUS_DATA = DiaryStartHandler.CODE + BUTTON_2;
     private final PreviousService previousService;
     private final StatsService statsService;
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        if (event.getUpdate().hasCallbackQuery() && event.getData().equals(WRITE_DIARY)) {
+        if (event.getUpdate().hasCallbackQuery() && event.getData().equals(PREVIOUS_DATA)) {
             Long chatId = event.getChatId();
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)

@@ -21,12 +21,10 @@ import java.util.List;
 @Component
 @Data
 public class DiaryStartHandler implements BelkaHandler {
-    private final static String CODE = "/diary";
-    public final static String GET_DIARY = "GET_DIARY";
-    public final static String WRITE_DIARY = "WRITE_DIARY";
+    final static String CODE = "/diary";
+    final static String BUTTON_1 = "get diary";
+    final static String BUTTON_2 = "write diary";
     private final static String HEADER_1 = "what do you want?";
-    private final static String BUTTON_1 = "get diary";
-    private final static String BUTTON_2 = "write diary";
     private final PreviousService previousService;
     private final StatsService statsService;
 
@@ -60,11 +58,11 @@ public class DiaryStartHandler implements BelkaHandler {
 
         InlineKeyboardButton getButton = new InlineKeyboardButton();
         getButton.setText(BUTTON_1);
-        getButton.setCallbackData(GET_DIARY);
+        getButton.setCallbackData(CODE + BUTTON_1);
 
         InlineKeyboardButton writeButton = new InlineKeyboardButton();
         writeButton.setText(BUTTON_2);
-        writeButton.setCallbackData(WRITE_DIARY);
+        writeButton.setCallbackData(CODE + BUTTON_2);
 
         rowInline.add(getButton);
         rowInline.add(writeButton);

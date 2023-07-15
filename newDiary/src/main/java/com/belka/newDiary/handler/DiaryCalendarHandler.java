@@ -18,22 +18,20 @@ import reactor.core.publisher.Flux;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static com.belka.newDiary.handler.DiaryStartHandler.GET_DIARY;
-
 @Component
 @AllArgsConstructor
 public class DiaryCalendarHandler implements BelkaHandler {
-
     private final static String CODE = "READ_DIARY";
     private final static String PREVIOUS = "PREV-MONTH";
     private final static String NEXT = "NEXT-MONTH";
+    private final static String PREVIOUS_DATA = DiaryStartHandler.CODE + DiaryStartHandler.BUTTON_1;
     private final PreviousService previousService;
     private final CalendarService calendarService;
     private final StatsService statsService;
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        if (event.isHasCallbackQuery() && event.getData().equals(GET_DIARY)) {
+        if (event.isHasCallbackQuery() && event.getData().equals(PREVIOUS_DATA)) {
             Long chatId = event.getChatId();
             LocalDate date = LocalDate.now();
             Integer YEAR = date.getYear();
@@ -56,12 +54,12 @@ public class DiaryCalendarHandler implements BelkaHandler {
             Integer MONTH = Integer.parseInt(dateArray[1]);
             Long chatId = event.getChatId();
             Integer updateId = event.getUpdateId();
+            SendMessage message = calendarService.sendCalendarMessage(chatId, YEAR, MONTH);
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(chatId)
                     .previousId(updateId)
                     .build());
-            SendMessage message = calendarService.sendCalendarMessage(chatId, YEAR, MONTH);
             statsService.save(StatsDto.builder()
                     .userId(event.getChatId())
                     .handlerCode(CODE)
