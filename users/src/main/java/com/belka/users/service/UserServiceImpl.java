@@ -63,6 +63,12 @@ public class UserServiceImpl implements UserService {
         return subscriptionsRepository.findAllFollowersID(userId);
     }
 
+    @Override
+    public String getName(Long userId) {
+        UserEntity entity = userRepository.findById(userId).orElseThrow(RuntimeException::new);
+        return getNameFromEntity(entity);
+    }
+
     private String getNameFromEntity(UserEntity entity) {
         if (entity.getUsername() == null) {
             return entity.getFirstname();

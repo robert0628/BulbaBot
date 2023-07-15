@@ -25,6 +25,7 @@ public class DiaryShareHandler implements BelkaHandler {
     private final static String CODE = "WRITE_DIARY";
     private final static String PREVIOUS_DATA = DiaryWriteHandler.CODE + DiaryWriteHandler.YES_BUTTON;
     private final static String ANSWER = "the note has been sent";
+    private final static String PREFIX_FOR_NOTE = "note from ";
     private final PreviousService previousService;
     private final DiaryService diaryService;
     private final StatsService statsService;
@@ -34,7 +35,7 @@ public class DiaryShareHandler implements BelkaHandler {
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         if (event.isHasCallbackQuery() && event.getData().equals(PREVIOUS_DATA)) {
             Long chatId = event.getChatId();
-            String note = diaryService.getNote(LocalDate.now(), chatId);
+            String note = PREFIX_FOR_NOTE + userService.getName(chatId) + "/n" + diaryService.getNote(LocalDate.now(), chatId);
             Collection<Long> followersId = userService.getFollowersId(chatId);
             Collection<SendMessage> messages = followersId.stream().map(id -> sendMessage(id, note)).collect(Collectors.toList());
 

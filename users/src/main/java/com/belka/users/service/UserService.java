@@ -13,15 +13,15 @@ public interface UserService {
 
     void save(UserDto userDto);
 
-    boolean existsById(Long chatId);
+    boolean existsById(Long userId);
 
     /**
      * subscribe for users updates;
      *
-     * @param chatId     {@link UserEntity follower}'s ID
+     * @param userId     {@link UserEntity follower}'s ID
      * @param producerId {@link UserEntity producer}'s ID
      */
-    void toSubscribe(Long chatId, Long producerId);
+    void toSubscribe(Long userId, Long producerId);
 
     /**
      * get names of the people user subscribed to
@@ -38,5 +38,13 @@ public interface UserService {
      * @return list of the ID
      */
     Collection<Long> getFollowersId(Long userId);
+
+    /**
+     * get {@link UserEntity user}'s id
+     *
+     * @param userId {@link UserEntity user}'s id
+     * @return name
+     */
+    String getName(Long userId);
 
 }
