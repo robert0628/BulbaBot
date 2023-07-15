@@ -30,4 +30,13 @@ public interface UserService {
      * @return list of the names
      */
     Collection<String> showSubscribes(Long userId);
+
+    /**
+     * get the ID of the user's subscribers
+     *
+     * @param userId {@link UserEntity user}'s id
+     * @return list of the ID
+     */
+    Collection<Long> getFollowersId(Long userId);
+
 }

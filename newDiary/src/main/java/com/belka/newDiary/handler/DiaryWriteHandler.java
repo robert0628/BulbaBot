@@ -11,17 +11,23 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Component
 public class DiaryWriteHandler implements BelkaHandler {
-
-    private final static String CODE = "WRITE_DIARY";
+    final static String CODE = "WRITE_DIARY";
+    final static String YES_BUTTON = "yes";
+    final static String NO_BUTTON = "no";
     private final static String PREVIOUS_CODE = "/diary-buttons";
     private final static String ANSWER = "got it";
+    private final static String HEADER = "do you want to share this";
     private final PreviousService previousService;
     private final DiaryService diaryService;
     private final StatsService statsService;
@@ -41,7 +47,7 @@ public class DiaryWriteHandler implements BelkaHandler {
                     .handlerCode(CODE)
                     .requestTime(LocalDateTime.now())
                     .build());
-            return Flux.just(sendMessage(chatId));
+            return Flux.just(sendMessage(chatId), getButtons(chatId));
         }
         return null;
     }
@@ -51,5 +57,32 @@ public class DiaryWriteHandler implements BelkaHandler {
                 .chatId(chatId)
                 .text(ANSWER)
                 .build();
+    }
+
+    private SendMessage getButtons(Long chatId) {
+        SendMessage message = SendMessage.builder()
+                .chatId(chatId)
+                .text(HEADER)
+                .build();
+        InlineKeyboardMarkup markupInLine = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
+        List<InlineKeyboardButton> rowInline = new ArrayList<>();
+
+        InlineKeyboardButton getButton = new InlineKeyboardButton();
+        getButton.setText(YES_BUTTON);
+        getButton.setCallbackData(CODE + YES_BUTTON);
+
+        InlineKeyboardButton writeButton = new InlineKeyboardButton();
+        writeButton.setText(NO_BUTTON);
+        writeButton.setCallbackData(CODE + NO_BUTTON);
+
+        rowInline.add(getButton);
+        rowInline.add(writeButton);
+        rowsInLine.add(rowInline);
+        markupInLine.setKeyboard(rowsInLine);
+
+        message.setReplyMarkup(markupInLine);
+
+        return message;
     }
 }

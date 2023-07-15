@@ -26,6 +26,7 @@ import java.util.List;
 @AllArgsConstructor
 public class StatsStartHandler implements BelkaHandler {
     private final static String CODE = "/stats";
+    private final static String HEADER = "what stats do you want?";
     final static String BUTTON_1 = "get total requests";
     final static String BUTTON_2 = "get total requests by user";
     final static String BUTTON_3 = "get total Requests by code";
@@ -56,7 +57,7 @@ public class StatsStartHandler implements BelkaHandler {
     private SendMessage getButtons(Long chatId) {
         SendMessage message = SendMessage.builder()
                 .chatId(chatId)
-                .text("what stats do you want?")
+                .text(HEADER)
                 .build();
         InlineKeyboardMarkup markupInLine = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();

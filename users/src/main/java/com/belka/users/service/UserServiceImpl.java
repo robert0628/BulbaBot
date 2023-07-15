@@ -58,6 +58,11 @@ public class UserServiceImpl implements UserService {
         return entities.stream().map(this::getNameFromEntity).toList();
     }
 
+    @Override
+    public Collection<Long> getFollowersId(Long userId) {
+        return subscriptionsRepository.findAllFollowersID(userId);
+    }
+
     private String getNameFromEntity(UserEntity entity) {
         if (entity.getUsername() == null) {
             return entity.getFirstname();
