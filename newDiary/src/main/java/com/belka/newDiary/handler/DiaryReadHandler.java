@@ -1,5 +1,6 @@
 package com.belka.newDiary.handler;
 
+import com.belka.core.BelkaSendMessage;
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
@@ -10,7 +11,6 @@ import com.belka.stats.service.StatsService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
@@ -24,6 +24,7 @@ public class DiaryReadHandler implements BelkaHandler {
     private final DiaryService diaryService;
     private final PreviousService previousService;
     private final StatsService statsService;
+    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
@@ -45,15 +46,8 @@ public class DiaryReadHandler implements BelkaHandler {
                     .handlerCode(CODE)
                     .requestTime(LocalDateTime.now())
                     .build());
-            return Flux.just(sendMessage(event.getChatId(), diaryService.getNote(date, event.getChatId())));
+            return Flux.just(belkaSendMessage.sendMessage(event.getChatId(), diaryService.getNote(date, event.getChatId())));
         }
         return null;
-    }
-
-    private SendMessage sendMessage(Long chatId, String note) {
-        return SendMessage.builder()
-                .chatId(chatId)
-                .text(note)
-                .build();
     }
 }

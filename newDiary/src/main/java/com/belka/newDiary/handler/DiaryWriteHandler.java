@@ -1,5 +1,6 @@
 package com.belka.newDiary.handler;
 
+import com.belka.core.BelkaSendMessage;
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
@@ -31,6 +32,7 @@ public class DiaryWriteHandler implements BelkaHandler {
     private final PreviousService previousService;
     private final DiaryService diaryService;
     private final StatsService statsService;
+    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
@@ -47,23 +49,14 @@ public class DiaryWriteHandler implements BelkaHandler {
                     .handlerCode(CODE)
                     .requestTime(LocalDateTime.now())
                     .build());
-            return Flux.just(sendMessage(chatId), getButtons(chatId));
+            return Flux.just(belkaSendMessage.sendMessage(chatId, ANSWER), getButtons(chatId));
         }
         return null;
     }
 
-    private SendMessage sendMessage(Long chatId) {
-        return SendMessage.builder()
-                .chatId(chatId)
-                .text(ANSWER)
-                .build();
-    }
-
     private SendMessage getButtons(Long chatId) {
-        SendMessage message = SendMessage.builder()
-                .chatId(chatId)
-                .text(HEADER)
-                .build();
+        SendMessage message = belkaSendMessage.sendMessage(chatId, HEADER);
+
         InlineKeyboardMarkup markupInLine = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
         List<InlineKeyboardButton> rowInline = new ArrayList<>();

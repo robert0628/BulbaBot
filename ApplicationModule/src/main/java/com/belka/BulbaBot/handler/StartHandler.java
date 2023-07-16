@@ -1,21 +1,24 @@
 package com.belka.BulbaBot.handler;
 
+import com.belka.core.BelkaSendMessage;
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
+import com.belka.stats.StatsDto;
+import com.belka.stats.service.StatsService;
 import com.belka.users.model.UserDto;
 import com.belka.users.service.UserService;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import reactor.core.publisher.Flux;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * а handler that initializes the user in the system and starts the interaction
@@ -27,18 +30,26 @@ public class StartHandler implements BelkaHandler {
     private final static String CODE = "/start";
     private final PreviousService previousService;
     private final UserService userService;
+    private final BelkaSendMessage belkaSendMessage;
+    private final StatsService statsService;
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
             Long chatId = event.getChatId();
+            String answer = EmojiParser.parseToUnicode("Hi, " + event.getUpdate().getMessage().getChat().getFirstName() + " nice to meet you" + " :blush:");
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(chatId)
                     .previousId(event.getUpdateId())
                     .build());
             registerUser(event.getUpdate().getMessage());
-            return Flux.just(startCommandReceived(chatId, event.getUpdate().getMessage().getChat().getFirstName()));
+            statsService.save(StatsDto.builder()
+                    .userId(event.getChatId())
+                    .handlerCode(CODE)
+                    .requestTime(LocalDateTime.now())
+                    .build());
+            return Flux.just(belkaSendMessage.sendMessage(chatId, answer));
         }
         return null;
     }
@@ -55,17 +66,5 @@ public class StartHandler implements BelkaHandler {
                     .build();
             userService.save(userDto);
         }
-    }
-
-    private SendMessage startCommandReceived(Long chatId, String name) {
-        String answer = EmojiParser.parseToUnicode("Hi, " + name + " nice to meet you" + " :blush:");
-        return sendMessage(chatId, answer);
-    }
-
-    private SendMessage sendMessage(Long chatId, String text) {
-        return SendMessage.builder()
-                .chatId(chatId)
-                .text(text)
-                .build();
     }
 }

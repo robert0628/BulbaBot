@@ -1,5 +1,6 @@
 package com.belka.newDiary.handler;
 
+import com.belka.core.BelkaSendMessage;
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
@@ -11,8 +12,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
@@ -24,10 +23,12 @@ public class DiaryCalendarHandler implements BelkaHandler {
     private final static String CODE = "READ_DIARY";
     private final static String PREVIOUS = "PREV-MONTH";
     private final static String NEXT = "NEXT-MONTH";
+    private final static String HEADER = "Calendar";
     private final static String PREVIOUS_DATA = DiaryStartHandler.CODE + DiaryStartHandler.BUTTON_1;
     private final PreviousService previousService;
     private final CalendarService calendarService;
     private final StatsService statsService;
+    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
@@ -65,19 +66,9 @@ public class DiaryCalendarHandler implements BelkaHandler {
                     .handlerCode(CODE)
                     .requestTime(LocalDateTime.now())
                     .build());
-            return Flux.just(editMessage(message));
+            return Flux.just(belkaSendMessage.editMessage(message, HEADER));
         }
 
         return null;
-    }
-
-    private PartialBotApiMethod<?> editMessage(SendMessage message) {
-        new EditMessageText();
-        return EditMessageText.builder()
-                .chatId(message.getChatId())
-                .messageId(message.getReplyToMessageId())
-                .text("Calendar")
-                .replyMarkup((InlineKeyboardMarkup) message.getReplyMarkup())
-                .build();
     }
 }

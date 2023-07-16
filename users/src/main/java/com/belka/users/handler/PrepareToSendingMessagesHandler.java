@@ -1,6 +1,7 @@
 package com.belka.users.handler;
 
 
+import com.belka.core.BelkaSendMessage;
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
@@ -11,7 +12,6 @@ import com.belka.users.UserConfig;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
@@ -28,6 +28,7 @@ public class PrepareToSendingMessagesHandler implements BelkaHandler {
     private final PreviousService previousService;
     private final UserConfig userConfig;
     private final StatsService statsService;
+    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
@@ -48,15 +49,8 @@ public class PrepareToSendingMessagesHandler implements BelkaHandler {
                     .requestTime(LocalDateTime.now())
                     .build());
 
-            return Flux.just(sendMessage(chatId));
+            return Flux.just(belkaSendMessage.sendMessage(chatId, HEADER));
         }
         return null;
-    }
-
-    private SendMessage sendMessage(Long chatId) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText(HEADER);
-        return message;
     }
 }

@@ -1,5 +1,6 @@
 package com.belka.stats.handler;
 
+import com.belka.core.BelkaSendMessage;
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
@@ -34,6 +35,7 @@ public class StatsStartHandler implements BelkaHandler {
     final static String BUTTON_5 = "get most popular request by user";
     private final PreviousService previousService;
     private final StatsService statsService;
+    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
@@ -55,10 +57,8 @@ public class StatsStartHandler implements BelkaHandler {
     }
 
     private SendMessage getButtons(Long chatId) {
-        SendMessage message = SendMessage.builder()
-                .chatId(chatId)
-                .text(HEADER)
-                .build();
+        SendMessage message = belkaSendMessage.sendMessage(chatId, HEADER);
+
         InlineKeyboardMarkup markupInLine = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
         //collection of all buttons

@@ -1,5 +1,6 @@
 package com.belka.users.handler;
 
+import com.belka.core.BelkaSendMessage;
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
@@ -12,7 +13,6 @@ import com.vdurmont.emoji.EmojiParser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -31,6 +31,7 @@ public class SendingMessageHandler implements BelkaHandler {
     private final UserService userService;
     private final UserConfig userConfig;
     private final StatsService statsService;
+    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
@@ -52,15 +53,8 @@ public class SendingMessageHandler implements BelkaHandler {
                     .requestTime(LocalDateTime.now())
                     .build());
             return Flux.fromIterable(userService.getAll())
-                    .flatMap(userDto -> sendMessage(userDto.getId(), textToSend));
+                    .flatMap(userDto -> Mono.just(belkaSendMessage.sendMessage(userDto.getId(), textToSend)));
         }
         return null;
-    }
-
-    private Mono<SendMessage> sendMessage(Long chatId, String textToSend) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText(textToSend);
-        return Mono.just(message);
     }
 }

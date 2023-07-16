@@ -1,5 +1,6 @@
 package com.belka.newDiary.handler;
 
+import com.belka.core.BelkaSendMessage;
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
@@ -30,6 +31,7 @@ public class DiaryShareHandler implements BelkaHandler {
     private final DiaryService diaryService;
     private final StatsService statsService;
     private final UserService userService;
+    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
@@ -37,9 +39,9 @@ public class DiaryShareHandler implements BelkaHandler {
             Long chatId = event.getChatId();
             String note = PREFIX_FOR_NOTE + userService.getName(chatId) + "/n" + diaryService.getNote(LocalDate.now(), chatId);
             Collection<Long> followersId = userService.getFollowersId(chatId);
-            Collection<SendMessage> messages = followersId.stream().map(id -> sendMessage(id, note)).collect(Collectors.toList());
+            Collection<SendMessage> messages = followersId.stream().map(id -> belkaSendMessage.sendMessage(id, note)).collect(Collectors.toList());
 
-            messages.add(sendMessage(chatId, ANSWER));
+            messages.add(belkaSendMessage.sendMessage(chatId, ANSWER));
 
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
@@ -54,12 +56,5 @@ public class DiaryShareHandler implements BelkaHandler {
             return Flux.fromIterable(messages);
         }
         return null;
-    }
-
-    private SendMessage sendMessage(Long chatId, String answer) {
-        return SendMessage.builder()
-                .chatId(chatId)
-                .text(answer)
-                .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.belka.QR.handler;
 
 import com.belka.QR.Services.QRService;
+import com.belka.core.BelkaSendMessage;
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
@@ -10,9 +11,6 @@ import com.belka.stats.service.StatsService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
@@ -29,21 +27,23 @@ public class QRHandler implements BelkaHandler {
     private final PreviousService previousService;
     private final QRService qrService;
     private final StatsService statsService;
+    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         if (event.isHasMessage() && event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
+            Long chatId = event.getChatId();
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
-                    .userId(event.getChatId())
+                    .userId(chatId)
                     .previousId(event.getUpdateId())
                     .build());
             statsService.save(StatsDto.builder()
-                    .userId(event.getChatId())
+                    .userId(chatId)
                     .handlerCode(CODE)
                     .requestTime(LocalDateTime.now())
                     .build());
-            return Flux.just(sendMessage(event.getChatId()));
+            return Flux.just(belkaSendMessage.sendMessage(chatId, HEADER_1));
         }
         if (event.isHasMessage() && event.isHasText() && event.getPrevious_step().equals(CODE)) {
             Long chatId = event.getChatId();
@@ -57,31 +57,8 @@ public class QRHandler implements BelkaHandler {
                     .handlerCode(CODE)
                     .requestTime(LocalDateTime.now())
                     .build());
-            return Flux.just(sendImageFromUrl(qrService.getQRLink(event.getText()), chatId));
+            return Flux.just(belkaSendMessage.sendImageFromUrl(qrService.getQRLink(event.getText()), chatId));
         }
         return null;
-    }
-
-    private SendMessage sendMessage(Long chatId) {
-        return SendMessage.builder()
-                .chatId(chatId)
-                .text(HEADER_1)
-                .build();
-    }
-
-    /**
-     * takes a picture from the url and sends it to the user
-     *
-     * @param url    link for the picture
-     * @param chatId user's chatId
-     */
-    private PartialBotApiMethod<?> sendImageFromUrl(String url, Long chatId) {
-        // Create send method
-        SendPhoto sendPhotoRequest = new SendPhoto();
-        // Set destination chat id
-        sendPhotoRequest.setChatId(chatId);
-        // Set the photo url as a simple photo
-        sendPhotoRequest.setPhoto(new InputFile(url));
-        return sendPhotoRequest;
     }
 }
