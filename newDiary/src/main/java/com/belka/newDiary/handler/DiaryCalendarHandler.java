@@ -56,6 +56,7 @@ public class DiaryCalendarHandler implements BelkaHandler {
             Long chatId = event.getChatId();
             Integer updateId = event.getUpdateId();
             SendMessage message = calendarService.sendCalendarMessage(chatId, YEAR, MONTH);
+            message.setReplyToMessageId(event.getUpdate().getCallbackQuery().getMessage().getMessageId());
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(chatId)
