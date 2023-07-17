@@ -41,7 +41,6 @@ public class StartHandler implements BelkaHandler {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(chatId)
-                    .previousId(event.getUpdateId())
                     .build());
             registerUser(event.getUpdate().getMessage());
             statsService.save(StatsDto.builder()

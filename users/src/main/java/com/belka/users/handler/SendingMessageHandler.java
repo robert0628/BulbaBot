@@ -42,7 +42,6 @@ public class SendingMessageHandler implements BelkaHandler {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(chatId)
-                    .previousId(event.getUpdateId())
                     .build());
 
             String textToSend = EmojiParser.parseToUnicode(event.getText());

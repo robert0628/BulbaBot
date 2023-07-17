@@ -65,7 +65,6 @@ public class GetStatsHandler implements BelkaHandler {
         previousService.save(PreviousStepDto.builder()
                 .previousStep(CODE)
                 .userId(event.getChatId())
-                .previousId(event.getUpdateId())
                 .build());
         statsService.save(StatsDto.builder()
                 .userId(event.getChatId())

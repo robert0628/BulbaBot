@@ -41,7 +41,6 @@ public class IncomingContactHandler implements BelkaHandler {
                 previousService.save(PreviousStepDto.builder()
                         .previousStep(CODE)
                         .userId(chatId)
-                        .previousId(event.getUpdateId())
                         .build());
                 statsService.save(StatsDto.builder()
                         .userId(chatId)

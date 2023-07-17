@@ -33,7 +33,6 @@ public class DiaryButtonsWriteHandler implements BelkaHandler {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(chatId)
-                    .previousId(event.getUpdateId())
                     .build());
             statsService.save(StatsDto.builder()
                     .userId(event.getChatId())

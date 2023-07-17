@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS weather_history
 
 CREATE TABLE IF NOT EXISTS previous_step
 (
-    user_id   bigint PRIMARY KEY,
+    user_id       bigint PRIMARY KEY,
     previous_step text,
-    previous_id int
+    next_step     int
 );
 

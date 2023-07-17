@@ -36,7 +36,6 @@ public class QRHandler implements BelkaHandler {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(chatId)
-                    .previousId(event.getUpdateId())
                     .build());
             statsService.save(StatsDto.builder()
                     .userId(chatId)
@@ -50,7 +49,6 @@ public class QRHandler implements BelkaHandler {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(EXIT_CODE)
                     .userId(chatId)
-                    .previousId(event.getUpdateId())
                     .build());
             statsService.save(StatsDto.builder()
                     .userId(event.getChatId())

@@ -8,5 +8,5 @@ import lombok.Getter;
 public class PreviousStepDto {
     private Long userId;
     private String previousStep;
-    private Integer previousId;
+    private String nextStep;
 }
