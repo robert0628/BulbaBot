@@ -23,7 +23,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PrepareToSendingMessagesHandler implements BelkaHandler {
 
-    private final static String CODE = "/send";
+    final static String CODE = "/send";
+    private final static String NEXT_HANDLER = SendingMessageHandler.CODE;
+    private final static String PREVIOUS_HANDLER = "";
     private final static String HEADER = "write some text";
     private final PreviousService previousService;
     private final UserConfig userConfig;
@@ -39,6 +41,7 @@ public class PrepareToSendingMessagesHandler implements BelkaHandler {
             Long chatId = event.getChatId();
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
+                    .nextStep(NEXT_HANDLER)
                     .userId(chatId)
                     .build());
 

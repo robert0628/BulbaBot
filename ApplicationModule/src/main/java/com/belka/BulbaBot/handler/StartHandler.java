@@ -28,6 +28,8 @@ import java.time.LocalDateTime;
 public class StartHandler implements BelkaHandler {
 
     private final static String CODE = "/start";
+    private final static String NEXT_HANDLER = "";
+    private final static String PREVIOUS_HANDLER = "";
     private final PreviousService previousService;
     private final UserService userService;
     private final BelkaSendMessage belkaSendMessage;
@@ -41,6 +43,7 @@ public class StartHandler implements BelkaHandler {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .userId(chatId)
+                    .nextStep(NEXT_HANDLER)
                     .build());
             registerUser(event.getUpdate().getMessage());
             statsService.save(StatsDto.builder()

@@ -17,7 +17,9 @@ import java.time.LocalDateTime;
 @Component
 @AllArgsConstructor
 public class SubscribeHandler implements BelkaHandler {
-    private final static String CODE = "/subscribe";
+    final static String CODE = "/subscribe";
+    private final static String NEXT_HANDLER = IncomingContactHandler.CODE;
+    private final static String PREVIOUS_HANDLER = "";
     private final static String ANSWER = "share the contact here";
     private final PreviousService previousService;
     private final StatsService statsService;
@@ -29,6 +31,7 @@ public class SubscribeHandler implements BelkaHandler {
             Long chatId = event.getChatId();
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
+                    .nextStep(NEXT_HANDLER)
                     .userId(chatId)
                     .build());
             statsService.save(StatsDto.builder()

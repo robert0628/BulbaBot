@@ -23,6 +23,8 @@ import java.util.Collection;
 @AllArgsConstructor
 public class ShowSubscribesHandler implements BelkaHandler {
     private final static String CODE = "/subscribes";
+    private final static String NEXT_HANDLER = "";
+    private final static String PREVIOUS_HANDLER = "";
     private final static String ANSWER_PREFIX = "You have %d subscription by now: %s";
     private final static String ANSWER_NO_SUBSCRIPTIONS = "You dont have any subscriptions";
     private final UserService userService;
@@ -36,6 +38,7 @@ public class ShowSubscribesHandler implements BelkaHandler {
             Long chatId = event.getChatId();
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
+                    .nextStep(NEXT_HANDLER)
                     .userId(chatId)
                     .build());
             statsService.save(StatsDto.builder()

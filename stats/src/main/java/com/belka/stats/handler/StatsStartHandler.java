@@ -26,7 +26,9 @@ import java.util.List;
 @Component
 @AllArgsConstructor
 public class StatsStartHandler implements BelkaHandler {
-    private final static String CODE = "/stats";
+    final static String CODE = "/stats";
+    private final static String NEXT_HANDLER = GetStatsHandler.CODE;
+    private final static String PREVIOUS_HANDLER = "";
     private final static String HEADER = "what stats do you want?";
     final static String BUTTON_1 = "get total requests";
     final static String BUTTON_2 = "get total requests by user";
@@ -43,6 +45,7 @@ public class StatsStartHandler implements BelkaHandler {
             Long chatId = event.getChatId();
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
+                    .nextStep(NEXT_HANDLER)
                     .userId(chatId)
                     .build());
             statsService.save(StatsDto.builder()

@@ -23,7 +23,9 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 public class DiaryShareHandler implements BelkaHandler {
-    private final static String CODE = "WRITE_DIARY";
+    final static String CODE = "WRITE_DIARY";
+    private final static String NEXT_HANDLER = "";
+    private final static String PREVIOUS_HANDLER = DiaryWriteHandler.CODE;
     private final static String PREVIOUS_DATA = DiaryWriteHandler.CODE + DiaryWriteHandler.YES_BUTTON;
     private final static String ANSWER = "the note has been sent";
     private final static String PREFIX_FOR_NOTE = "note from ";
@@ -45,6 +47,7 @@ public class DiaryShareHandler implements BelkaHandler {
 
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
+                    .nextStep(NEXT_HANDLER)
                     .userId(chatId)
                     .build());
             statsService.save(StatsDto.builder()

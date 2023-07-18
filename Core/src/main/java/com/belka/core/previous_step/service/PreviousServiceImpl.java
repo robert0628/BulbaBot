@@ -22,7 +22,7 @@ public class PreviousServiceImpl implements PreviousService {
     }
 
     @Override
-    public Integer getPreviousIdByUserId(Long chatId) {
-        return repository.getPreviousIdByUserId(chatId);
+    public String getNextStep(Long chatId) {
+        return repository.getNextStepByUserId(chatId);
     }
 }

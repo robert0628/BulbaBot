@@ -23,10 +23,11 @@ import java.util.List;
 @Data
 @Component
 public class DiaryWriteHandler implements BelkaHandler {
-    final static String CODE = "WRITE_DIARY";
+    static String CODE = "WRITE_DIARY";
+    private final static String NEXT_HANDLER = DiaryShareHandler.CODE;
+    private final static String PREVIOUS_CODE = DiaryGetHeaderWriteHandler.CODE;
     final static String YES_BUTTON = "yes";
     final static String NO_BUTTON = "no";
-    private final static String PREVIOUS_CODE = "/diary-buttons";
     private final static String ANSWER = "got it";
     private final static String HEADER = "do you want to share this";
     private final PreviousService previousService;
@@ -41,6 +42,7 @@ public class DiaryWriteHandler implements BelkaHandler {
             diaryService.addNote(chatId, event.getText());
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
+                    .nextStep(NEXT_HANDLER)
                     .userId(chatId)
                     .build());
             statsService.save(StatsDto.builder()

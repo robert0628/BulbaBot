@@ -23,6 +23,8 @@ import java.time.LocalDateTime;
 public class WeatherHandler implements BelkaHandler {
 
     private final static String CODE = "/weather";
+    private final static String NEXT_HANDLER = "";
+    private final static String PREVIOUS_HANDLER = "";
     private final PreviousService previousService;
     private final WeatherService weatherService;
     private final StatsService statsService;
@@ -34,6 +36,7 @@ public class WeatherHandler implements BelkaHandler {
             Long chatId = event.getChatId();
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
+                    .nextStep(NEXT_HANDLER)
                     .userId(chatId)
                     .build());
             statsService.save(StatsDto.builder()

@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TotalRequestsByCodeHandler implements BelkaHandler {
     private final static String CODE = "Total Requests By Code Handler";
+    private final static String NEXT_HANDLER = "";
+    private final static String PREVIOUS_HANDLER = GetStatsHandler.CODE;
     private final static String PREVIOUS_CODE = "get stats";
     private final PreviousService previousService;
     private final StatsService statsService;
@@ -31,6 +33,7 @@ public class TotalRequestsByCodeHandler implements BelkaHandler {
         if (event.isHasText() && event.getPrevious_step().equals(PREVIOUS_CODE)) {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
+                    .nextStep(NEXT_HANDLER)
                     .userId(event.getChatId())
                     .build());
             statsService.save(StatsDto.builder()

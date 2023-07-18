@@ -20,7 +20,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class DiaryReadHandler implements BelkaHandler {
 
-    private final static String CODE = "DIARY_WRITE";
+    final static String CODE = "READ_DIARY";
+    private final static String NEXT_HANDLER = DiaryCalendarHandler.CODE;
+    private final static String PREVIOUS_HANDLER = DiaryStartHandler.CODE;
     private final DiaryService diaryService;
     private final PreviousService previousService;
     private final StatsService statsService;
@@ -38,6 +40,7 @@ public class DiaryReadHandler implements BelkaHandler {
 
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
+                    .nextStep(NEXT_HANDLER)
                     .userId(event.getChatId())
                     .build());
             statsService.save(StatsDto.builder()

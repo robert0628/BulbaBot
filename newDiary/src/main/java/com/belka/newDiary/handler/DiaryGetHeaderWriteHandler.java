@@ -18,8 +18,10 @@ import static com.belka.newDiary.handler.DiaryStartHandler.BUTTON_2;
 
 @Component
 @AllArgsConstructor
-public class DiaryButtonsWriteHandler implements BelkaHandler {
-    private final static String CODE = "/diary-buttons";
+public class DiaryGetHeaderWriteHandler implements BelkaHandler {
+    final static String CODE = "write diary header";
+    private final static String NEXT_HANDLER = DiaryWriteHandler.CODE;
+    private final static String PREVIOUS_HANDLER = DiaryStartHandler.CODE;
     private final static String HEADER = "write some words";
     private final static String PREVIOUS_DATA = DiaryStartHandler.CODE + BUTTON_2;
     private final PreviousService previousService;
@@ -32,6 +34,7 @@ public class DiaryButtonsWriteHandler implements BelkaHandler {
             Long chatId = event.getChatId();
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
+                    .nextStep(NEXT_HANDLER)
                     .userId(chatId)
                     .build());
             statsService.save(StatsDto.builder()

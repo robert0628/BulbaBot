@@ -19,7 +19,9 @@ import java.time.LocalDateTime;
 @Component
 @AllArgsConstructor
 public class IncomingContactHandler implements BelkaHandler {
-    private final static String CODE = "Subscription";
+    final static String CODE = "Subscription";
+    private final static String NEXT_HANDLER = "";
+    private final static String PREVIOUS_HANDLER = SubscribeHandler.CODE;
     private final static String PREVIOUS_CODE = "/subscribe";
     private final static String SUCCESSFULLY_ANSWER = "subscription is issued";
     private final static String FAILED_ANSWER = "this user is not registered";
@@ -40,6 +42,7 @@ public class IncomingContactHandler implements BelkaHandler {
                 Long chatId = event.getChatId();
                 previousService.save(PreviousStepDto.builder()
                         .previousStep(CODE)
+                        .nextStep(NEXT_HANDLER)
                         .userId(chatId)
                         .build());
                 statsService.save(StatsDto.builder()

@@ -25,7 +25,9 @@ import static com.belka.stats.handler.StatsStartHandler.*;
 @AllArgsConstructor
 @Setter
 public class GetStatsHandler implements BelkaHandler {
-    private final static String CODE = "get stats";
+    final static String CODE = "get stats";
+    private final static String NEXT_HANDLER = "";
+    private final static String PREVIOUS_HANDLER = StatsStartHandler.CODE;
     private final static String answer = "write code";
     private final PreviousService previousService;
     private final StatsService statsService;
@@ -64,6 +66,7 @@ public class GetStatsHandler implements BelkaHandler {
     private void savePreviousAndStats(BelkaEvent event) {
         previousService.save(PreviousStepDto.builder()
                 .previousStep(CODE)
+                .nextStep(NEXT_HANDLER)
                 .userId(event.getChatId())
                 .build());
         statsService.save(StatsDto.builder()

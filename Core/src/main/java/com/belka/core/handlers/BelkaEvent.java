@@ -26,6 +26,7 @@ public class BelkaEvent {
      * previous handler's CODE
      */
     private final String previous_step;
+    private final String code;
     private final String data;
     private final String text;
     private final boolean hasMessage;

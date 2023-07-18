@@ -23,6 +23,8 @@ import java.util.List;
 @Data
 public class DiaryStartHandler implements BelkaHandler {
     final static String CODE = "/diary";
+    private final static String NEXT_HANDLER = "";
+    private final static String PREVIOUS_HANDLER = "";
     final static String BUTTON_1 = "get diary";
     final static String BUTTON_2 = "write diary";
     private final static String HEADER_1 = "what do you want?";
@@ -36,6 +38,7 @@ public class DiaryStartHandler implements BelkaHandler {
             Long chatId = event.getChatId();
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
+                    .nextStep(NEXT_HANDLER)
                     .userId(chatId)
                     .build());
             statsService.save(StatsDto.builder()

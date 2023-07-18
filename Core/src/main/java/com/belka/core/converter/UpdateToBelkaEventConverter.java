@@ -28,6 +28,11 @@ public class UpdateToBelkaEventConverter implements BelkaConverter<Update, Belka
         if (previousStepFromDB != null) {
             previousStep = previousStepFromDB;
         }
+        String nextStep = "";
+        String nextStepFromDB = previousService.getNextStep(chatId);
+        if (nextStepFromDB != null) {
+            nextStep = nextStepFromDB;
+        }
         boolean hasMessage = value.hasMessage();
         boolean hasText = hasMessage && value.getMessage().hasText();
         boolean hasCallbackQuery = value.hasCallbackQuery();
@@ -45,6 +50,7 @@ public class UpdateToBelkaEventConverter implements BelkaConverter<Update, Belka
                 .chatId(chatId)
                 .text(text)
                 .previous_step(previousStep)
+                .code(nextStep)
                 .hasMessage(hasMessage)
                 .hasCallbackQuery(hasCallbackQuery)
                 .hasText(hasText)

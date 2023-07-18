@@ -25,7 +25,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class SendingMessageHandler implements BelkaHandler {
 
-    private final static String CODE = "message has been sent";
+    final static String CODE = "SENDING MESSAGE";
+    private final static String NEXT_HANDLER = "";
+    private final static String PREVIOUS_HANDLER = PrepareToSendingMessagesHandler.CODE;
     private final static String PREVIOUS_CODE = "/send";
     private final PreviousService previousService;
     private final UserService userService;
@@ -39,13 +41,12 @@ public class SendingMessageHandler implements BelkaHandler {
                 && event.getPrevious_step().equals(PREVIOUS_CODE)
                 && userConfig.getBotOwner().equals(event.getChatId())) {
             Long chatId = event.getChatId();
+            String textToSend = EmojiParser.parseToUnicode(event.getText());
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
+                    .nextStep(NEXT_HANDLER)
                     .userId(chatId)
                     .build());
-
-            String textToSend = EmojiParser.parseToUnicode(event.getText());
-
             statsService.save(StatsDto.builder()
                     .userId(event.getChatId())
                     .handlerCode(CODE)

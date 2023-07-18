@@ -22,6 +22,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class QRHandler implements BelkaHandler {
     private final static String CODE = "/QR";
+    private final static String NEXT_HANDLER = "";
+    private final static String PREVIOUS_HANDLER = "";
     private final static String EXIT_CODE = "/send QR";
     private final static String HEADER_1 = "write your text";
     private final PreviousService previousService;
@@ -35,6 +37,7 @@ public class QRHandler implements BelkaHandler {
             Long chatId = event.getChatId();
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
+                    .nextStep(NEXT_HANDLER)
                     .userId(chatId)
                     .build());
             statsService.save(StatsDto.builder()

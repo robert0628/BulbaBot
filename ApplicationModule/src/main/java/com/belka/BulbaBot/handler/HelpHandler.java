@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class HelpHandler implements BelkaHandler {
     private final static String CODE = "/help";
+    private final static String NEXT_HANDLER = "";
+    private final static String PREVIOUS_HANDLER = "";
     private static final String TEXT_HELP = "This bot can show you weather in your city, generate QR code for your and get your diary.";
     private final PreviousService previousService;
     private final StatsService statsService;
@@ -32,6 +34,7 @@ public class HelpHandler implements BelkaHandler {
             Long chatId = event.getChatId();
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
+                    .nextStep(NEXT_HANDLER)
                     .userId(chatId)
                     .build());
             statsService.save(StatsDto.builder()
