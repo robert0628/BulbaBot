@@ -28,7 +28,6 @@ public class SendingMessageHandler implements BelkaHandler {
     final static String CODE = "SENDING MESSAGE";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = PrepareToSendingMessagesHandler.CODE;
-    private final static String PREVIOUS_CODE = "/send";
     private final PreviousService previousService;
     private final UserService userService;
     private final UserConfig userConfig;
@@ -38,7 +37,7 @@ public class SendingMessageHandler implements BelkaHandler {
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         if (event.isHasText()
-                && event.getPrevious_step().equals(PREVIOUS_CODE)
+                && event.getPrevious_step().equals(PREVIOUS_HANDLER)
                 && userConfig.getBotOwner().equals(event.getChatId())) {
             Long chatId = event.getChatId();
             String textToSend = EmojiParser.parseToUnicode(event.getText());

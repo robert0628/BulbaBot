@@ -28,7 +28,7 @@ public class GetStatsHandler implements BelkaHandler {
     final static String CODE = "get stats";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = StatsStartHandler.CODE;
-    private final static String answer = "write code";
+    private final static String ANSWER = "write code";
     private final PreviousService previousService;
     private final StatsService statsService;
     private final StatsConfig statsConfig;
@@ -48,7 +48,7 @@ public class GetStatsHandler implements BelkaHandler {
                 }
                 case BUTTON_3 -> {
                     savePreviousAndStats(event);
-                    return Flux.just(belkaSendMessage.sendMessage(event.getChatId(), answer));
+                    return Flux.just(belkaSendMessage.sendMessage(event.getChatId(), ANSWER));
                 }
                 case BUTTON_4 -> {
                     savePreviousAndStats(event);

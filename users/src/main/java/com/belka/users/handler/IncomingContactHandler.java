@@ -22,7 +22,6 @@ public class IncomingContactHandler implements BelkaHandler {
     final static String CODE = "Subscription";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = SubscribeHandler.CODE;
-    private final static String PREVIOUS_CODE = "/subscribe";
     private final static String SUCCESSFULLY_ANSWER = "subscription is issued";
     private final static String FAILED_ANSWER = "this user is not registered";
     private final PreviousService previousService;
@@ -32,9 +31,8 @@ public class IncomingContactHandler implements BelkaHandler {
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        if (event.isHasMessage()
-                && event.getUpdate().getMessage().hasContact()
-                && event.getPrevious_step().equals(PREVIOUS_CODE)) {
+        if (event.getPrevious_step().equals(PREVIOUS_HANDLER) && event.isHasMessage()
+                && event.getUpdate().getMessage().hasContact()) {
 
             Contact contact = event.getUpdate().getMessage().getContact();
             if (userService.existsById(contact.getUserId())) {

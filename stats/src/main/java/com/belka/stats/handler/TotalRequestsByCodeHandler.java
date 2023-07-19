@@ -23,14 +23,13 @@ public class TotalRequestsByCodeHandler implements BelkaHandler {
     private final static String CODE = "Total Requests By Code Handler";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = GetStatsHandler.CODE;
-    private final static String PREVIOUS_CODE = "get stats";
     private final PreviousService previousService;
     private final StatsService statsService;
     private final BelkaSendMessage belkaSendMessage;
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        if (event.isHasText() && event.getPrevious_step().equals(PREVIOUS_CODE)) {
+        if (event.isHasText() && event.getPrevious_step().equals(PREVIOUS_HANDLER)) {
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)
                     .nextStep(NEXT_HANDLER)
