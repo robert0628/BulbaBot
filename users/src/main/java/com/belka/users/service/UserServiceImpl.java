@@ -3,7 +3,7 @@ package com.belka.users.service;
 import com.belka.core.converter.ConverterService;
 import com.belka.users.entities.SubscriptionEntity;
 import com.belka.users.entities.UserEntity;
-import com.belka.users.model.UserDto;
+import com.belka.users.dto.UserDto;
 import com.belka.users.repository.SubscriptionsRepository;
 import com.belka.users.repository.UserRepository;
 import lombok.AllArgsConstructor;

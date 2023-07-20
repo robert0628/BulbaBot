@@ -8,7 +8,6 @@ import lombok.Data;
  */
 @Data
 public class Geo {
-
     @JsonProperty("query")
     private String ip;
     private String country;

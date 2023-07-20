@@ -1,8 +1,8 @@
 package com.belka.weather.service.weather;
 
 import com.belka.core.converter.ConverterService;
-import com.belka.core.weather_core.weather.WeatherInfo;
-import com.belka.core.weather_core.weather.WeatherNow;
+import com.belka.core.weather_core.model.weather.WeatherInfo;
+import com.belka.core.weather_core.model.weather.WeatherNow;
 import com.belka.weather.entity.WeatherHistoryEntity;
 import com.belka.weather.dto.WeatherHistoryDto;
 import com.belka.weather.repository.WeatherRepository;

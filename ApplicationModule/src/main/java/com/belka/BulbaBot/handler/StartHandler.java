@@ -7,7 +7,7 @@ import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
 import com.belka.stats.service.StatsService;
-import com.belka.users.model.UserDto;
+import com.belka.users.dto.UserDto;
 import com.belka.users.service.UserService;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.AllArgsConstructor;

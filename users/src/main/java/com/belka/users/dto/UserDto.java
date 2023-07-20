@@ -1,4 +1,4 @@
-package com.belka.users.model;
+package com.belka.users.dto;
 
 import lombok.Builder;
 import lombok.Data;

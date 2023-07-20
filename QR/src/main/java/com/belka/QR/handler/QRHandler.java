@@ -1,6 +1,6 @@
 package com.belka.QR.handler;
 
-import com.belka.QR.Services.QRService;
+import com.belka.QR.service.QRService;
 import com.belka.core.BelkaSendMessage;
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;

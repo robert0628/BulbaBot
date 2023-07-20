@@ -1,7 +1,7 @@
 package com.belka.kafka.service;
 
 import com.belka.core.weather_core.model.WeatherHistory;
-import com.belka.core.weather_core.weather.WeatherNow;
+import com.belka.core.weather_core.model.weather.WeatherNow;
 import com.belka.kafka.producer.KafkaProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

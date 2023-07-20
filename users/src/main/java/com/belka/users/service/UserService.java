@@ -1,7 +1,7 @@
 package com.belka.users.service;
 
 import com.belka.users.entities.UserEntity;
-import com.belka.users.model.UserDto;
+import com.belka.users.dto.UserDto;
 
 import java.util.Collection;
 

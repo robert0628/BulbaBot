@@ -1,4 +1,4 @@
-package com.belka.QR.Services;
+package com.belka.QR.service;
 
 /**
  * Service for converting text to QR-code
