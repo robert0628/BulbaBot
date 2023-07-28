@@ -10,6 +10,7 @@ import com.belka.stats.StatsDto;
 import com.belka.stats.service.StatsService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import reactor.core.publisher.Flux;
 
@@ -32,6 +33,7 @@ public class QRHandler implements BelkaHandler {
     private final BelkaSendMessage belkaSendMessage;
 
     @Override
+    @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         if (event.isHasMessage() && event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
             Long chatId = event.getChatId();

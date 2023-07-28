@@ -12,6 +12,7 @@ import com.belka.users.service.UserService;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -35,6 +36,7 @@ public class SendingMessageHandler implements BelkaHandler {
     private final BelkaSendMessage belkaSendMessage;
 
     @Override
+    @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         if (event.isHasText()
                 && event.getPrevious_step().equals(PREVIOUS_HANDLER)

@@ -10,6 +10,7 @@ import com.belka.stats.service.StatsService;
 import com.belka.weather.service.weather.WeatherService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import reactor.core.publisher.Flux;
 
@@ -31,6 +32,7 @@ public class WeatherHandler implements BelkaHandler {
     private final BelkaSendMessage belkaSendMessage;
 
     @Override
+    @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
             Long chatId = event.getChatId();

@@ -10,6 +10,7 @@ import com.belka.stats.StatsDto;
 import com.belka.stats.service.StatsService;
 import lombok.Data;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -36,6 +37,7 @@ public class DiaryWriteHandler implements BelkaHandler {
     private final BelkaSendMessage belkaSendMessage;
 
     @Override
+    @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         if (event.isHasText() && event.getPrevious_step().equals(PREVIOUS_HANDLER)) {
             Long chatId = event.getChatId();

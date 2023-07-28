@@ -12,6 +12,7 @@ import com.belka.users.service.UserService;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -36,6 +37,7 @@ public class StartHandler implements BelkaHandler {
     private final StatsService statsService;
 
     @Override
+    @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
             Long chatId = event.getChatId();

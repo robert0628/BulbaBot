@@ -11,6 +11,7 @@ import com.belka.stats.service.StatsService;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import reactor.core.publisher.Flux;
 
@@ -35,6 +36,7 @@ public class GetStatsHandler implements BelkaHandler {
     private final BelkaSendMessage belkaSendMessage;
 
     @Override
+    @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         if (event.getChatId().equals(statsConfig.getBotOwner()) && event.isHasCallbackQuery()) {
             switch (event.getData()) {
