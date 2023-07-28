@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>pom</packaging>
     <modules>
-        <module>newQR</module>
-		<module>newWeather</module>
+        <module>QR</module>
+		<module>Weather</module>
 		<module>ApplicationModule</module>
-        <module>newDiary</module>
+        <module>Diary</module>
         <module>kafka-service</module>
 		<module>users</module>
 		<module>stats</module>
@@ -30,7 +30,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -49,14 +49,13 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.3.8</version>
+			<version>42.5.4</version>
 			<scope>runtime</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework/spring-webflux -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webflux</artifactId>
-			<version>6.0.10</version>
+			<groupId>org.projectreactor</groupId>
+			<artifactId>reactor-spring</artifactId>
+			<version>1.0.1.RELEASE</version>
 		</dependency>
 
 	</dependencies>

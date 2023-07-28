@@ -16,9 +16,10 @@ import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * building and sending messages, receiving and processing {@link Update updates}
@@ -53,11 +54,14 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param update {@link Update telegram update}
      */
     @Override
-    @Transactional
     public void onUpdateReceived(Update update) {
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
         if (update.hasMessage() || update.hasCallbackQuery()) {
-            handlerService.handle(update)
-                    .subscribe(this::executeMessage);
+            executorService.execute(() -> {
+                handlerService.handle(update)
+                        .subscribe(this::executeMessage);
+                log.info("end of the main method, " + Thread.currentThread().getId());
+           });
         }
     }
 
