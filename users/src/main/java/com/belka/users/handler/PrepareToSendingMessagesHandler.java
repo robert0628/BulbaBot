@@ -55,6 +55,6 @@ public class PrepareToSendingMessagesHandler implements BelkaHandler {
 
             return Flux.just(belkaSendMessage.sendMessage(chatId, HEADER));
         }
-        return null;
+        return Flux.empty();
     }
 }

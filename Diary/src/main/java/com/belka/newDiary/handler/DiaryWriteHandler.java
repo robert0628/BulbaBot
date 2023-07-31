@@ -54,7 +54,7 @@ public class DiaryWriteHandler implements BelkaHandler {
                     .build());
             return Flux.just(belkaSendMessage.sendMessage(chatId, ANSWER), getButtons(chatId));
         }
-        return null;
+        return Flux.empty();
     }
 
     private SendMessage getButtons(Long chatId) {

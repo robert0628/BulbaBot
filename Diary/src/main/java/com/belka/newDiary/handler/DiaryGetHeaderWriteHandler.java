@@ -46,6 +46,6 @@ public class DiaryGetHeaderWriteHandler implements BelkaHandler {
                     .build());
             return Flux.just(belkaSendMessage.sendMessage(chatId, HEADER));
         }
-        return null;
+        return Flux.empty();
     }
 }

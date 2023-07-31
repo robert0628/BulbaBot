@@ -59,6 +59,6 @@ public class DiaryShareHandler implements BelkaHandler {
                     .build());
             return Flux.fromIterable(messages);
         }
-        return null;
+        return Flux.empty();
     }
 }

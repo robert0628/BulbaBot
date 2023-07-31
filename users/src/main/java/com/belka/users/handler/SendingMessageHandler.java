@@ -56,6 +56,6 @@ public class SendingMessageHandler implements BelkaHandler {
             return Flux.fromIterable(userService.getAll())
                     .flatMap(userDto -> Mono.just(belkaSendMessage.sendMessage(userDto.getId(), textToSend)));
         }
-        return null;
+        return Flux.empty();
     }
 }

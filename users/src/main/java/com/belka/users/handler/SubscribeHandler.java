@@ -43,6 +43,6 @@ public class SubscribeHandler implements BelkaHandler {
                     .build());
             return Flux.just(belkaSendMessage.sendMessage(event.getChatId(), ANSWER));
         }
-        return null;
+        return Flux.empty();
     }
 }

@@ -46,6 +46,6 @@ public class HelpHandler implements BelkaHandler {
                     .build());
             return Flux.just(belkaSendMessage.sendMessage(chatId, TEXT_HELP));
         }
-        return null;
+        return Flux.empty();
     }
 }

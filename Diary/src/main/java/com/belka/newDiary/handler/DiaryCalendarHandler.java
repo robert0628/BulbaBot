@@ -72,6 +72,6 @@ public class DiaryCalendarHandler implements BelkaHandler {
             return Flux.just(belkaSendMessage.editMessage(message, HEADER));
         }
 
-        return null;
+        return Flux.empty();
     }
 }

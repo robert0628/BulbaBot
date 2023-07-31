@@ -52,6 +52,6 @@ public class DiaryReadHandler implements BelkaHandler {
                     .build());
             return Flux.just(belkaSendMessage.sendMessage(event.getChatId(), diaryService.getNote(date, event.getChatId())));
         }
-        return null;
+        return Flux.empty();
     }
 }

@@ -48,6 +48,6 @@ public class WeatherHandler implements BelkaHandler {
                     .build());
             return Flux.just(belkaSendMessage.sendMessage(chatId, weatherService.getWeatherResponse(weatherService.findCity())));
         }
-        return null;
+        return Flux.empty();
     }
 }

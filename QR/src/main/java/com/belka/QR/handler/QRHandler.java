@@ -62,6 +62,6 @@ public class QRHandler implements BelkaHandler {
                     .build());
             return Flux.just(belkaSendMessage.sendImageFromUrl(qrService.getQRLink(event.getText()), chatId));
         }
-        return null;
+        return Flux.empty();
     }
 }

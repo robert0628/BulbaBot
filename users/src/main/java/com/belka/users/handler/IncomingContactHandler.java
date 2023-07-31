@@ -55,6 +55,6 @@ public class IncomingContactHandler implements BelkaHandler {
             }
             return Flux.just(belkaSendMessage.sendMessage(event.getChatId(), FAILED_ANSWER));
         }
-        return null;
+        return Flux.empty();
     }
 }

@@ -62,7 +62,7 @@ public class GetStatsHandler implements BelkaHandler {
                 }
             }
         }
-        return null;
+        return Flux.empty();
     }
 
     private void savePreviousAndStats(BelkaEvent event) {

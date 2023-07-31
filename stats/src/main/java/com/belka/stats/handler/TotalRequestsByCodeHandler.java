@@ -44,6 +44,6 @@ public class TotalRequestsByCodeHandler implements BelkaHandler {
                     .build());
             return Flux.just(belkaSendMessage.sendMessage(event.getChatId(), String.valueOf(statsService.getTotalRequestsByCode(event.getText()))));
         }
-        return null;
+        return Flux.empty();
     }
 }

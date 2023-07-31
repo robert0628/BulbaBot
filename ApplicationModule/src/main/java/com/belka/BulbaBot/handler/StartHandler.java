@@ -55,7 +55,7 @@ public class StartHandler implements BelkaHandler {
                     .build());
             return Flux.just(belkaSendMessage.sendMessage(chatId, answer));
         }
-        return null;
+        return Flux.empty();
     }
 
     private void registerUser(Message message) {

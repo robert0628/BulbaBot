@@ -57,7 +57,7 @@ public class StatsStartHandler implements BelkaHandler {
                     .build());
             return Flux.just(getButtons(chatId));
         }
-        return null;
+        return Flux.empty();
     }
 
     private SendMessage getButtons(Long chatId) {

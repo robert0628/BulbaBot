@@ -50,7 +50,7 @@ public class ShowSubscribesHandler implements BelkaHandler {
                     .build());
             return Flux.just(belkaSendMessage.sendMessage(chatId, getAnswer(chatId)));
         }
-        return null;
+        return Flux.empty();
     }
 
     private String getAnswer(Long chatId) {
