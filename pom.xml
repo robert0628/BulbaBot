@@ -5,7 +5,7 @@
 	<packaging>pom</packaging>
     <modules>
         <module>QR</module>
-		<module>Weather</module>
+		<module>newWeather</module>
 		<module>ApplicationModule</module>
         <module>Diary</module>
         <module>kafka-service</module>
