@@ -30,6 +30,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final BotConfig botConfig;
     private final HandlerService handlerService;
+    private final static int NUMBER_OF_THREADS = 10;
 
     @Autowired
     public TelegramBot(BotConfig botConfig, HandlerService handlerService) {
@@ -55,13 +56,13 @@ public class TelegramBot extends TelegramLongPollingBot {
      */
     @Override
     public void onUpdateReceived(Update update) {
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
         if (update.hasMessage() || update.hasCallbackQuery()) {
             executorService.execute(() -> {
                 handlerService.handle(update)
                         .subscribe(this::executeMessage);
-                log.info("end of the main method, " + Thread.currentThread().getId());
-           });
+                log.info("end of the onUpdateReceived method");
+            });
         }
     }
 
@@ -84,6 +85,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * set commands in the main menu
+     */
     private void setCommands() {
         List<BotCommand> listOfCommands = new ArrayList<>();
         listOfCommands.add(new BotCommand("/start", "get a welcome message"));
