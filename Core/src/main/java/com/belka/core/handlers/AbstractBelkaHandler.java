@@ -1,18 +1,17 @@
-package com.belka.core;
+package com.belka.core.handlers;
 
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import reactor.core.publisher.Flux;
 
-/**
- * makes and sends {@link PartialBotApiMethod} to the user
- */
-@Deprecated
-public class BelkaSendMessage {
+public abstract class AbstractBelkaHandler implements BelkaHandler{
+    @Override
+    abstract public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event);
+
     /**
      * makes and sends {@link org.telegram.telegrambots.meta.api.objects.Message message} to the user
      *

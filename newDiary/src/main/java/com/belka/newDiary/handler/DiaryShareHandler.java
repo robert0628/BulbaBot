@@ -1,8 +1,7 @@
 package com.belka.newDiary.handler;
 
-import com.belka.core.BelkaSendMessage;
+import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
-import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.newDiary.service.DiaryService;
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
-public class DiaryShareHandler implements BelkaHandler {
+public class DiaryShareHandler extends AbstractBelkaHandler {
     final static String CODE = "WRITE_DIARY";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = DiaryWriteHandler.CODE;
@@ -34,7 +33,6 @@ public class DiaryShareHandler implements BelkaHandler {
     private final DiaryService diaryService;
     private final StatsService statsService;
     private final UserService userService;
-    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     @Transactional
@@ -43,9 +41,9 @@ public class DiaryShareHandler implements BelkaHandler {
             Long chatId = event.getChatId();
             String note = PREFIX_FOR_NOTE + userService.getName(chatId) + "/n" + diaryService.getNote(LocalDate.now(), chatId);
             Collection<Long> followersId = userService.getFollowersId(chatId);
-            Collection<SendMessage> messages = followersId.stream().map(id -> belkaSendMessage.sendMessage(id, note)).collect(Collectors.toList());
+            Collection<SendMessage> messages = followersId.stream().map(id -> sendMessage(id, note)).collect(Collectors.toList());
 
-            messages.add(belkaSendMessage.sendMessage(chatId, ANSWER));
+            messages.add(sendMessage(chatId, ANSWER));
 
             previousService.save(PreviousStepDto.builder()
                     .previousStep(CODE)

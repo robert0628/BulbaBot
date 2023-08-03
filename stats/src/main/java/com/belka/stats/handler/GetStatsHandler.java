@@ -1,8 +1,7 @@
 package com.belka.stats.handler;
 
-import com.belka.core.BelkaSendMessage;
+import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
-import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsConfig;
@@ -25,7 +24,7 @@ import static com.belka.stats.handler.StatsStartHandler.*;
 @Component
 @AllArgsConstructor
 @Setter
-public class GetStatsHandler implements BelkaHandler {
+public class GetStatsHandler extends AbstractBelkaHandler {
     final static String CODE = "get stats";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = StatsStartHandler.CODE;
@@ -33,7 +32,6 @@ public class GetStatsHandler implements BelkaHandler {
     private final PreviousService previousService;
     private final StatsService statsService;
     private final StatsConfig statsConfig;
-    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     @Transactional
@@ -42,23 +40,23 @@ public class GetStatsHandler implements BelkaHandler {
             switch (event.getData()) {
                 case BUTTON_1 -> {
                     savePreviousAndStats(event);
-                    return Flux.just(belkaSendMessage.sendMessage(event.getChatId(), String.valueOf(statsService.getTotalRequests())));
+                    return Flux.just(sendMessage(event.getChatId(), String.valueOf(statsService.getTotalRequests())));
                 }
                 case BUTTON_2 -> {
                     savePreviousAndStats(event);
-                    return Flux.just(belkaSendMessage.sendMessage(event.getChatId(), String.valueOf(statsService.getTotalRequestsByUser(event.getChatId()))));
+                    return Flux.just(sendMessage(event.getChatId(), String.valueOf(statsService.getTotalRequestsByUser(event.getChatId()))));
                 }
                 case BUTTON_3 -> {
                     savePreviousAndStats(event);
-                    return Flux.just(belkaSendMessage.sendMessage(event.getChatId(), ANSWER));
+                    return Flux.just(sendMessage(event.getChatId(), ANSWER));
                 }
                 case BUTTON_4 -> {
                     savePreviousAndStats(event);
-                    return Flux.just(belkaSendMessage.sendMessage(event.getChatId(), String.valueOf(statsService.getMostPopularRequest())));
+                    return Flux.just(sendMessage(event.getChatId(), String.valueOf(statsService.getMostPopularRequest())));
                 }
                 case BUTTON_5 -> {
                     savePreviousAndStats(event);
-                    return Flux.just(belkaSendMessage.sendMessage(event.getChatId(), String.valueOf(statsService.getMostPopularRequestByUser(event.getChatId()))));
+                    return Flux.just(sendMessage(event.getChatId(), String.valueOf(statsService.getMostPopularRequestByUser(event.getChatId()))));
                 }
             }
         }

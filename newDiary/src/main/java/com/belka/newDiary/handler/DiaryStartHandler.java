@@ -1,8 +1,7 @@
 package com.belka.newDiary.handler;
 
-import com.belka.core.BelkaSendMessage;
+import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
-import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
@@ -22,7 +21,7 @@ import java.util.List;
 
 @Component
 @Data
-public class DiaryStartHandler implements BelkaHandler {
+public class DiaryStartHandler extends AbstractBelkaHandler {
     final static String CODE = "/diary";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = "";
@@ -31,7 +30,6 @@ public class DiaryStartHandler implements BelkaHandler {
     private final static String HEADER_1 = "what do you want?";
     private final PreviousService previousService;
     private final StatsService statsService;
-    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     @Transactional
@@ -54,7 +52,7 @@ public class DiaryStartHandler implements BelkaHandler {
     }
 
     private SendMessage getButtons(Long chatId) {
-        SendMessage message = belkaSendMessage.sendMessage(chatId, HEADER_1);
+        SendMessage message = sendMessage(chatId, HEADER_1);
         InlineKeyboardMarkup markupInLine = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
         List<InlineKeyboardButton> rowInline = new ArrayList<>();

@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>pom</packaging>
     <modules>
-        <module>QR</module>
+        <module>newQR</module>
 		<module>newWeather</module>
 		<module>ApplicationModule</module>
-        <module>Diary</module>
+        <module>newDiary</module>
         <module>kafka-service</module>
 		<module>users</module>
 		<module>stats</module>

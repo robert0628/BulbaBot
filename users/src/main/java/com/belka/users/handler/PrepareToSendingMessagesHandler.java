@@ -1,9 +1,8 @@
 package com.belka.users.handler;
 
 
-import com.belka.core.BelkaSendMessage;
+import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
-import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
@@ -22,7 +21,7 @@ import java.time.LocalDateTime;
  */
 @Component
 @AllArgsConstructor
-public class PrepareToSendingMessagesHandler implements BelkaHandler {
+public class PrepareToSendingMessagesHandler extends AbstractBelkaHandler {
 
     final static String CODE = "/send";
     private final static String NEXT_HANDLER = SendingMessageHandler.CODE;
@@ -31,7 +30,6 @@ public class PrepareToSendingMessagesHandler implements BelkaHandler {
     private final PreviousService previousService;
     private final UserConfig userConfig;
     private final StatsService statsService;
-    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     @Transactional
@@ -53,7 +51,7 @@ public class PrepareToSendingMessagesHandler implements BelkaHandler {
                     .requestTime(LocalDateTime.now())
                     .build());
 
-            return Flux.just(belkaSendMessage.sendMessage(chatId, HEADER));
+            return Flux.just(sendMessage(chatId, HEADER));
         }
         return Flux.empty();
     }

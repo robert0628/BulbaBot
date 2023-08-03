@@ -1,8 +1,7 @@
 package com.belka.stats.handler;
 
-import com.belka.core.BelkaSendMessage;
+import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
-import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
@@ -26,7 +25,7 @@ import java.util.List;
  */
 @Component
 @AllArgsConstructor
-public class StatsStartHandler implements BelkaHandler {
+public class StatsStartHandler extends AbstractBelkaHandler {
     final static String CODE = "/stats";
     private final static String NEXT_HANDLER = GetStatsHandler.CODE;
     private final static String PREVIOUS_HANDLER = "";
@@ -38,7 +37,6 @@ public class StatsStartHandler implements BelkaHandler {
     final static String BUTTON_5 = "get most popular request by user";
     private final PreviousService previousService;
     private final StatsService statsService;
-    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     @Transactional
@@ -61,7 +59,7 @@ public class StatsStartHandler implements BelkaHandler {
     }
 
     private SendMessage getButtons(Long chatId) {
-        SendMessage message = belkaSendMessage.sendMessage(chatId, HEADER);
+        SendMessage message = sendMessage(chatId, HEADER);
 
         InlineKeyboardMarkup markupInLine = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();

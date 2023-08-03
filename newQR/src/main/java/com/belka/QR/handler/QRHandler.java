@@ -1,9 +1,8 @@
 package com.belka.QR.handler;
 
 import com.belka.QR.service.QRService;
-import com.belka.core.BelkaSendMessage;
+import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
-import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
@@ -21,7 +20,7 @@ import java.time.LocalDateTime;
  */
 @Component
 @AllArgsConstructor
-public class QRHandler implements BelkaHandler {
+public class QRHandler extends AbstractBelkaHandler {
     private final static String CODE = "/QR";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = "";
@@ -30,7 +29,6 @@ public class QRHandler implements BelkaHandler {
     private final PreviousService previousService;
     private final QRService qrService;
     private final StatsService statsService;
-    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     @Transactional
@@ -47,7 +45,7 @@ public class QRHandler implements BelkaHandler {
                     .handlerCode(CODE)
                     .requestTime(LocalDateTime.now())
                     .build());
-            return Flux.just(belkaSendMessage.sendMessage(chatId, HEADER_1));
+            return Flux.just(sendMessage(chatId, HEADER_1));
         }
         if (event.isHasMessage() && event.isHasText() && event.getPrevious_step().equals(CODE)) {
             Long chatId = event.getChatId();
@@ -60,7 +58,7 @@ public class QRHandler implements BelkaHandler {
                     .handlerCode(CODE)
                     .requestTime(LocalDateTime.now())
                     .build());
-            return Flux.just(belkaSendMessage.sendImageFromUrl(qrService.getQRLink(event.getText()), chatId));
+            return Flux.just(sendImageFromUrl(qrService.getQRLink(event.getText()), chatId));
         }
         return Flux.empty();
     }

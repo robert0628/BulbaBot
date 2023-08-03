@@ -1,8 +1,7 @@
 package com.belka.users.handler;
 
-import com.belka.core.BelkaSendMessage;
+import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
-import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
@@ -17,14 +16,13 @@ import java.time.LocalDateTime;
 
 @Component
 @AllArgsConstructor
-public class SubscribeHandler implements BelkaHandler {
+public class SubscribeHandler extends AbstractBelkaHandler {
     final static String CODE = "/subscribe";
     private final static String NEXT_HANDLER = IncomingContactHandler.CODE;
     private final static String PREVIOUS_HANDLER = "";
     private final static String ANSWER = "share the contact here";
     private final PreviousService previousService;
     private final StatsService statsService;
-    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     @Transactional
@@ -41,7 +39,7 @@ public class SubscribeHandler implements BelkaHandler {
                     .handlerCode(CODE)
                     .requestTime(LocalDateTime.now())
                     .build());
-            return Flux.just(belkaSendMessage.sendMessage(event.getChatId(), ANSWER));
+            return Flux.just(sendMessage(event.getChatId(), ANSWER));
         }
         return Flux.empty();
     }

@@ -1,8 +1,7 @@
 package com.belka.users.handler;
 
-import com.belka.core.BelkaSendMessage;
+import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
-import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
@@ -22,7 +21,7 @@ import java.util.Collection;
  */
 @Component
 @AllArgsConstructor
-public class ShowSubscribesHandler implements BelkaHandler {
+public class ShowSubscribesHandler extends AbstractBelkaHandler {
     private final static String CODE = "/subscribes";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = "";
@@ -31,7 +30,6 @@ public class ShowSubscribesHandler implements BelkaHandler {
     private final UserService userService;
     private final PreviousService previousService;
     private final StatsService statsService;
-    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     @Transactional
@@ -48,7 +46,7 @@ public class ShowSubscribesHandler implements BelkaHandler {
                     .handlerCode(CODE)
                     .requestTime(LocalDateTime.now())
                     .build());
-            return Flux.just(belkaSendMessage.sendMessage(chatId, getAnswer(chatId)));
+            return Flux.just(sendMessage(chatId, getAnswer(chatId)));
         }
         return Flux.empty();
     }

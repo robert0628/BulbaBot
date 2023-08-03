@@ -1,8 +1,7 @@
 package com.belka.BulbaBot.handler;
 
-import com.belka.core.BelkaSendMessage;
+import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
-import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
@@ -26,14 +25,13 @@ import java.time.LocalDateTime;
  */
 @Component
 @AllArgsConstructor
-public class StartHandler implements BelkaHandler {
+public class StartHandler extends AbstractBelkaHandler {
 
     private final static String CODE = "/start";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = "";
     private final PreviousService previousService;
     private final UserService userService;
-    private final BelkaSendMessage belkaSendMessage;
     private final StatsService statsService;
 
     @Override
@@ -53,7 +51,7 @@ public class StartHandler implements BelkaHandler {
                     .handlerCode(CODE)
                     .requestTime(LocalDateTime.now())
                     .build());
-            return Flux.just(belkaSendMessage.sendMessage(chatId, answer));
+            return Flux.just(sendMessage(chatId, answer));
         }
         return Flux.empty();
     }

@@ -1,8 +1,7 @@
 package com.belka.newDiary.handler;
 
-import com.belka.core.BelkaSendMessage;
+import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
-import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.newDiary.service.CalendarService;
@@ -20,7 +19,7 @@ import java.time.LocalDateTime;
 
 @Component
 @AllArgsConstructor
-public class DiaryCalendarHandler implements BelkaHandler {
+public class DiaryCalendarHandler extends AbstractBelkaHandler {
     final static String CODE = "CALENDAR_DIARY";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = DiaryReadHandler.CODE;
@@ -31,7 +30,6 @@ public class DiaryCalendarHandler implements BelkaHandler {
     private final PreviousService previousService;
     private final CalendarService calendarService;
     private final StatsService statsService;
-    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     @Transactional
@@ -69,7 +67,7 @@ public class DiaryCalendarHandler implements BelkaHandler {
                     .handlerCode(CODE)
                     .requestTime(LocalDateTime.now())
                     .build());
-            return Flux.just(belkaSendMessage.editMessage(message, HEADER));
+            return Flux.just(editMessage(message, HEADER));
         }
 
         return Flux.empty();

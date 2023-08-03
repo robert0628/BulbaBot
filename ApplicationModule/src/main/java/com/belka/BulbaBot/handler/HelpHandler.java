@@ -1,8 +1,7 @@
 package com.belka.BulbaBot.handler;
 
-import com.belka.core.BelkaSendMessage;
+import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
-import com.belka.core.handlers.BelkaHandler;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
@@ -20,14 +19,13 @@ import java.time.LocalDateTime;
  */
 @Component
 @AllArgsConstructor
-public class HelpHandler implements BelkaHandler {
+public class HelpHandler extends AbstractBelkaHandler {
     private final static String CODE = "/help";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = "";
     private static final String TEXT_HELP = "This bot can show you weather in your city, generate QR code for your and get your diary.";
     private final PreviousService previousService;
     private final StatsService statsService;
-    private final BelkaSendMessage belkaSendMessage;
 
     @Override
     @Transactional
@@ -44,7 +42,7 @@ public class HelpHandler implements BelkaHandler {
                     .handlerCode(CODE)
                     .requestTime(LocalDateTime.now())
                     .build());
-            return Flux.just(belkaSendMessage.sendMessage(chatId, TEXT_HELP));
+            return Flux.just(sendMessage(chatId, TEXT_HELP));
         }
         return Flux.empty();
     }

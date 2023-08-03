@@ -4,6 +4,7 @@ import com.belka.BulbaBot.config.BotConfig;
 import com.belka.BulbaBot.handler.HandlerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -30,7 +31,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final BotConfig botConfig;
     private final HandlerService handlerService;
-    private final static int NUMBER_OF_THREADS = 10;
+    @Value("${bot.number_of_threads}")
+    private int NUMBER_OF_THREADS;
 
     @Autowired
     public TelegramBot(BotConfig botConfig, HandlerService handlerService) {
