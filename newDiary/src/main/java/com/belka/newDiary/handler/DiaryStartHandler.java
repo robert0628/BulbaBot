@@ -6,7 +6,7 @@ import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
 import com.belka.stats.service.StatsService;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-@Data
+@AllArgsConstructor
 public class DiaryStartHandler extends AbstractBelkaHandler {
     final static String CODE = "/diary";
     private final static String NEXT_HANDLER = "";

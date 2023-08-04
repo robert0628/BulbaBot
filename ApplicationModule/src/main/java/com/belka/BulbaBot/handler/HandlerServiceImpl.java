@@ -3,7 +3,7 @@ package com.belka.BulbaBot.handler;
 import com.belka.core.converter.ConverterService;
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.handlers.BelkaHandler;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 @Service
-@Data
+@AllArgsConstructor
 public class HandlerServiceImpl implements HandlerService {
     private final Collection<BelkaHandler> handlers;
     private final ConverterService converterService;
