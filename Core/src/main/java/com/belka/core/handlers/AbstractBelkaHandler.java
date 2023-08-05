@@ -1,5 +1,6 @@
 package com.belka.core.handlers;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -8,7 +9,17 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import reactor.core.publisher.Flux;
 
-public abstract class AbstractBelkaHandler implements BelkaHandler{
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+public abstract class AbstractBelkaHandler implements BelkaHandler {
+    private final static String TIMEOUT_MESSAGE = "sorry, it's tooooo long processing, try again or later";
+    private final static String EXCEPTION_MESSAGE = "something was wrong and your request has been interrupted, try again or later";
+    @Value("${bot.handler.timeout}")
+    private Integer timeout;
+
     @Override
     abstract public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event);
 
@@ -19,7 +30,7 @@ public abstract class AbstractBelkaHandler implements BelkaHandler{
      * @param answer answer to user
      * @return text message
      */
-    public SendMessage sendMessage(Long chatId, String answer) {
+    protected SendMessage sendMessage(Long chatId, String answer) {
         return SendMessage.builder()
                 .chatId(chatId)
                 .text(answer)
@@ -32,7 +43,7 @@ public abstract class AbstractBelkaHandler implements BelkaHandler{
      * @param url    link for the picture
      * @param chatId user's chatId
      */
-    public PartialBotApiMethod<?> sendImageFromUrl(String url, Long chatId) {
+    protected PartialBotApiMethod<?> sendImageFromUrl(String url, Long chatId) {
         // Create send method
         SendPhoto sendPhotoRequest = new SendPhoto();
         // Set destination chat id
@@ -42,7 +53,7 @@ public abstract class AbstractBelkaHandler implements BelkaHandler{
         return sendPhotoRequest;
     }
 
-    public PartialBotApiMethod<?> editMessage(SendMessage message, String text) {
+    protected PartialBotApiMethod<?> editMessage(SendMessage message, String text) {
         new EditMessageText();
         return EditMessageText.builder()
                 .chatId(message.getChatId())
@@ -50,5 +61,15 @@ public abstract class AbstractBelkaHandler implements BelkaHandler{
                 .text(text)
                 .replyMarkup((InlineKeyboardMarkup) message.getReplyMarkup())
                 .build();
+    }
+
+    protected Flux<PartialBotApiMethod<?>> future(CompletableFuture<Flux<PartialBotApiMethod<?>>> future, Long chatId) {
+        try {
+            return future.get(timeout, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            return Flux.just(sendMessage(chatId, TIMEOUT_MESSAGE));
+        } catch (InterruptedException | ExecutionException e) {
+            return Flux.just(sendMessage(chatId, EXCEPTION_MESSAGE));
+        }
     }
 }
