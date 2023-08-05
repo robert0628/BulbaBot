@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 /**
  * makes and sends {@link PartialBotApiMethod} to the user
  */
-@Deprecated
+@Component
 public class BelkaSendMessage {
     /**
      * makes and sends {@link org.telegram.telegrambots.meta.api.objects.Message message} to the user
