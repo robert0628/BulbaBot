@@ -16,6 +16,7 @@ import java.util.function.Function;
 @Service
 @AllArgsConstructor
 public class HandlerServiceImpl implements HandlerService {
+    private final static String RESPONSE = "sorry, but this command is not supported";
     private final Collection<BelkaHandler> handlers;
     private final ConverterService converterService;
     private final BelkaSendMessage belkaSendMessage;
@@ -28,7 +29,7 @@ public class HandlerServiceImpl implements HandlerService {
                 .filter(flux -> flux.hasElements().block())
                 .findAny()
                 .isEmpty()) {
-            return Flux.just(belkaSendMessage.sendMessage(event.getChatId(), "asd"));
+            return Flux.just(belkaSendMessage.sendMessage(event.getChatId(), RESPONSE));
         }
         return Flux.fromStream(handlers.stream()
                         .map(handler -> handler.handle(event)))
