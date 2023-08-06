@@ -12,4 +12,6 @@ public interface DiaryRepository extends JpaRepository<DiaryEntity, Long> {
 
     @Query(value = "SELECT note FROM diary WHERE user_id = :userId and date = :date", nativeQuery = true)
     Optional<String> findNoteByUserIdAndDate(Long userId, LocalDate date);
+
+    boolean existsByUserIdAndDate(Long userId, LocalDate date);
 }

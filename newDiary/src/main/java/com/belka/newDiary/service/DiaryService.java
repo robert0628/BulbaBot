@@ -15,4 +15,13 @@ public interface DiaryService {
     void addNote(Long chatID, String text);
 
     String getNote(LocalDate date, Long chatID);
+
+    /**
+     * checks if a note exists on that day
+     *
+     * @param chatID user's id
+     * @param date   which day we check
+     * @return true if any note exists or false if not
+     */
+    boolean existsByUserIdAndDate(Long userId, LocalDate date);
 }

@@ -40,10 +40,15 @@ public class DiaryServiceImpl implements DiaryService {
     @Override
     public String getNote(LocalDate date, Long chatID) {
         Optional<String> entity = repository.findNoteByUserIdAndDate(chatID, date);
-        if(entity.isEmpty()){
+        if (entity.isEmpty()) {
             throw new RuntimeException("sorry but there are no notes for this date");
         }
         return entity.get();
+    }
+
+    @Override
+    public boolean existsByUserIdAndDate(Long userId, LocalDate date) {
+        return repository.existsByUserIdAndDate(userId, date);
     }
 }
 

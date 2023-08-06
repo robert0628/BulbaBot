@@ -1,18 +1,23 @@
 package com.belka.newDiary.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 @Component
+@AllArgsConstructor
 public class CalendarService {
     private final static String CALENDAR = "Calendar";
+    private final DiaryService diaryService;
 
     public SendMessage sendCalendarMessage(Long chatId, Integer year, Integer month) {
         Calendar calendar = Calendar.getInstance();
@@ -23,10 +28,9 @@ public class CalendarService {
         rows.add(addDaysOfTheWeekToCalendar(calendar));
         calendar = Calendar.getInstance();
         calendar.set(year, month, 1);
-        calendar.add(Calendar.MONTH, 1);
         for (int i = 1; i <= 5; i++) {
             List<InlineKeyboardButton> row = new ArrayList<>();
-            rows.add(addDaysToCalendar(row, calendar));
+            rows.add(addDaysToCalendar(row, calendar, chatId));
         }
         markup.setKeyboard(rows);
         SendMessage message = new SendMessage(String.valueOf(chatId), CALENDAR);
@@ -72,10 +76,17 @@ public class CalendarService {
         return row;
     }
 
-    private List<InlineKeyboardButton> addDaysToCalendar(List<InlineKeyboardButton> row, Calendar calendar) {
+    private List<InlineKeyboardButton> addDaysToCalendar(List<InlineKeyboardButton> row, Calendar calendar, Long userId) {
         for (int j = 1; j <= 7; j++) {
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-            inlineKeyboardButton.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
+            LocalDate date = calendar.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            if (diaryService.existsByUserIdAndDate(userId, date)) {
+                inlineKeyboardButton.setText("-" + calendar.get(Calendar.DAY_OF_MONTH) + "-");
+            } else {
+                inlineKeyboardButton.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
+            }
             inlineKeyboardButton.setCallbackData("DAY-" + calendar.get(Calendar.YEAR)
                     + "." + calendar.get(Calendar.MONTH)
                     + "." + calendar.get(Calendar.DAY_OF_MONTH));
