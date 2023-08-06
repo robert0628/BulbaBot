@@ -52,7 +52,7 @@ public class ShowSubscribesHandler extends AbstractBelkaHandler {
             }
             return Flux.empty();
         });
-        return future(future, event.getChatId());
+        return getCompleteFuture(future, event.getChatId());
     }
 
     private String getAnswer(Long chatId) {

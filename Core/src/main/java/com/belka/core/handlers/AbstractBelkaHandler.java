@@ -44,7 +44,7 @@ public abstract class AbstractBelkaHandler implements BelkaHandler {
         return belkaSendMessage.editMessage(message, text);
     }
 
-    protected Flux<PartialBotApiMethod<?>> future(CompletableFuture<Flux<PartialBotApiMethod<?>>> future, Long chatId) {
+    protected Flux<PartialBotApiMethod<?>> getCompleteFuture(CompletableFuture<Flux<PartialBotApiMethod<?>>> future, Long chatId) {
         try {
             return future.get(timeout, TimeUnit.SECONDS);
         } catch (TimeoutException e) {

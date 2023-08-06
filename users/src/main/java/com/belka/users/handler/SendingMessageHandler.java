@@ -58,6 +58,6 @@ public class SendingMessageHandler extends AbstractBelkaHandler {
             }
             return Flux.empty();
         });
-        return future(future, event.getChatId());
+        return getCompleteFuture(future, event.getChatId());
     }
 }
