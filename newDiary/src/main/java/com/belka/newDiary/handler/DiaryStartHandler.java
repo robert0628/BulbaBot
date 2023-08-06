@@ -18,6 +18,7 @@ import reactor.core.publisher.Flux;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 @AllArgsConstructor
@@ -34,21 +35,24 @@ public class DiaryStartHandler extends AbstractBelkaHandler {
     @Override
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
-            Long chatId = event.getChatId();
-            previousService.save(PreviousStepDto.builder()
-                    .previousStep(CODE)
-                    .nextStep(NEXT_HANDLER)
-                    .userId(chatId)
-                    .build());
-            statsService.save(StatsDto.builder()
-                    .userId(event.getChatId())
-                    .handlerCode(CODE)
-                    .requestTime(LocalDateTime.now())
-                    .build());
-            return Flux.just(getButtons(chatId));
-        }
-        return Flux.empty();
+        CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
+            if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
+                Long chatId = event.getChatId();
+                previousService.save(PreviousStepDto.builder()
+                        .previousStep(CODE)
+                        .nextStep(NEXT_HANDLER)
+                        .userId(chatId)
+                        .build());
+                statsService.save(StatsDto.builder()
+                        .userId(event.getChatId())
+                        .handlerCode(CODE)
+                        .requestTime(LocalDateTime.now())
+                        .build());
+                return Flux.just(getButtons(chatId));
+            }
+            return Flux.empty();
+        });
+        return future(future, event.getChatId());
     }
 
     private SendMessage getButtons(Long chatId) {

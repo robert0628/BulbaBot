@@ -19,6 +19,7 @@ import reactor.core.publisher.Flux;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * а handler that initializes the user in the system and starts the interaction
@@ -37,23 +38,26 @@ public class StartHandler extends AbstractBelkaHandler {
     @Override
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
-            Long chatId = event.getChatId();
-            String answer = EmojiParser.parseToUnicode("Hi, " + event.getUpdate().getMessage().getChat().getFirstName() + " nice to meet you" + " :blush:");
-            previousService.save(PreviousStepDto.builder()
-                    .previousStep(CODE)
-                    .userId(chatId)
-                    .nextStep(NEXT_HANDLER)
-                    .build());
-            registerUser(event.getUpdate().getMessage());
-            statsService.save(StatsDto.builder()
-                    .userId(event.getChatId())
-                    .handlerCode(CODE)
-                    .requestTime(LocalDateTime.now())
-                    .build());
-            return Flux.just(sendMessage(chatId, answer));
-        }
-        return Flux.empty();
+        CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
+            if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
+                Long chatId = event.getChatId();
+                String answer = EmojiParser.parseToUnicode("Hi, " + event.getUpdate().getMessage().getChat().getFirstName() + " nice to meet you" + " :blush:");
+                previousService.save(PreviousStepDto.builder()
+                        .previousStep(CODE)
+                        .userId(chatId)
+                        .nextStep(NEXT_HANDLER)
+                        .build());
+                registerUser(event.getUpdate().getMessage());
+                statsService.save(StatsDto.builder()
+                        .userId(event.getChatId())
+                        .handlerCode(CODE)
+                        .requestTime(LocalDateTime.now())
+                        .build());
+                return Flux.just(sendMessage(chatId, answer));
+            }
+            return Flux.empty();
+        });
+        return future(future, event.getChatId());
     }
 
     private void registerUser(Message message) {

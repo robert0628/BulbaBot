@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 @AllArgsConstructor
@@ -27,20 +28,23 @@ public class SubscribeHandler extends AbstractBelkaHandler {
     @Override
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
-            Long chatId = event.getChatId();
-            previousService.save(PreviousStepDto.builder()
-                    .previousStep(CODE)
-                    .nextStep(NEXT_HANDLER)
-                    .userId(chatId)
-                    .build());
-            statsService.save(StatsDto.builder()
-                    .userId(chatId)
-                    .handlerCode(CODE)
-                    .requestTime(LocalDateTime.now())
-                    .build());
-            return Flux.just(sendMessage(event.getChatId(), ANSWER));
-        }
-        return Flux.empty();
+        CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
+            if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
+                Long chatId = event.getChatId();
+                previousService.save(PreviousStepDto.builder()
+                        .previousStep(CODE)
+                        .nextStep(NEXT_HANDLER)
+                        .userId(chatId)
+                        .build());
+                statsService.save(StatsDto.builder()
+                        .userId(chatId)
+                        .handlerCode(CODE)
+                        .requestTime(LocalDateTime.now())
+                        .build());
+                return Flux.just(sendMessage(event.getChatId(), ANSWER));
+            }
+            return Flux.empty();
+        });
+        return future(future, event.getChatId());
     }
 }

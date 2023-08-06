@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 import static com.belka.stats.handler.StatsStartHandler.*;
 
@@ -36,31 +37,34 @@ public class GetStatsHandler extends AbstractBelkaHandler {
     @Override
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        if (event.getChatId().equals(statsConfig.getBotOwner()) && event.isHasCallbackQuery()) {
-            switch (event.getData()) {
-                case BUTTON_1 -> {
-                    savePreviousAndStats(event);
-                    return Flux.just(sendMessage(event.getChatId(), String.valueOf(statsService.getTotalRequests())));
-                }
-                case BUTTON_2 -> {
-                    savePreviousAndStats(event);
-                    return Flux.just(sendMessage(event.getChatId(), String.valueOf(statsService.getTotalRequestsByUser(event.getChatId()))));
-                }
-                case BUTTON_3 -> {
-                    savePreviousAndStats(event);
-                    return Flux.just(sendMessage(event.getChatId(), ANSWER));
-                }
-                case BUTTON_4 -> {
-                    savePreviousAndStats(event);
-                    return Flux.just(sendMessage(event.getChatId(), String.valueOf(statsService.getMostPopularRequest())));
-                }
-                case BUTTON_5 -> {
-                    savePreviousAndStats(event);
-                    return Flux.just(sendMessage(event.getChatId(), String.valueOf(statsService.getMostPopularRequestByUser(event.getChatId()))));
+        CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
+            if (event.getChatId().equals(statsConfig.getBotOwner()) && event.isHasCallbackQuery()) {
+                switch (event.getData()) {
+                    case BUTTON_1 -> {
+                        savePreviousAndStats(event);
+                        return Flux.just(sendMessage(event.getChatId(), String.valueOf(statsService.getTotalRequests())));
+                    }
+                    case BUTTON_2 -> {
+                        savePreviousAndStats(event);
+                        return Flux.just(sendMessage(event.getChatId(), String.valueOf(statsService.getTotalRequestsByUser(event.getChatId()))));
+                    }
+                    case BUTTON_3 -> {
+                        savePreviousAndStats(event);
+                        return Flux.just(sendMessage(event.getChatId(), ANSWER));
+                    }
+                    case BUTTON_4 -> {
+                        savePreviousAndStats(event);
+                        return Flux.just(sendMessage(event.getChatId(), String.valueOf(statsService.getMostPopularRequest())));
+                    }
+                    case BUTTON_5 -> {
+                        savePreviousAndStats(event);
+                        return Flux.just(sendMessage(event.getChatId(), String.valueOf(statsService.getMostPopularRequestByUser(event.getChatId()))));
+                    }
                 }
             }
-        }
-        return Flux.empty();
+            return Flux.empty();
+        });
+        return future(future, event.getChatId());
     }
 
     private void savePreviousAndStats(BelkaEvent event) {

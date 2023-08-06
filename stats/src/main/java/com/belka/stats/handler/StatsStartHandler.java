@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * get buttons to choose which stats you want to get
@@ -41,21 +42,24 @@ public class StatsStartHandler extends AbstractBelkaHandler {
     @Override
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
-            Long chatId = event.getChatId();
-            previousService.save(PreviousStepDto.builder()
-                    .previousStep(CODE)
-                    .nextStep(NEXT_HANDLER)
-                    .userId(chatId)
-                    .build());
-            statsService.save(StatsDto.builder()
-                    .userId(chatId)
-                    .handlerCode(CODE)
-                    .requestTime(LocalDateTime.now())
-                    .build());
-            return Flux.just(getButtons(chatId));
-        }
-        return Flux.empty();
+        CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
+            if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
+                Long chatId = event.getChatId();
+                previousService.save(PreviousStepDto.builder()
+                        .previousStep(CODE)
+                        .nextStep(NEXT_HANDLER)
+                        .userId(chatId)
+                        .build());
+                statsService.save(StatsDto.builder()
+                        .userId(chatId)
+                        .handlerCode(CODE)
+                        .requestTime(LocalDateTime.now())
+                        .build());
+                return Flux.just(getButtons(chatId));
+            }
+            return Flux.empty();
+        });
+        return future(future, event.getChatId());
     }
 
     private SendMessage getButtons(Long chatId) {

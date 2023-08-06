@@ -17,6 +17,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * the handler that processes the request to create a mailing list
@@ -36,24 +37,27 @@ public class SendingMessageHandler extends AbstractBelkaHandler {
     @Override
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        if (event.isHasText()
-                && event.getPrevious_step().equals(PREVIOUS_HANDLER)
-                && userConfig.getBotOwner().equals(event.getChatId())) {
-            Long chatId = event.getChatId();
-            String textToSend = EmojiParser.parseToUnicode(event.getText());
-            previousService.save(PreviousStepDto.builder()
-                    .previousStep(CODE)
-                    .nextStep(NEXT_HANDLER)
-                    .userId(chatId)
-                    .build());
-            statsService.save(StatsDto.builder()
-                    .userId(event.getChatId())
-                    .handlerCode(CODE)
-                    .requestTime(LocalDateTime.now())
-                    .build());
-            return Flux.fromIterable(userService.getAll())
-                    .flatMap(userDto -> Mono.just(sendMessage(userDto.getId(), textToSend)));
-        }
-        return Flux.empty();
+        CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
+            if (event.isHasText()
+                    && event.getPrevious_step().equals(PREVIOUS_HANDLER)
+                    && userConfig.getBotOwner().equals(event.getChatId())) {
+                Long chatId = event.getChatId();
+                String textToSend = EmojiParser.parseToUnicode(event.getText());
+                previousService.save(PreviousStepDto.builder()
+                        .previousStep(CODE)
+                        .nextStep(NEXT_HANDLER)
+                        .userId(chatId)
+                        .build());
+                statsService.save(StatsDto.builder()
+                        .userId(event.getChatId())
+                        .handlerCode(CODE)
+                        .requestTime(LocalDateTime.now())
+                        .build());
+                return Flux.fromIterable(userService.getAll())
+                        .flatMap(userDto -> Mono.just(sendMessage(userDto.getId(), textToSend)));
+            }
+            return Flux.empty();
+        });
+        return future(future, event.getChatId());
     }
 }

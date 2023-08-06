@@ -15,6 +15,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * show user all his subscriptions
@@ -34,21 +35,24 @@ public class ShowSubscribesHandler extends AbstractBelkaHandler {
     @Override
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
-            Long chatId = event.getChatId();
-            previousService.save(PreviousStepDto.builder()
-                    .previousStep(CODE)
-                    .nextStep(NEXT_HANDLER)
-                    .userId(chatId)
-                    .build());
-            statsService.save(StatsDto.builder()
-                    .userId(chatId)
-                    .handlerCode(CODE)
-                    .requestTime(LocalDateTime.now())
-                    .build());
-            return Flux.just(sendMessage(chatId, getAnswer(chatId)));
-        }
-        return Flux.empty();
+        CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
+            if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
+                Long chatId = event.getChatId();
+                previousService.save(PreviousStepDto.builder()
+                        .previousStep(CODE)
+                        .nextStep(NEXT_HANDLER)
+                        .userId(chatId)
+                        .build());
+                statsService.save(StatsDto.builder()
+                        .userId(chatId)
+                        .handlerCode(CODE)
+                        .requestTime(LocalDateTime.now())
+                        .build());
+                return Flux.just(sendMessage(chatId, getAnswer(chatId)));
+            }
+            return Flux.empty();
+        });
+        return future(future, event.getChatId());
     }
 
     private String getAnswer(Long chatId) {

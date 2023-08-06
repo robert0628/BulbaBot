@@ -16,6 +16,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 @AllArgsConstructor
@@ -34,42 +35,45 @@ public class DiaryCalendarHandler extends AbstractBelkaHandler {
     @Override
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        if (event.isHasCallbackQuery() && event.getData().equals(PREVIOUS_DATA)) {
-            Long chatId = event.getChatId();
-            LocalDate date = LocalDate.now();
-            Integer YEAR = date.getYear();
-            Integer MONTH = date.getMonth().getValue() - 1;
-            previousService.save(PreviousStepDto.builder()
-                    .previousStep(CODE)
-                    .userId(chatId)
-                    .nextStep(NEXT_HANDLER)
-                    .build());
-            statsService.save(StatsDto.builder()
-                    .userId(event.getChatId())
-                    .handlerCode(CODE)
-                    .requestTime(LocalDateTime.now())
-                    .build());
-            return Flux.just(calendarService.sendCalendarMessage(chatId, YEAR, MONTH));
-        } else if (event.getUpdate().hasCallbackQuery() && (event.getData().startsWith(PREVIOUS) || event.getData().startsWith(NEXT))) {
-            String dateString = event.getData().substring(11);
-            String[] dateArray = dateString.split("-");
-            Integer YEAR = Integer.parseInt(dateArray[0]);
-            Integer MONTH = Integer.parseInt(dateArray[1]);
-            Long chatId = event.getChatId();
-            SendMessage message = calendarService.sendCalendarMessage(chatId, YEAR, MONTH);
-            message.setReplyToMessageId(event.getUpdate().getCallbackQuery().getMessage().getMessageId());
-            previousService.save(PreviousStepDto.builder()
-                    .previousStep(CODE)
-                    .userId(chatId)
-                    .build());
-            statsService.save(StatsDto.builder()
-                    .userId(event.getChatId())
-                    .handlerCode(CODE)
-                    .requestTime(LocalDateTime.now())
-                    .build());
-            return Flux.just(editMessage(message, HEADER));
-        }
+        CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
+            if (event.isHasCallbackQuery() && event.getData().equals(PREVIOUS_DATA)) {
+                Long chatId = event.getChatId();
+                LocalDate date = LocalDate.now();
+                Integer YEAR = date.getYear();
+                Integer MONTH = date.getMonth().getValue() - 1;
+                previousService.save(PreviousStepDto.builder()
+                        .previousStep(CODE)
+                        .userId(chatId)
+                        .nextStep(NEXT_HANDLER)
+                        .build());
+                statsService.save(StatsDto.builder()
+                        .userId(event.getChatId())
+                        .handlerCode(CODE)
+                        .requestTime(LocalDateTime.now())
+                        .build());
+                return Flux.just(calendarService.sendCalendarMessage(chatId, YEAR, MONTH));
+            } else if (event.getUpdate().hasCallbackQuery() && (event.getData().startsWith(PREVIOUS) || event.getData().startsWith(NEXT))) {
+                String dateString = event.getData().substring(11);
+                String[] dateArray = dateString.split("-");
+                Integer YEAR = Integer.parseInt(dateArray[0]);
+                Integer MONTH = Integer.parseInt(dateArray[1]);
+                Long chatId = event.getChatId();
+                SendMessage message = calendarService.sendCalendarMessage(chatId, YEAR, MONTH);
+                message.setReplyToMessageId(event.getUpdate().getCallbackQuery().getMessage().getMessageId());
+                previousService.save(PreviousStepDto.builder()
+                        .previousStep(CODE)
+                        .userId(chatId)
+                        .build());
+                statsService.save(StatsDto.builder()
+                        .userId(event.getChatId())
+                        .handlerCode(CODE)
+                        .requestTime(LocalDateTime.now())
+                        .build());
+                return Flux.just(editMessage(message, HEADER));
+            }
 
-        return Flux.empty();
+            return Flux.empty();
+        });
+        return future(future, event.getChatId());
     }
 }

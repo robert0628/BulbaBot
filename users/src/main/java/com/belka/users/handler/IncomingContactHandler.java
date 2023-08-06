@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.Contact;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 @AllArgsConstructor
@@ -31,28 +32,31 @@ public class IncomingContactHandler extends AbstractBelkaHandler {
     @Override
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        if (event.getPrevious_step().equals(PREVIOUS_HANDLER) && event.isHasMessage()
-                && event.getUpdate().getMessage().hasContact()) {
+        CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
+            if (event.getPrevious_step().equals(PREVIOUS_HANDLER) && event.isHasMessage()
+                    && event.getUpdate().getMessage().hasContact()) {
 
-            Contact contact = event.getUpdate().getMessage().getContact();
-            if (userService.existsById(contact.getUserId())) {
-                userService.toSubscribe(event.getChatId(), contact.getUserId());
-                Long chatId = event.getChatId();
-                previousService.save(PreviousStepDto.builder()
-                        .previousStep(CODE)
-                        .nextStep(NEXT_HANDLER)
-                        .userId(chatId)
-                        .build());
-                statsService.save(StatsDto.builder()
-                        .userId(chatId)
-                        .handlerCode(CODE)
-                        .requestTime(LocalDateTime.now())
-                        .build());
+                Contact contact = event.getUpdate().getMessage().getContact();
+                if (userService.existsById(contact.getUserId())) {
+                    userService.toSubscribe(event.getChatId(), contact.getUserId());
+                    Long chatId = event.getChatId();
+                    previousService.save(PreviousStepDto.builder()
+                            .previousStep(CODE)
+                            .nextStep(NEXT_HANDLER)
+                            .userId(chatId)
+                            .build());
+                    statsService.save(StatsDto.builder()
+                            .userId(chatId)
+                            .handlerCode(CODE)
+                            .requestTime(LocalDateTime.now())
+                            .build());
 
-                return Flux.just(sendMessage(chatId, SUCCESSFULLY_ANSWER));
+                    return Flux.just(sendMessage(chatId, SUCCESSFULLY_ANSWER));
+                }
+                return Flux.just(sendMessage(event.getChatId(), FAILED_ANSWER));
             }
-            return Flux.just(sendMessage(event.getChatId(), FAILED_ANSWER));
-        }
-        return Flux.empty();
+            return Flux.empty();
+        });
+        return future(future, event.getChatId());
     }
 }

@@ -18,6 +18,7 @@ import reactor.core.publisher.Flux;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Component
@@ -39,22 +40,25 @@ public class DiaryShareHandler extends AbstractBelkaHandler {
     @Override
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        if (event.isHasCallbackQuery() && event.getData().equals(PREVIOUS_DATA_YES)) {
-            Long chatId = event.getChatId();
-            String note = PREFIX_FOR_NOTE + userService.getName(chatId) + "/n" + diaryService.getNote(LocalDate.now(), chatId);
-            Collection<Long> followersId = userService.getFollowersId(chatId);
-            Collection<SendMessage> messages = followersId.stream().map(id -> sendMessage(id, note)).collect(Collectors.toList());
+        CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
+            if (event.isHasCallbackQuery() && event.getData().equals(PREVIOUS_DATA_YES)) {
+                Long chatId = event.getChatId();
+                String note = PREFIX_FOR_NOTE + userService.getName(chatId) + "/n" + diaryService.getNote(LocalDate.now(), chatId);
+                Collection<Long> followersId = userService.getFollowersId(chatId);
+                Collection<SendMessage> messages = followersId.stream().map(id -> sendMessage(id, note)).collect(Collectors.toList());
 
-            messages.add(sendMessage(chatId, ANSWER_FOR_SHARING));
+                messages.add(sendMessage(chatId, ANSWER_FOR_SHARING));
 
-            savePreviousAndStats(event);
-            return Flux.fromIterable(messages);
-        } else if (event.isHasCallbackQuery() && event.getData().equals(PREVIOUS_DATA_NO)) {
-            Long chatId = event.getChatId();
-            savePreviousAndStats(event);
-            return Flux.just(sendMessage(chatId, ANSWER_FOR_SAVING));
-        }
-        return Flux.empty();
+                savePreviousAndStats(event);
+                return Flux.fromIterable(messages);
+            } else if (event.isHasCallbackQuery() && event.getData().equals(PREVIOUS_DATA_NO)) {
+                Long chatId = event.getChatId();
+                savePreviousAndStats(event);
+                return Flux.just(sendMessage(chatId, ANSWER_FOR_SAVING));
+            }
+            return Flux.empty();
+        });
+        return future(future, event.getChatId());
     }
 
     private void savePreviousAndStats(BelkaEvent event) {

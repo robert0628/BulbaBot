@@ -15,6 +15,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 @AllArgsConstructor
@@ -30,26 +31,29 @@ public class DiaryReadHandler extends AbstractBelkaHandler {
     @Override
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
-        if (event.isHasCallbackQuery() && event.getData().startsWith("DAY-")) {
-            String dateString = event.getData().substring(4);
-            String[] dateArray = dateString.split("\\.");
-            Integer YEAR = Integer.parseInt(dateArray[0]);
-            Integer MONTH = Integer.parseInt(dateArray[1]);
-            Integer DAY = Integer.parseInt(dateArray[2]);
-            LocalDate date = LocalDate.of(YEAR, MONTH, DAY);
+        CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
+            if (event.isHasCallbackQuery() && event.getData().startsWith("DAY-")) {
+                String dateString = event.getData().substring(4);
+                String[] dateArray = dateString.split("\\.");
+                int YEAR = Integer.parseInt(dateArray[0]);
+                int MONTH = Integer.parseInt(dateArray[1]);
+                int DAY = Integer.parseInt(dateArray[2]);
+                LocalDate date = LocalDate.of(YEAR, MONTH, DAY);
 
-            previousService.save(PreviousStepDto.builder()
-                    .previousStep(CODE)
-                    .nextStep(NEXT_HANDLER)
-                    .userId(event.getChatId())
-                    .build());
-            statsService.save(StatsDto.builder()
-                    .userId(event.getChatId())
-                    .handlerCode(CODE)
-                    .requestTime(LocalDateTime.now())
-                    .build());
-            return Flux.just(sendMessage(event.getChatId(), diaryService.getNote(date, event.getChatId())));
-        }
-        return Flux.empty();
+                previousService.save(PreviousStepDto.builder()
+                        .previousStep(CODE)
+                        .nextStep(NEXT_HANDLER)
+                        .userId(event.getChatId())
+                        .build());
+                statsService.save(StatsDto.builder()
+                        .userId(event.getChatId())
+                        .handlerCode(CODE)
+                        .requestTime(LocalDateTime.now())
+                        .build());
+                return Flux.just(sendMessage(event.getChatId(), diaryService.getNote(date, event.getChatId())));
+            }
+            return Flux.empty();
+        });
+        return future(future, event.getChatId());
     }
 }
