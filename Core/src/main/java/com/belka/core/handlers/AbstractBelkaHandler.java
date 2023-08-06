@@ -2,6 +2,7 @@ package com.belka.core.handlers;
 
 import com.belka.core.BelkaSendMessage;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+@Slf4j
 @Component
 @Setter
 public abstract class AbstractBelkaHandler implements BelkaHandler {
@@ -48,8 +50,10 @@ public abstract class AbstractBelkaHandler implements BelkaHandler {
         try {
             return future.get(timeout, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
+            log.info("request was interrupted with timeout");
             return Flux.just(sendMessage(chatId, TIMEOUT_MESSAGE));
         } catch (InterruptedException | ExecutionException e) {
+            log.info("request was interrupted");
             return Flux.just(sendMessage(chatId, EXCEPTION_MESSAGE));
         }
     }
