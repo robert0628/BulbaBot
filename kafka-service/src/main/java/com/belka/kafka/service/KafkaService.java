@@ -12,6 +12,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 @Slf4j
@@ -44,15 +46,18 @@ public class KafkaService {
 
     @Scheduled(cron = CRON_EVERY_MINUTE)
     private void saveWeatherEveryMinute() {
+        ExecutorService executorService = Executors.newFixedThreadPool(cities.size());
         for (String city : cities) {
-            WeatherNow weatherNow = getWeather(city);
-            WeatherHistory weatherHistory = WeatherHistory.builder()
-                    .temp(weatherNow.getWeatherInfo().getTemp())
-                    .city(city)
-                    .date(LocalDateTime.now())
-                    .build();
-            producer.sendMessage(weatherHistory);
-            log.info("we saved it");
+            executorService.execute(() -> {
+                WeatherNow weatherNow = getWeather(city);
+                WeatherHistory weatherHistory = WeatherHistory.builder()
+                        .temp(weatherNow.getWeatherInfo().getTemp())
+                        .city(city)
+                        .date(LocalDateTime.now())
+                        .build();
+                producer.sendMessage(weatherHistory);
+                log.info("we saved it");
+            });
         }
     }
 }
