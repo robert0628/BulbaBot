@@ -24,7 +24,7 @@ public class HelpHandler extends AbstractBelkaHandler {
     private final static String CODE = "/help";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = "";
-    private static final String TEXT_HELP = "This bot can show you weather in your city, generate QR code for your and get your diary.";
+    private static final String TEXT_HELP = "This bot can show you weather in your city, generate QR code for you and get your diary.";
     private final PreviousService previousService;
     private final StatsService statsService;
 

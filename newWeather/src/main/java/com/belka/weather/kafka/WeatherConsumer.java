@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,8 @@ public class WeatherConsumer {
     private final WeatherService service;
     private final String TOPIC = "weather";
     private final String GROUP_ID = "myGroup";
+    @Value("${cities.list:}#{T(java.util.Collections).emptyList()}")
+    private Collection<String> cities;
     private final Collection<WeatherHistoryDto> inputs = new ArrayList<>();
 
     @Autowired
@@ -29,7 +32,7 @@ public class WeatherConsumer {
     public void consume(String input) {
         inputs.add(convertToWeatherHistory(input));
         log.info(String.format("Message received -> %s", input));
-        if (inputs.size() > 5) {
+        if (inputs.size() > cities.size()) {
             service.saveBatch(inputs);
             inputs.clear();
         }
