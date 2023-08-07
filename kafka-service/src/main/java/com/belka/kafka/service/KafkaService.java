@@ -21,15 +21,18 @@ public class KafkaService {
     private final static String CRON_EVERY_MINUTE = "1 * * * * *";
     private final RestTemplate restTemplate;
     private final KafkaProducer producer;
-    @Value("${cities.list:}#{T(java.util.Collections).emptyList()}")
-    private Collection<String> cities;
+    private final Collection<String> cities;
+    private final ExecutorService executorService;
     @Value("${weather.link}")
     private String link;
 
     @Autowired
-    public KafkaService(RestTemplate restTemplate, KafkaProducer producer) {
+    public KafkaService(RestTemplate restTemplate, KafkaProducer producer,
+                        @Value("${cities.list:}#{T(java.util.Collections).emptyList()}") Collection<String> cities) {
         this.restTemplate = restTemplate;
         this.producer = producer;
+        this.cities = cities;
+        executorService = Executors.newFixedThreadPool(cities.size());
     }
 
     private String getWeatherLink(String city) {
@@ -46,7 +49,6 @@ public class KafkaService {
 
     @Scheduled(cron = CRON_EVERY_MINUTE)
     private void saveWeatherEveryMinute() {
-        ExecutorService executorService = Executors.newFixedThreadPool(cities.size());
         for (String city : cities) {
             executorService.execute(() -> {
                 WeatherNow weatherNow = getWeather(city);

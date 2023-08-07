@@ -31,13 +31,14 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final BotConfig botConfig;
     private final HandlerService handlerService;
-    @Value("${bot.number_of_threads}")
-    private int NUMBER_OF_THREADS;
+    private final ExecutorService executorService;
+
 
     @Autowired
-    public TelegramBot(BotConfig botConfig, HandlerService handlerService) {
+    public TelegramBot(BotConfig botConfig, HandlerService handlerService, @Value("${bot.number_of_threads}") int numberOfThreads) {
         this.botConfig = botConfig;
         this.handlerService = handlerService;
+        executorService = Executors.newFixedThreadPool(numberOfThreads);
         setCommands();
     }
 
@@ -58,7 +59,6 @@ public class TelegramBot extends TelegramLongPollingBot {
      */
     @Override
     public void onUpdateReceived(Update update) {
-        ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
         if (update.hasMessage() || update.hasCallbackQuery()) {
             executorService.execute(() -> {
                 handlerService.handle(update)
