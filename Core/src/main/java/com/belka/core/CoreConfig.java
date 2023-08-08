@@ -1,5 +1,6 @@
 package com.belka.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
@@ -51,6 +52,11 @@ public class CoreConfig {
     @Bean
     public JdbcTemplate jdbcTemplate() {
         return namedParameterJdbcTemplate().getJdbcTemplate();
+    }
+
+    @Bean
+    ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 
 }

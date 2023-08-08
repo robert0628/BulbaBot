@@ -4,8 +4,8 @@ import com.belka.weather.dto.WeatherHistoryDto;
 import com.belka.weather.service.weather.WeatherService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -15,18 +15,15 @@ import java.util.Collection;
 
 @Component
 @Slf4j
+@AllArgsConstructor
 public class WeatherConsumer {
     private final WeatherService service;
+    private final ObjectMapper objectMapper;
     private final String TOPIC = "weather";
     private final String GROUP_ID = "myGroup";
     @Value("${cities.list:}#{T(java.util.Collections).emptyList()}")
     private Collection<String> cities;
     private final Collection<WeatherHistoryDto> inputs = new ArrayList<>();
-
-    @Autowired
-    public WeatherConsumer(WeatherService service) {
-        this.service = service;
-    }
 
     @KafkaListener(topics = TOPIC, groupId = GROUP_ID)
     public void consume(String input) {
@@ -39,10 +36,9 @@ public class WeatherConsumer {
     }
 
     private WeatherHistoryDto convertToWeatherHistory(String weather) {
-        ObjectMapper mapper = new ObjectMapper();
         WeatherHistoryDto weatherHistoryDto;
         try {
-            weatherHistoryDto = mapper.readValue(weather, WeatherHistoryDto.class);
+            weatherHistoryDto = objectMapper.readValue(weather, WeatherHistoryDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
