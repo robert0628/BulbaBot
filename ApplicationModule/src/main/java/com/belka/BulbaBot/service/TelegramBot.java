@@ -35,10 +35,10 @@ public class TelegramBot extends TelegramLongPollingBot {
 
 
     @Autowired
-    public TelegramBot(BotConfig botConfig, HandlerService handlerService, @Value("${bot.number_of_threads}") int numberOfThreads) {
+    public TelegramBot(BotConfig botConfig, HandlerService handlerService) {
         this.botConfig = botConfig;
         this.handlerService = handlerService;
-        executorService = Executors.newFixedThreadPool(numberOfThreads);
+        executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         setCommands();
     }
 
