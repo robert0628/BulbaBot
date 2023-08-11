@@ -32,7 +32,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final HandlerService handlerService;
     private final ExecutorService executorService;
 
-
     @Autowired
     public TelegramBot(BotConfig botConfig, HandlerService handlerService) {
         this.botConfig = botConfig;

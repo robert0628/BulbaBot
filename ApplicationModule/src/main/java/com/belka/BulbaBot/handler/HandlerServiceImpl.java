@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.Collection;
 import java.util.function.Function;
@@ -24,16 +25,12 @@ public class HandlerServiceImpl implements HandlerService {
     @Override
     public Flux<PartialBotApiMethod<?>> handle(Update update) {
         BelkaEvent event = converterService.ConvertTo(BelkaEvent.class, update);
-        if (handlers.stream()
-                .map(handler -> handler.handle(event))
-                .filter(flux -> flux.hasElements().block())
-                .findAny()
-                .isEmpty()) {
-            return Flux.just(belkaSendMessage.sendMessage(event.getChatId(), RESPONSE));
-        }
         return Flux.fromStream(handlers.stream()
                         .map(handler -> handler.handle(event)))
-                .flatMap(Function.identity());
+                .publishOn(Schedulers.boundedElastic())
+                .filter(flux -> Boolean.TRUE.equals(flux.hasElements().block()))
+                .flatMap(Function.identity())
+                .switchIfEmpty(Flux.just(belkaSendMessage.sendMessage(event.getChatId(), RESPONSE)));
     }
 
 }
