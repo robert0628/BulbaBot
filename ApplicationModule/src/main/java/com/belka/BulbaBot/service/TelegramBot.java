@@ -9,6 +9,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
+import org.telegram.telegrambots.meta.api.methods.send.SendAudio;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -79,6 +80,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                 execute(sendPhoto);
             } else if (message instanceof SendDocument sendDocument) {
                 execute(sendDocument);
+            } else if (message instanceof SendAudio sendAudio) {
+                execute(sendAudio);
             }
         } catch (TelegramApiException e) {
             throw new RuntimeException(e.getMessage());

@@ -42,6 +42,10 @@ public abstract class AbstractBelkaHandler implements BelkaHandler {
         return belkaSendMessage.sendImageFromUrl(url, chatId);
     }
 
+    protected PartialBotApiMethod<?> sendAudioFromLocalStorage(String url, Long chatId) {
+        return belkaSendMessage.sendAudioFromLocalStorage(url, chatId);
+    }
+
     protected PartialBotApiMethod<?> editMessage(SendMessage message, String text) {
         return belkaSendMessage.editMessage(message, text);
     }

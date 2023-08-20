@@ -2,11 +2,14 @@ package com.belka.core;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendAudio;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+
+import java.io.File;
 
 /**
  * makes and sends {@link PartialBotApiMethod} to the user
@@ -41,6 +44,23 @@ public class BelkaSendMessage {
         // Set the photo url as a simple photo
         sendPhotoRequest.setPhoto(new InputFile(url));
         return sendPhotoRequest;
+    }
+
+    /**
+     * takes an audio from the path of the local storage and sends it to the user
+     *
+     * @param path   path to the audio
+     * @param chatId user's chatId
+     */
+    public PartialBotApiMethod<?> sendAudioFromLocalStorage(String path, Long chatId) {
+        // Create send method
+        File audioFile = new File(path);
+        SendAudio sendAudioRequest = new SendAudio();
+        // Set destination chat id
+        sendAudioRequest.setChatId(chatId);
+        // Set the audio path as a simple audio
+        sendAudioRequest.setAudio(new InputFile(audioFile, audioFile.getName()));
+        return sendAudioRequest;
     }
 
     public PartialBotApiMethod<?> editMessage(SendMessage message, String text) {
