@@ -65,11 +65,25 @@ public class AudioServiceImpl implements AudioService {
                 .userId(userId)
                 .build();
         audioRepository.save(entity);
+    }
 
+    public void deleteVoice(String fileId) {
+        String pathToAudio = getPathToAudio(fileId);
+        Path path = Paths.get(pathToAudio);
+        try {
+            boolean result = Files.deleteIfExists(path);
+            if (result) {
+                System.out.println("File is successfully deleted.");
+            } else {
+                System.out.println("File deletion failed.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public String getAudioPath(String fileId) {
+    public String getPathToAudio(String fileId) {
         return pathToAudio + fileId + EXTENSION;
     }
 

@@ -13,10 +13,12 @@ public class PreviousServiceImpl implements PreviousService {
     private final PreviousStepRepository repository;
     private final ConverterService converterService;
 
+    @Override
     public void save(PreviousStepDto dto) {
         repository.save(converterService.ConvertTo(PreviousStepEntity.class, dto));
     }
 
+    @Override
     public String getPreviousStep(Long chatId) {
         return repository.getPreviousStepByUserId(chatId);
     }
@@ -24,5 +26,10 @@ public class PreviousServiceImpl implements PreviousService {
     @Override
     public String getNextStep(Long chatId) {
         return repository.getNextStepByUserId(chatId);
+    }
+
+    @Override
+    public String getData(Long chatId) {
+        return repository.getDataByUserId(chatId);
     }
 }

@@ -12,6 +12,7 @@ public class PreviousStepDTOConverterToEntity implements BelkaConverter<Previous
                 .previousStep(value.getPreviousStep())
                 .userId(value.getUserId())
                 .nextStep(value.getNextStep())
+                .data(value.getData())
                 .build();
     }
 

@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS previous_step
 (
     user_id       bigint PRIMARY KEY,
     previous_step text,
-    next_step     varchar
+    next_step     varchar,
+    data          varchar
 );
 

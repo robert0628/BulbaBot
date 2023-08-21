@@ -20,5 +20,12 @@ public interface AudioService {
      * @param fileId voice's ID
      * @return path to Voice in local DB
      */
-    String getAudioPath(String fileId);
+    String getPathToAudio(String fileId);
+
+    /**
+     * delete chosen Voice
+     *
+     * @param fileId Voice's ID
+     */
+    void deleteVoice(String fileId);
 }

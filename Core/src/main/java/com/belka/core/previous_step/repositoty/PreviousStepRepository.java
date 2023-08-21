@@ -10,4 +10,6 @@ public interface PreviousStepRepository extends JpaRepository<PreviousStepEntity
 
     @Query(value = "SELECT next_step FROM previous_step WHERE user_id = :userId", nativeQuery = true)
     String getNextStepByUserId(Long userId);
+    @Query(value = "SELECT data FROM previous_step WHERE user_id = :userId", nativeQuery = true)
+    String getDataByUserId(Long userId);
 }

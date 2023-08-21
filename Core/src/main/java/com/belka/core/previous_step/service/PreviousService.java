@@ -28,4 +28,12 @@ public interface PreviousService {
      * @return code of the next step
      */
     String getNextStep(Long chatId);
+
+    /**
+     * get get {@link com.belka.core.previous_step.entity.PreviousStepEntity data}
+     *
+     * @param chatId user's id
+     * @return data from the previous step
+     */
+    String getData(Long chatId);
 }

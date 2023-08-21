@@ -22,4 +22,5 @@ public class PreviousStepEntity {
     private String previousStep;
     @Column(name = "next_step")
     private String nextStep;
+    private String data;
 }

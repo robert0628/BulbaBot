@@ -9,4 +9,5 @@ public class PreviousStepDto {
     private Long userId;
     private String previousStep;
     private String nextStep;
+    private String data;
 }
