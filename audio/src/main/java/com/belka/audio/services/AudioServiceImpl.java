@@ -67,19 +67,24 @@ public class AudioServiceImpl implements AudioService {
         audioRepository.save(entity);
     }
 
+    @Transactional
     public void deleteVoice(String fileId) {
         String pathToAudio = getPathToAudio(fileId);
         Path path = Paths.get(pathToAudio);
         try {
             boolean result = Files.deleteIfExists(path);
             if (result) {
-                System.out.println("File is successfully deleted.");
+                audioRepository.deleteById(fileId);
             } else {
-                System.out.println("File deletion failed.");
+                throw new RuntimeException("File deletion failed.");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void changeIsPrivateFlag(boolean flag, String fileId) {
+        audioRepository.changeIsPrivateFlag(flag, fileId);
     }
 
     @Override

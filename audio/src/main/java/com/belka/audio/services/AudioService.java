@@ -28,4 +28,12 @@ public interface AudioService {
      * @param fileId Voice's ID
      */
     void deleteVoice(String fileId);
+
+    /**
+     * change voice status on public or private
+     *
+     * @param fileId Voice's ID
+     * @param flag if the voice status is private, the flag is false
+     */
+    void changeIsPrivateFlag(boolean flag, String fileId);
 }
