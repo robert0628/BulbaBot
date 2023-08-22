@@ -78,12 +78,10 @@ public class StatsStartHandler extends AbstractBelkaHandler {
         return message;
     }
 
-    private List<InlineKeyboardButton> getRowInline(String button) {
+    private List<InlineKeyboardButton> getRowInline(String buttonText) {
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
-        InlineKeyboardButton first = new InlineKeyboardButton();
-        first.setText(button);
-        first.setCallbackData(button);
-        rowInline.add(first);
+        InlineKeyboardButton button = getButton(buttonText, buttonText);
+        rowInline.add(button);
         return rowInline;
     }
 }

@@ -66,16 +66,11 @@ public class RecordAudioHandler extends AbstractBelkaHandler {
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
 
-        InlineKeyboardButton getButton = new InlineKeyboardButton();
-        getButton.setText(BUTTON_SAVE);
-        getButton.setCallbackData(CODE + BUTTON_SAVE);
+        InlineKeyboardButton saveButton = getButton(BUTTON_SAVE, CODE + BUTTON_SAVE);
+        InlineKeyboardButton deleteButton = getButton(BUTTON_DELETE, CODE + BUTTON_DELETE);
 
-        InlineKeyboardButton writeButton = new InlineKeyboardButton();
-        writeButton.setText(BUTTON_DELETE);
-        writeButton.setCallbackData(CODE + BUTTON_DELETE);
-
-        rowInline.add(getButton);
-        rowInline.add(writeButton);
+        rowInline.add(saveButton);
+        rowInline.add(deleteButton);
         rowsInLine.add(rowInline);
         markupInLine.setKeyboard(rowsInLine);
 

@@ -79,16 +79,11 @@ public class SaveAudioHandler extends AbstractBelkaHandler {
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
 
-        InlineKeyboardButton getButton = new InlineKeyboardButton();
-        getButton.setText(BUTTON_SHARE);
-        getButton.setCallbackData(CODE + BUTTON_SHARE);
+        InlineKeyboardButton shareButton = getButton(BUTTON_SHARE, CODE + CODE + BUTTON_SHARE);
+        InlineKeyboardButton privateButton = getButton(BUTTON_PRIVATE, CODE + BUTTON_PRIVATE);
 
-        InlineKeyboardButton writeButton = new InlineKeyboardButton();
-        writeButton.setText(BUTTON_PRIVATE);
-        writeButton.setCallbackData(CODE + BUTTON_PRIVATE);
-
-        rowInline.add(getButton);
-        rowInline.add(writeButton);
+        rowInline.add(shareButton);
+        rowInline.add(privateButton);
         rowsInLine.add(rowInline);
         markupInLine.setKeyboard(rowsInLine);
 

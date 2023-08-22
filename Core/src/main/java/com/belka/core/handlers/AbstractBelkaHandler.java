@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import reactor.core.publisher.Flux;
 
 import java.util.concurrent.CompletableFuture;
@@ -48,6 +49,13 @@ public abstract class AbstractBelkaHandler implements BelkaHandler {
 
     protected PartialBotApiMethod<?> editMessage(SendMessage message, String text) {
         return belkaSendMessage.editMessage(message, text);
+    }
+
+    protected InlineKeyboardButton getButton(String text, String callbackData) {
+        return InlineKeyboardButton.builder()
+                .text(text)
+                .callbackData(callbackData)
+                .build();
     }
 
     protected Flux<PartialBotApiMethod<?>> getCompleteFuture(CompletableFuture<Flux<PartialBotApiMethod<?>>> future, Long chatId) {

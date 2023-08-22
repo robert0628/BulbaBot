@@ -61,13 +61,8 @@ public class DiaryStartHandler extends AbstractBelkaHandler {
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
 
-        InlineKeyboardButton getButton = new InlineKeyboardButton();
-        getButton.setText(BUTTON_1);
-        getButton.setCallbackData(CODE + BUTTON_1);
-
-        InlineKeyboardButton writeButton = new InlineKeyboardButton();
-        writeButton.setText(BUTTON_2);
-        writeButton.setCallbackData(CODE + BUTTON_2);
+        InlineKeyboardButton getButton = getButton(BUTTON_1, CODE + BUTTON_1);
+        InlineKeyboardButton writeButton = getButton(BUTTON_2, CODE + BUTTON_2);
 
         rowInline.add(getButton);
         rowInline.add(writeButton);
