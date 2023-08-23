@@ -28,10 +28,10 @@ public class ShareAudioHandler extends AbstractBelkaHandler {
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (event.getPrevious_step().equals(PREVIOUS_HANDLER)) {
+            if (event.getPrevious_step().equals(PREVIOUS_HANDLER) && event.getCode().equals(CODE) && event.isHasCallbackQuery()) {
                 Long chatId = event.getChatId();
                 if (event.getData().equals(SaveAudioHandler.BUTTON_SHARE)) {
-                    audioService.changeIsPrivateFlag(true, event.getData());
+                    audioService.changeIsPrivateFlag(true, previousService.getData(chatId));
                     previousService.save(PreviousStepDto.builder()
                             .previousStep(CODE)
                             .nextStep(NEXT_HANDLER)

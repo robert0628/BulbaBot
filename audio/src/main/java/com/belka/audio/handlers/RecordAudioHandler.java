@@ -37,7 +37,7 @@ public class RecordAudioHandler extends AbstractBelkaHandler {
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (event.getUpdate().getMessage().hasVoice()) {
+            if (event.isHasMessage() && event.getUpdate().getMessage().hasVoice()) {
                 Long chatId = event.getChatId();
                 Voice voice = event.getUpdate().getMessage().getVoice();
                 audioService.saveVoice(voice, chatId);
@@ -46,6 +46,7 @@ public class RecordAudioHandler extends AbstractBelkaHandler {
                         .previousStep(CODE)
                         .nextStep(NEXT_HANDLER)
                         .userId(chatId)
+                        // put the ID of the file to work with it at the stage where we will share the voice
                         .data(voice.getFileId())
                         .build());
                 statsService.save(StatsDto.builder()
@@ -66,8 +67,8 @@ public class RecordAudioHandler extends AbstractBelkaHandler {
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
 
-        InlineKeyboardButton saveButton = getButton(BUTTON_SAVE, CODE + BUTTON_SAVE);
-        InlineKeyboardButton deleteButton = getButton(BUTTON_DELETE, CODE + BUTTON_DELETE);
+        InlineKeyboardButton saveButton = getButton(BUTTON_SAVE, BUTTON_SAVE);
+        InlineKeyboardButton deleteButton = getButton(BUTTON_DELETE, BUTTON_DELETE);
 
         rowInline.add(saveButton);
         rowInline.add(deleteButton);

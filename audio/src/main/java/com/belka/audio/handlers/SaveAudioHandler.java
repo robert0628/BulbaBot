@@ -24,7 +24,7 @@ import java.util.concurrent.CompletableFuture;
 @AllArgsConstructor
 public class SaveAudioHandler extends AbstractBelkaHandler {
     final static String CODE = "save audio handler";
-    private final static String NEXT_HANDLER = "share audio handler";
+    private final static String NEXT_HANDLER = ShareAudioHandler.CODE;
     private final static String PREVIOUS_HANDLER = RecordAudioHandler.CODE;
     final static String BUTTON_SHARE = "share";
     final static String BUTTON_PRIVATE = "let's keep it private";
@@ -36,14 +36,15 @@ public class SaveAudioHandler extends AbstractBelkaHandler {
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (event.getPrevious_step().equals(PREVIOUS_HANDLER)) {
+            if (event.getPrevious_step().equals(PREVIOUS_HANDLER) && event.getCode().equals(CODE) && event.isHasCallbackQuery()) {
                 Long chatId = event.getChatId();
                 if (event.getData().equals(RecordAudioHandler.BUTTON_SAVE)) {
                     previousService.save(PreviousStepDto.builder()
                             .previousStep(CODE)
                             .nextStep(NEXT_HANDLER)
                             .userId(chatId)
-                            .data(event.getData())
+                            // put the ID of the file to work with it at the stage where we will share the voice
+                            .data(previousService.getData(chatId))
                             .build());
                     statsService.save(StatsDto.builder()
                             .userId(event.getChatId())
@@ -80,8 +81,8 @@ public class SaveAudioHandler extends AbstractBelkaHandler {
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
 
-        InlineKeyboardButton shareButton = getButton(BUTTON_SHARE, CODE + CODE + BUTTON_SHARE);
-        InlineKeyboardButton privateButton = getButton(BUTTON_PRIVATE, CODE + BUTTON_PRIVATE);
+        InlineKeyboardButton shareButton = getButton(BUTTON_SHARE, BUTTON_SHARE);
+        InlineKeyboardButton privateButton = getButton(BUTTON_PRIVATE, BUTTON_PRIVATE);
 
         rowInline.add(shareButton);
         rowInline.add(privateButton);

@@ -67,6 +67,7 @@ public class AudioServiceImpl implements AudioService {
         audioRepository.save(entity);
     }
 
+    @Override
     @Transactional
     public void deleteVoice(String fileId) {
         String pathToAudio = getPathToAudio(fileId);
@@ -83,6 +84,8 @@ public class AudioServiceImpl implements AudioService {
         }
     }
 
+    @Override
+    @Transactional
     public void changeIsPrivateFlag(boolean flag, String fileId) {
         audioRepository.changeIsPrivateFlag(flag, fileId);
     }
