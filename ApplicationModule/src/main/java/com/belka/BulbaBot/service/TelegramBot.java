@@ -95,6 +95,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         List<BotCommand> listOfCommands = new ArrayList<>();
         listOfCommands.add(new BotCommand("/start", "get a welcome message"));
         listOfCommands.add(new BotCommand("/help", "info how to use this bot"));
+        listOfCommands.add(new BotCommand("/audio", "your own audio diary"));
         listOfCommands.add(new BotCommand("/weather", "get weather"));
         listOfCommands.add(new BotCommand("/qr", "get QR code for your text"));
         listOfCommands.add(new BotCommand("/diary", "your own diary, write down and read your thoughts"));

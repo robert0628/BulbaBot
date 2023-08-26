@@ -29,7 +29,8 @@ public class SubscribeHandler extends AbstractBelkaHandler {
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
+            if (event.isHasText() && event.getText().equalsIgnoreCase(CODE) ||
+                    event.isHasCallbackQuery() && event.getData().equals(CODE)) {
                 Long chatId = event.getChatId();
                 previousService.save(PreviousStepDto.builder()
                         .previousStep(CODE)

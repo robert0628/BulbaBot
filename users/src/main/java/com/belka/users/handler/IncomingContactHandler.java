@@ -33,9 +33,7 @@ public class IncomingContactHandler extends AbstractBelkaHandler {
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (event.getPrevious_step().equals(PREVIOUS_HANDLER) && event.isHasMessage()
-                    && event.getUpdate().getMessage().hasContact()) {
-
+            if (event.isHasMessage() && event.getUpdate().getMessage().hasContact()) {
                 Contact contact = event.getUpdate().getMessage().getContact();
                 if (userService.existsById(contact.getUserId())) {
                     userService.toSubscribe(event.getChatId(), contact.getUserId());
