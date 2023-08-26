@@ -64,6 +64,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Collection<Long> getProducersId(Long userId) {
+        return subscriptionsRepository.findAllProducersID(userId);
+    }
+
+    @Override
     public String getName(Long userId) {
         UserEntity entity = userRepository.findById(userId).orElseThrow(RuntimeException::new);
         return getNameFromEntity(entity);

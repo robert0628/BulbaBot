@@ -25,12 +25,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class AudioServiceImpl implements AudioService {
-    private final static String EXTENSION = ".ogg";
+    final static String AUDIO_EXTENSION = ".ogg";
     private final RestTemplate restTemplate;
     private final HttpHeaders headers;
     private final AudioRepository audioRepository;
@@ -63,8 +64,8 @@ public class AudioServiceImpl implements AudioService {
                 String audioIdInDB = audiosIdInDB.get(0);
                 writeDataToDB(voice, userId);
                 concatenateAudios(
-                        pathToAudio + audioIdInDB + EXTENSION,
-                        pathToAudio + voice.getFileId() + EXTENSION
+                        pathToAudio + audioIdInDB + AUDIO_EXTENSION,
+                        pathToAudio + voice.getFileId() + AUDIO_EXTENSION
                 );
             } finally {
                 deleteVoice(voice.getFileId());
@@ -72,7 +73,6 @@ public class AudioServiceImpl implements AudioService {
         } else {
             writeDataToDB(voice, userId);
         }
-
     }
 
     @Transactional
@@ -80,7 +80,7 @@ public class AudioServiceImpl implements AudioService {
         String fileId = voice.getFileId();
         ResponseEntity<String> response = getFilePath(fileId);
         byte[] downloadFile = downloadFile(getFilePath(response));
-        Path filePath = Paths.get(pathToAudio, fileId + EXTENSION);
+        Path filePath = Paths.get(pathToAudio, fileId + AUDIO_EXTENSION);
         try {
             Files.write(filePath, downloadFile);
         } catch (IOException e) {
@@ -118,8 +118,13 @@ public class AudioServiceImpl implements AudioService {
     }
 
     @Override
+    public Collection<String> getAudiosIDbyUser(Long userId) {
+        return audioRepository.getAllIdByUserId(userId);
+    }
+
+    @Override
     public String getPathToAudio(String fileId) {
-        return pathToAudio + fileId + EXTENSION;
+        return pathToAudio + fileId + AUDIO_EXTENSION;
     }
 
     @Transactional

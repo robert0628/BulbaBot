@@ -6,6 +6,7 @@ import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
 import com.belka.stats.service.StatsService;
+import com.belka.users.handler.SubscribeHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -63,7 +64,7 @@ public class EntranceAudioHandler extends AbstractBelkaHandler {
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
 
         InlineKeyboardButton saveButton = getButton(BUTTON_PULL, BUTTON_PULL);
-        InlineKeyboardButton deleteButton = getButton(BUTTON_SUBSCRIBE, "/subscribe");
+        InlineKeyboardButton deleteButton = getButton(BUTTON_SUBSCRIBE, SubscribeHandler.CODE);
 
         rowInline.add(saveButton);
         rowInline.add(deleteButton);

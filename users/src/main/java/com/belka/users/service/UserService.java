@@ -1,7 +1,7 @@
 package com.belka.users.service;
 
-import com.belka.users.entities.UserEntity;
 import com.belka.users.dto.UserDto;
+import com.belka.users.entities.UserEntity;
 
 import java.util.Collection;
 
@@ -38,6 +38,14 @@ public interface UserService {
      * @return list of the ID
      */
     Collection<Long> getFollowersId(Long userId);
+
+    /**
+     * get the ID of the user's subscriptions
+     *
+     * @param userId {@link UserEntity user}'s id
+     * @return list of the ID
+     */
+    Collection<Long> getProducersId(Long userId);
 
     /**
      * get {@link UserEntity user}'s id

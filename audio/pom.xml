@@ -13,8 +13,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.belka.stats</groupId>
-            <artifactId>stats</artifactId>
+            <groupId>com.belka.users</groupId>
+            <artifactId>users</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
