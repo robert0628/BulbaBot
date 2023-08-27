@@ -3,6 +3,7 @@ package com.belka.users.service;
 import com.belka.users.dto.UserDto;
 import com.belka.users.entities.UserEntity;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 /**
@@ -55,4 +56,12 @@ public interface UserService {
      */
     String getName(Long userId);
 
+    /**
+     * set the date when the audio was pulled
+     *
+     * @param date the date when the audio was pulled
+     * @param producerId {@link UserEntity producer}'s id
+     * @param followerId {@link UserEntity follower}'s id
+     */
+    void setPullDate(LocalDate date, Long producerId, Long followerId);
 }

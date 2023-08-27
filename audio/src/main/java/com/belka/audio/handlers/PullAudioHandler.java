@@ -10,9 +10,11 @@ import com.belka.stats.service.StatsService;
 import com.belka.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import reactor.core.publisher.Flux;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,13 +32,13 @@ public class PullAudioHandler extends AbstractBelkaHandler {
     private final StatsService statsService;
 
     @Override
+    @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
             if (event.isHasCallbackQuery() && event.getData().equals(EntranceAudioHandler.BUTTON_PULL)) {
                 Long chatId = event.getChatId();
                 Collection<Long> producersId = userService.getProducersId(chatId);
-                Collection<String> audiosId = new ArrayList<>();
-                producersId.forEach(id -> audiosId.addAll(audioService.getAudiosIDbyUser(id)));
+                Collection<String> audiosId = getAudiosId(producersId, chatId);
 
                 Collection<PartialBotApiMethod<?>> methods = new ArrayList<>();
                 audiosId.forEach(id -> methods.add(sendAudioFromLocalStorage(audioService.getPathToAudio(id), chatId)));
@@ -58,5 +60,16 @@ public class PullAudioHandler extends AbstractBelkaHandler {
             return Flux.empty();
         });
         return getCompleteFuture(future, event.getChatId());
+    }
+
+    @Transactional
+    public Collection<String> getAudiosId(Collection<Long> producersId, Long chatId) {
+        LocalDate today = LocalDate.now();
+        Collection<String> audiosId = new ArrayList<>();
+        for (Long id : producersId) {
+            audiosId.addAll(audioService.getAudiosIDbyUser(id));
+            userService.setPullDate(today, id, chatId);
+        }
+        return audiosId;
     }
 }
