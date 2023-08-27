@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.meta.api.objects.Voice;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
@@ -169,11 +170,18 @@ public class AudioServiceImpl implements AudioService {
             throw new RuntimeException("bad URL passed, " + e.getMessage());
         }
 
-        //TODO подумать над оптимизацией
         try (InputStream is = urlObj.openStream()) {
-            return is.readAllBytes();
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            int nRead;
+            byte[] data = new byte[1024];
+            while ((nRead = is.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+            buffer.flush();
+            return buffer.toByteArray();
         } catch (IOException e) {
             throw new RuntimeException(urlObj.toExternalForm(), e);
         }
+
     }
 }
