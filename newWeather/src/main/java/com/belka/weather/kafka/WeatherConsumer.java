@@ -40,9 +40,8 @@ public class WeatherConsumer {
         try {
             weatherHistoryDto = objectMapper.readValue(weather, WeatherHistoryDto.class);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("we couldn't convert weather to history");
         }
         return weatherHistoryDto;
-
     }
 }

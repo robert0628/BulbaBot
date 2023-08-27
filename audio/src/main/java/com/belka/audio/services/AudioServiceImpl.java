@@ -159,13 +159,14 @@ public class AudioServiceImpl implements AudioService {
     }
 
     private byte[] downloadFile(String filePath) {
-        String fullUri = fileStorageUri.replace("{token}", token)
+        String fullUri = fileStorageUri
+                .replace("{token}", token)
                 .replace("{filePath}", filePath);
         URL urlObj;
         try {
             urlObj = new URL(fullUri);
         } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("bad URL passed, " + e.getMessage());
         }
 
         //TODO подумать над оптимизацией

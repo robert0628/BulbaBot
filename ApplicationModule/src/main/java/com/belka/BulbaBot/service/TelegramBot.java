@@ -84,7 +84,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 execute(sendAudio);
             }
         } catch (TelegramApiException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("we couldn't execute message, " + e.getMessage());
         }
     }
 

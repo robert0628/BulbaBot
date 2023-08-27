@@ -9,6 +9,7 @@ import java.util.Map;
 
 @Service
 public class ConverterServiceImpl implements ConverterService {
+    private final static String notConvertersErrorMessage = "there are not converters from %s to %s";
 
     private final Map<Class<?>, Map<Class<?>, BelkaConverter<?, ?>>> converters = new HashMap<>();
 
@@ -36,16 +37,16 @@ public class ConverterServiceImpl implements ConverterService {
         }
         Map<Class<?>, BelkaConverter<?, ?>> inputTypeConverters = converters.get(value.getClass());
         if (inputTypeConverters == null) {
-            throw new RuntimeException(String.format("there are not converters from %s to %s", value.getClass(), to));
+            throw new RuntimeException(String.format(notConvertersErrorMessage, value.getClass(), to));
         }
         BelkaConverter<?, ?> converter = inputTypeConverters.get(to);
         if (converter == null) {
-            throw new RuntimeException(String.format("there are not converters from %s to %s", value.getClass(), to));
+            throw new RuntimeException(String.format(notConvertersErrorMessage, value.getClass(), to));
         }
         try {
             return (T) converter.convertObject(value);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(String.format("we couldn't convert from %s to %s, " + e.getMessage(), value.getClass(), to));
         }
 
     }
