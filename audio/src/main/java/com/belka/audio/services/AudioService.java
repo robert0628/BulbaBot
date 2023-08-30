@@ -1,8 +1,7 @@
 package com.belka.audio.services;
 
+import com.belka.audio.models.NotListened;
 import org.telegram.telegrambots.meta.api.objects.Voice;
-
-import java.util.Collection;
 
 /**
  * service for work with audio messages
@@ -40,9 +39,15 @@ public interface AudioService {
     void changeIsPrivateFlag(boolean flag, String fileId);
 
     /**
-     * get all audio IDs by user
+     * deletes audio from the listening list
      *
-     * @param userId ID of the user who sent this {@link Voice voices}
+     * @param userId subscriber's ID
+     * @param fileId audio's ID
      */
-    Collection<String> getAudiosIDbyUser(Long userId);
+    void removeAudioFromListening(Long userId, String fileId);
+
+    /**
+     * get meta data about audio for listening
+     */
+    NotListened getMetaDataAudioForPull();
 }

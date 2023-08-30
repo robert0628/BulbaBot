@@ -1,17 +1,15 @@
 package com.belka.users.service;
 
 import com.belka.core.converter.ConverterService;
+import com.belka.users.dto.UserDto;
 import com.belka.users.entities.SubscriptionEntity;
 import com.belka.users.entities.UserEntity;
-import com.belka.users.dto.UserDto;
 import com.belka.users.repository.SubscriptionsRepository;
 import com.belka.users.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,20 +64,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<Long> getProducersId(Long userId) {
-        return subscriptionsRepository.findAllProducersID(userId);
-    }
-
-    @Override
     public String getName(Long userId) {
         UserEntity entity = userRepository.findById(userId).orElseThrow(RuntimeException::new);
         return getNameFromEntity(entity);
-    }
-
-    @Override
-    @Transactional
-    public void setPullDate(LocalDate date, Long producerId, Long followerId) {
-        subscriptionsRepository.setPullDate(date, producerId, followerId);
     }
 
     private String getNameFromEntity(UserEntity entity) {

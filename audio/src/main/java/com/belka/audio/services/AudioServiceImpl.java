@@ -1,8 +1,12 @@
 package com.belka.audio.services;
 
 import com.belka.audio.entityes.AudioEntity;
+import com.belka.audio.models.NotListened;
 import com.belka.audio.repositoryes.AudioRepository;
+import com.belka.audio.repositoryes.NotListenedRepository;
+import com.belka.core.converter.ConverterService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +14,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -26,16 +31,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class AudioServiceImpl implements AudioService {
     final static String AUDIO_EXTENSION = ".ogg";
     private final RestTemplate restTemplate;
     private final HttpHeaders headers;
     private final AudioRepository audioRepository;
+    private final NotListenedRepository notListenedRepository;
+    private final ConverterService converterService;
     @Value("${bot.audio.path}")
     private String pathToAudio;
     @Value("${bot.token}")
@@ -46,10 +53,13 @@ public class AudioServiceImpl implements AudioService {
     private String fileStorageUri;
 
     @Autowired
-    public AudioServiceImpl(RestTemplate restTemplate, HttpHeaders headers, AudioRepository audioRepository) {
+    public AudioServiceImpl(RestTemplate restTemplate, HttpHeaders headers, AudioRepository audioRepository,
+                            NotListenedRepository notListenedRepository, ConverterService converterService) {
         this.restTemplate = restTemplate;
         this.headers = headers;
         this.audioRepository = audioRepository;
+        this.notListenedRepository = notListenedRepository;
+        this.converterService = converterService;
     }
 
     @Override
@@ -119,8 +129,8 @@ public class AudioServiceImpl implements AudioService {
     }
 
     @Override
-    public Collection<String> getAudiosIDbyUser(Long userId) {
-        return audioRepository.getAllIdByUserId(userId);
+    public void removeAudioFromListening(Long userId, String fileId) {
+        audioRepository.deleteFromNotListened(userId, fileId);
     }
 
     @Override
@@ -138,6 +148,11 @@ public class AudioServiceImpl implements AudioService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public NotListened getMetaDataAudioForPull() {
+        return converterService.ConvertTo(NotListened.class, notListenedRepository.getOldestAudio());
     }
 
     private ResponseEntity<String> getFilePath(String fileId) {
@@ -182,6 +197,12 @@ public class AudioServiceImpl implements AudioService {
         } catch (IOException e) {
             throw new RuntimeException(urlObj.toExternalForm(), e);
         }
+    }
 
+    @Scheduled(cron = "0 0 0 * * *")
+    @Transactional
+    public void changeStatus() {
+        audioRepository.fillNotListened();
+        log.info("audios added to listening");
     }
 }
