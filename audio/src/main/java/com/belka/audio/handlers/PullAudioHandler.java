@@ -33,6 +33,9 @@ public class PullAudioHandler extends AbstractBelkaHandler {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
             if (event.isHasCallbackQuery() && event.getData().equals(EntranceAudioHandler.BUTTON_PULL)) {
                 Long chatId = event.getChatId();
+                if (!audioService.existAudioForUser(chatId)) {
+                    return Flux.just(sendMessage(chatId, "there are no new audios for you"));
+                }
                 NotListened notListenedAudio = audioService.getMetaDataAudioForPull();
                 String fileId = notListenedAudio.getAudioId();
                 audioService.removeAudioFromListening(notListenedAudio.getSubscriber(), fileId);

@@ -50,4 +50,12 @@ public interface AudioService {
      * get meta data about audio for listening
      */
     NotListened getMetaDataAudioForPull();
+
+    /**
+     * check if exist new audios for pulling
+     *
+     * @param userId subscriber's ID
+     * @return true if there are audios for pulling
+     */
+    boolean existAudioForUser(Long userId);
 }

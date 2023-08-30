@@ -155,6 +155,11 @@ public class AudioServiceImpl implements AudioService {
         return converterService.ConvertTo(NotListened.class, notListenedRepository.getOldestAudio());
     }
 
+    @Override
+    public boolean existAudioForUser(Long userId) {
+        return notListenedRepository.existsBySubscriber(userId);
+    }
+
     private ResponseEntity<String> getFilePath(String fileId) {
         HttpEntity<String> request = new HttpEntity<>(headers);
         return restTemplate.exchange(
@@ -199,7 +204,7 @@ public class AudioServiceImpl implements AudioService {
         }
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "1 * * * * *")
     @Transactional
     public void changeStatus() {
         audioRepository.fillNotListened();

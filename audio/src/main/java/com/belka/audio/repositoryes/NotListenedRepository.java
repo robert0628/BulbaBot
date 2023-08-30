@@ -15,4 +15,6 @@ public interface NotListenedRepository extends JpaRepository<NotListenedEntity, 
             ASC LIMIT 1
             """, nativeQuery = true)
     NotListenedEntity getOldestAudio();
+
+    boolean existsBySubscriber(Long userId);
 }
