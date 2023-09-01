@@ -160,6 +160,11 @@ public class AudioServiceImpl implements AudioService {
         return notListenedRepository.existsBySubscriber(userId);
     }
 
+    @Override
+    public boolean existsByUserIdAndDate(Long userId, LocalDate date) {
+        return audioRepository.existsByDateAndUserId(date, userId);
+    }
+
     private ResponseEntity<String> getFilePath(String fileId) {
         HttpEntity<String> request = new HttpEntity<>(headers);
         return restTemplate.exchange(

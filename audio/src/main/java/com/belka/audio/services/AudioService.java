@@ -3,6 +3,8 @@ package com.belka.audio.services;
 import com.belka.audio.models.NotListened;
 import org.telegram.telegrambots.meta.api.objects.Voice;
 
+import java.time.LocalDate;
+
 /**
  * service for work with audio messages
  */
@@ -58,4 +60,13 @@ public interface AudioService {
      * @return true if there are audios for pulling
      */
     boolean existAudioForUser(Long userId);
+
+    /**
+     * checks if an audio exists on that day
+     *
+     * @param userId user's id
+     * @param date   which day we check
+     * @return true if any note exists or false if not
+     */
+    boolean existsByUserIdAndDate(Long userId, LocalDate date);
 }

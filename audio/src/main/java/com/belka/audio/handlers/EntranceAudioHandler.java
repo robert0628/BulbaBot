@@ -28,6 +28,7 @@ public class EntranceAudioHandler extends AbstractBelkaHandler {
     private final static String PREVIOUS_HANDLER = "";
     final static String BUTTON_PULL = "pull new ones";
     final static String BUTTON_SUBSCRIBE = "subscribe to new people";
+    final static String BUTTON_CALENDAR = "get calendar";
 
     private final static String HEADER = "what would you like to do?";
     private final PreviousService previousService;
@@ -63,11 +64,13 @@ public class EntranceAudioHandler extends AbstractBelkaHandler {
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
         List<InlineKeyboardButton> rowInline = new ArrayList<>();
 
-        InlineKeyboardButton saveButton = getButton(BUTTON_PULL, BUTTON_PULL);
-        InlineKeyboardButton deleteButton = getButton(BUTTON_SUBSCRIBE, SubscribeHandler.CODE);
+        InlineKeyboardButton pullButton = getButton(BUTTON_PULL, PullAudioHandler.CODE);
+        InlineKeyboardButton subscribeButton = getButton(BUTTON_SUBSCRIBE, SubscribeHandler.CODE);
+        InlineKeyboardButton calendarButton = getButton(BUTTON_CALENDAR, CalendarAudioHandler.CODE);
 
-        rowInline.add(saveButton);
-        rowInline.add(deleteButton);
+        rowInline.add(pullButton);
+        rowInline.add(subscribeButton);
+        rowInline.add(calendarButton);
         rowsInLine.add(rowInline);
         markupInLine.setKeyboard(rowsInLine);
 

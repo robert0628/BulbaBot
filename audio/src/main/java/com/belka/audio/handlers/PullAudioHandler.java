@@ -31,7 +31,7 @@ public class PullAudioHandler extends AbstractBelkaHandler {
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (event.isHasCallbackQuery() && event.getData().equals(EntranceAudioHandler.BUTTON_PULL)) {
+            if (event.isHasCallbackQuery() && event.getData().equals(CODE)) {
                 Long chatId = event.getChatId();
                 if (!audioService.existAudioForUser(chatId)) {
                     return Flux.just(sendMessage(chatId, "there are no new audios for you"));
@@ -51,7 +51,6 @@ public class PullAudioHandler extends AbstractBelkaHandler {
                         .handlerCode(CODE)
                         .requestTime(LocalDateTime.now())
                         .build());
-
                 return Flux.just(sendAudioFromLocalStorage(audioService.getPathToAudio(fileId), chatId));
             }
             return Flux.empty();

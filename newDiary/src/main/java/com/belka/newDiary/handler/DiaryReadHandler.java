@@ -4,6 +4,7 @@ import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
+import com.belka.newDiary.service.DiaryCalendarService;
 import com.belka.newDiary.service.DiaryService;
 import com.belka.stats.StatsDto;
 import com.belka.stats.service.StatsService;
@@ -32,25 +33,25 @@ public class DiaryReadHandler extends AbstractBelkaHandler {
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (event.isHasCallbackQuery() && event.getData().startsWith("DAY-")) {
-                String dateString = event.getData().substring(4);
-                String[] dateArray = dateString.split("\\.");
-                int YEAR = Integer.parseInt(dateArray[0]);
-                int MONTH = Integer.parseInt(dateArray[1]);
-                int DAY = Integer.parseInt(dateArray[2]);
+            if (event.isHasCallbackQuery() && event.getData().startsWith(DiaryCalendarService.DAY_DIARY_CALENDAR_CODE)) {
+                Long chatId = event.getChatId();
+                String[] dateArray = event.getData().split("\\.");
+                int YEAR = Integer.parseInt(dateArray[1]);
+                int MONTH = Integer.parseInt(dateArray[2]) + 1;
+                int DAY = Integer.parseInt(dateArray[3]);
                 LocalDate date = LocalDate.of(YEAR, MONTH, DAY);
 
                 previousService.save(PreviousStepDto.builder()
                         .previousStep(CODE)
                         .nextStep(NEXT_HANDLER)
-                        .userId(event.getChatId())
+                        .userId(chatId)
                         .build());
                 statsService.save(StatsDto.builder()
-                        .userId(event.getChatId())
+                        .userId(chatId)
                         .handlerCode(CODE)
                         .requestTime(LocalDateTime.now())
                         .build());
-                return Flux.just(sendMessage(event.getChatId(), diaryService.getNote(date, event.getChatId())));
+                return Flux.just(sendMessage(chatId, diaryService.getNote(date, chatId)));
             }
             return Flux.empty();
         });
