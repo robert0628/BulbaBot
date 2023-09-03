@@ -19,7 +19,7 @@ public interface DiaryService {
     /**
      * checks if a note exists on that day
      *
-     * @param chatID user's id
+     * @param userId user's id
      * @param date   which day we check
      * @return true if any note exists or false if not
      */

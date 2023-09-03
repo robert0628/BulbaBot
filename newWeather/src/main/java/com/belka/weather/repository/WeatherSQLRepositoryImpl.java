@@ -22,7 +22,7 @@ public class WeatherSQLRepositoryImpl implements WeatherSQLRepository {
     }
 
     private List<MapSqlParameterSource> getParams(Collection<WeatherHistoryEntity> entities) {
-        List<MapSqlParameterSource> params = new ArrayList<MapSqlParameterSource>();
+        List<MapSqlParameterSource> params = new ArrayList<>();
         for (WeatherHistoryEntity entity : entities) {
             MapSqlParameterSource source = new MapSqlParameterSource();
             source.addValue("city", entity.getCity());

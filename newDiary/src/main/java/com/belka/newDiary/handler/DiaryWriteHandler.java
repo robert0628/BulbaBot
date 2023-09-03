@@ -24,7 +24,7 @@ import java.util.concurrent.CompletableFuture;
 @AllArgsConstructor
 @Component
 public class DiaryWriteHandler extends AbstractBelkaHandler {
-    static String CODE = "WRITE_DIARY";
+    static final String CODE = "WRITE_DIARY";
     private final static String NEXT_HANDLER = DiaryShareHandler.CODE;
     private final static String PREVIOUS_HANDLER = DiaryGetHeaderWriteHandler.CODE;
     final static String YES_BUTTON = "yes";
