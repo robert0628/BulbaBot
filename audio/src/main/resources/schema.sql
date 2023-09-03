@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS audio
     id        varchar PRIMARY KEY,
     user_id   bigint,
     date      date,
-    is_public boolean
+    is_public boolean,
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
 CREATE TABLE IF NOT EXISTS not_listened
