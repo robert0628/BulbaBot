@@ -3,7 +3,7 @@ package com.belka.stats;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -20,6 +20,6 @@ public class StatsEntity {
     private Long userId;
     @Column(name = "handler_code")
     private String handlerCode;
-    @Column(name = "request_time")
-    private LocalDateTime requestTime;
+    @Column(name = "request_time", columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    private OffsetDateTime requestTime;
 }

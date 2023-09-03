@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import reactor.core.publisher.Flux;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.concurrent.CompletableFuture;
 
 import static com.belka.newDiary.handler.DiaryStartHandler.BUTTON_2;
@@ -42,7 +42,7 @@ public class DiaryGetHeaderWriteHandler extends AbstractBelkaHandler {
                 statsService.save(StatsDto.builder()
                         .userId(event.getChatId())
                         .handlerCode(CODE)
-                        .requestTime(LocalDateTime.now())
+                        .requestTime(OffsetDateTime.now())
                         .build());
                 return Flux.just(sendMessage(chatId, HEADER));
             }

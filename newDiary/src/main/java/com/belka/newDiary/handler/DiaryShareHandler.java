@@ -16,7 +16,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -70,7 +70,7 @@ public class DiaryShareHandler extends AbstractBelkaHandler {
         statsService.save(StatsDto.builder()
                 .userId(event.getChatId())
                 .handlerCode(CODE)
-                .requestTime(LocalDateTime.now())
+                .requestTime(OffsetDateTime.now())
                 .build());
     }
 }

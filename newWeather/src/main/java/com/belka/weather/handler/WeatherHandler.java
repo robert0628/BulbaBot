@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import reactor.core.publisher.Flux;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -44,7 +44,7 @@ public class WeatherHandler extends AbstractBelkaHandler {
                 statsService.save(StatsDto.builder()
                         .userId(chatId)
                         .handlerCode(CODE)
-                        .requestTime(LocalDateTime.now())
+                        .requestTime(OffsetDateTime.now())
                         .build());
                 return Flux.just(sendMessage(chatId, weatherService.getWeatherResponse(weatherService.findCity())));
             }

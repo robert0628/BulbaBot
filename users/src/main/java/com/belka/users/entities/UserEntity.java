@@ -2,10 +2,12 @@ package com.belka.users.entities;
 
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 
 /**
  * bot user
@@ -23,5 +25,6 @@ public class UserEntity {
     private String firstname;
     private String lastname;
     private String username;
-    private Timestamp registeredAt;
+    @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    private OffsetDateTime registeredAt;
 }

@@ -15,7 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import reactor.core.publisher.Flux;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -49,7 +49,7 @@ public class SaveAudioHandler extends AbstractBelkaHandler {
                     statsService.save(StatsDto.builder()
                             .userId(event.getChatId())
                             .handlerCode(CODE)
-                            .requestTime(LocalDateTime.now())
+                            .requestTime(OffsetDateTime.now())
                             .build());
                     return Flux.just(getButtons(event.getChatId()));
                 } else {
@@ -63,7 +63,7 @@ public class SaveAudioHandler extends AbstractBelkaHandler {
                     statsService.save(StatsDto.builder()
                             .userId(event.getChatId())
                             .handlerCode(CODE)
-                            .requestTime(LocalDateTime.now())
+                            .requestTime(OffsetDateTime.now())
                             .build());
                     return Flux.just(sendMessage(chatId, "message has been deleted"));
                 }
