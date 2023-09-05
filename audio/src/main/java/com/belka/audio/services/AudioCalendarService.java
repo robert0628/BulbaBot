@@ -15,7 +15,7 @@ import java.util.Locale;
 @Service
 @AllArgsConstructor
 public class AudioCalendarService extends AbstractCalendarService {
-    final static String DATA_AUDIO_CODE = "AUDIO_CALENDAR";
+    public final static String DATA_AUDIO_CODE = "AUDIO_CALENDAR";
     public final static String AUDIO_CALENDAR_PREV_MONTH = "AUDIO_PREV_MONTH";
     public final static String AUDIO_CALENDAR_NEXT_MONTH = "AUDIO_NEXT_MONTH";
     private final AudioService audioService;

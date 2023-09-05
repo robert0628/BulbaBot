@@ -69,4 +69,13 @@ public interface AudioService {
      * @return true if any note exists or false if not
      */
     boolean existsByUserIdAndDate(Long userId, LocalDate date);
+
+    /**
+     * get user's audio's id
+     *
+     * @param userId user's id
+     * @param date   for what day do I need audio
+     * @return audio's id
+     */
+    String getFileId(Long userId, LocalDate date);
 }

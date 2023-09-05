@@ -1,6 +1,7 @@
 package com.belka.audio.handlers;
 
 import com.belka.audio.models.NotListened;
+import com.belka.audio.services.AudioCalendarService;
 import com.belka.audio.services.AudioService;
 import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import reactor.core.publisher.Flux;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.concurrent.CompletableFuture;
 
@@ -52,6 +54,29 @@ public class PullAudioHandler extends AbstractBelkaHandler {
                         .requestTime(OffsetDateTime.now())
                         .build());
                 return Flux.just(sendAudioFromLocalStorage(audioService.getPathToAudio(fileId), chatId));
+            }
+            if (event.isHasCallbackQuery() && event.getData().startsWith(AudioCalendarService.DATA_AUDIO_CODE)) {
+                Long chatId = event.getChatId();
+                String[] data = event.getData().split("\\.");
+                LocalDate date = LocalDate.of(Integer.parseInt(data[1]), Integer.parseInt(data[2]) + 1, Integer.parseInt(data[3]));
+                String fileId = audioService.getFileId(chatId, date);
+
+                previousService.save(PreviousStepDto.builder()
+                        .previousStep(CODE)
+                        .nextStep(NEXT_HANDLER)
+                        .userId(chatId)
+                        .data("")
+                        .build());
+                statsService.save(StatsDto.builder()
+                        .userId(event.getChatId())
+                        .handlerCode(CODE)
+                        .requestTime(OffsetDateTime.now())
+                        .build());
+                if (fileId == null) {
+                    return Flux.just(sendMessage(chatId, "there are no new audios for you"));
+                }
+                return Flux.just(sendAudioFromLocalStorage(audioService.getPathToAudio(fileId), chatId));
+
             }
             return Flux.empty();
         });

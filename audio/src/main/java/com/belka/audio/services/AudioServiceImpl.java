@@ -31,7 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -68,14 +68,9 @@ public class AudioServiceImpl implements AudioService {
         LocalDate today = LocalDate.now();
         if (audioRepository.existsByDateAndUserId(today, userId)) {
             try {
-                List<String> audiosIdInDB = audioRepository.getAllIdByDateAndUserId(today, userId);
-                if (audiosIdInDB.size() > 1) {
-                    throw new RuntimeException("something was wrong and we have two records in one day");
-                }
-                String audioIdInDB = audiosIdInDB.get(0);
                 writeDataToDB(voice, userId);
                 concatenateAudios(
-                        pathToAudio + audioIdInDB + AUDIO_EXTENSION,
+                        pathToAudio + getFileId(userId, today) + AUDIO_EXTENSION,
                         pathToAudio + voice.getFileId() + AUDIO_EXTENSION
                 );
             } finally {
@@ -163,6 +158,15 @@ public class AudioServiceImpl implements AudioService {
     @Override
     public boolean existsByUserIdAndDate(Long userId, LocalDate date) {
         return audioRepository.existsByDateAndUserId(date, userId);
+    }
+
+    @Override
+    public String getFileId(Long userId, LocalDate date) {
+        Optional<String> audioIdInDB = audioRepository.getIdByDateAndUserId(date, userId);
+        if (audioIdInDB.isEmpty()) {
+            throw new RuntimeException("something was wrong, there are no audio");
+        }
+        return audioIdInDB.get();
     }
 
     private ResponseEntity<String> getFilePath(String fileId) {
