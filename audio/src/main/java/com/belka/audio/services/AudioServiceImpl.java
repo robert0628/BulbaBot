@@ -68,9 +68,10 @@ public class AudioServiceImpl implements AudioService {
         LocalDate today = LocalDate.now();
         if (audioRepository.existsByDateAndUserId(today, userId)) {
             try {
+                String audioIdInDB = getFileId(userId, today);
                 writeDataToDB(voice, userId);
                 concatenateAudios(
-                        pathToAudio + getFileId(userId, today) + AUDIO_EXTENSION,
+                        pathToAudio + audioIdInDB + AUDIO_EXTENSION,
                         pathToAudio + voice.getFileId() + AUDIO_EXTENSION
                 );
             } finally {
@@ -213,7 +214,7 @@ public class AudioServiceImpl implements AudioService {
         }
     }
 
-    @Scheduled(cron = "1 * * * * *")
+    @Scheduled(cron = "0 0 * * * *")
     @Transactional
     public void changeStatus() {
         audioRepository.fillNotListened();
