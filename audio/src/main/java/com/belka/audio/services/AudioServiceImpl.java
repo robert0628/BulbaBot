@@ -1,5 +1,6 @@
 package com.belka.audio.services;
 
+import com.belka.audio.utils.OggToWavConverter;
 import com.belka.audio.entityes.AudioEntity;
 import com.belka.audio.models.NotListened;
 import com.belka.audio.repositoryes.AudioRepository;
@@ -20,10 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.meta.api.objects.Voice;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.SequenceInputStream;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -37,12 +38,14 @@ import java.util.Optional;
 @AllArgsConstructor
 @Slf4j
 public class AudioServiceImpl implements AudioService {
-    final static String AUDIO_EXTENSION = ".ogg";
+    final static String OGG = ".ogg";
+    final static String WAV = ".WAV";
     private final RestTemplate restTemplate;
     private final HttpHeaders headers;
     private final AudioRepository audioRepository;
     private final NotListenedRepository notListenedRepository;
     private final ConverterService converterService;
+    private final OggToWavConverter oggToWavConverter;
     @Value("${bot.audio.path}")
     private String pathToAudio;
     @Value("${bot.token}")
@@ -54,12 +57,14 @@ public class AudioServiceImpl implements AudioService {
 
     @Autowired
     public AudioServiceImpl(RestTemplate restTemplate, HttpHeaders headers, AudioRepository audioRepository,
-                            NotListenedRepository notListenedRepository, ConverterService converterService) {
+                            NotListenedRepository notListenedRepository, ConverterService converterService,
+                            OggToWavConverter oggToWavConverter) {
         this.restTemplate = restTemplate;
         this.headers = headers;
         this.audioRepository = audioRepository;
         this.notListenedRepository = notListenedRepository;
         this.converterService = converterService;
+        this.oggToWavConverter = oggToWavConverter;
     }
 
     @Override
@@ -70,10 +75,7 @@ public class AudioServiceImpl implements AudioService {
             try {
                 String audioIdInDB = getFileId(userId, today);
                 writeDataToDB(voice, userId);
-                concatenateAudios(
-                        pathToAudio + audioIdInDB + AUDIO_EXTENSION,
-                        pathToAudio + voice.getFileId() + AUDIO_EXTENSION
-                );
+                concatenateAudios(audioIdInDB, voice.getFileId());
             } finally {
                 deleteVoice(voice.getFileId());
             }
@@ -87,12 +89,13 @@ public class AudioServiceImpl implements AudioService {
         String fileId = voice.getFileId();
         ResponseEntity<String> response = getFilePath(fileId);
         byte[] downloadFile = downloadFile(getFilePath(response));
-        Path filePath = Paths.get(pathToAudio, fileId + AUDIO_EXTENSION);
+        Path filePath = Paths.get(pathToAudio, fileId + OGG);
         try {
             Files.write(filePath, downloadFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        oggToWavConverter.convert(filePath.toString());
         AudioEntity entity = AudioEntity.builder()
                 .id(fileId)
                 .date(LocalDate.now())
@@ -131,17 +134,28 @@ public class AudioServiceImpl implements AudioService {
 
     @Override
     public String getPathToAudio(String fileId) {
-        return pathToAudio + fileId + AUDIO_EXTENSION;
+        return pathToAudio + fileId + WAV;
     }
 
     @Transactional
     public void concatenateAudios(String firstAudio, String secondAudio) {
-        Path firstAudioPath = Path.of(firstAudio);
-        try (InputStream inputStream1 = Files.newInputStream(firstAudioPath);
-             InputStream inputStream2 = Files.newInputStream(Path.of(secondAudio));
-             InputStream concatenatedStream = new SequenceInputStream(inputStream1, inputStream2)) {
-            Files.copy(concatenatedStream, firstAudioPath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
+        Path outputWavPath = Path.of(pathToAudio + firstAudio + "temporary" + WAV);
+        File file1 = new File(pathToAudio + firstAudio + WAV);
+        File file2 = new File(pathToAudio + secondAudio + WAV);
+        try {
+            AudioInputStream clip1 = AudioSystem.getAudioInputStream(file1);
+            AudioInputStream clip2 = AudioSystem.getAudioInputStream(file2);
+
+            AudioInputStream appendedFiles =
+                    new AudioInputStream(
+                            new SequenceInputStream(clip1, clip2),
+                            clip1.getFormat(),
+                            clip1.getFrameLength() + clip2.getFrameLength());
+
+            AudioSystem.write(appendedFiles, AudioFileFormat.Type.WAVE, outputWavPath.toFile());
+            Files.copy(outputWavPath, Path.of(file1.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
+            Files.delete(outputWavPath);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
