@@ -29,7 +29,7 @@ public class GetStatsHandler extends AbstractBelkaHandler {
     final static String CODE = "get stats";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = StatsStartHandler.CODE;
-    private final static String ANSWER = "write code";
+    private final static String ANSWER = "what code?";
     private final PreviousService previousService;
     private final StatsService statsService;
     private final StatsConfig statsConfig;

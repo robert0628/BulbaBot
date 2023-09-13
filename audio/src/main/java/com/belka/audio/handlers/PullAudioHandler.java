@@ -42,17 +42,8 @@ public class PullAudioHandler extends AbstractBelkaHandler {
                 String fileId = notListenedAudio.getAudioId();
                 audioService.removeAudioFromListening(notListenedAudio.getSubscriber(), fileId);
 
-                previousService.save(PreviousStepDto.builder()
-                        .previousStep(CODE)
-                        .nextStep(NEXT_HANDLER)
-                        .userId(chatId)
-                        .data("")
-                        .build());
-                statsService.save(StatsDto.builder()
-                        .userId(event.getChatId())
-                        .handlerCode(CODE)
-                        .requestTime(OffsetDateTime.now())
-                        .build());
+                savePreviousAndStats(chatId);
+
                 return Flux.just(sendAudioFromLocalStorage(audioService.getPathToAudio(fileId), chatId));
             }
             if (event.isHasCallbackQuery() && event.getData().startsWith(AudioCalendarService.DATA_AUDIO_CODE)) {
@@ -61,17 +52,8 @@ public class PullAudioHandler extends AbstractBelkaHandler {
                 LocalDate date = LocalDate.of(Integer.parseInt(data[1]), Integer.parseInt(data[2]) + 1, Integer.parseInt(data[3]));
                 String fileId = audioService.getFileId(chatId, date);
 
-                previousService.save(PreviousStepDto.builder()
-                        .previousStep(CODE)
-                        .nextStep(NEXT_HANDLER)
-                        .userId(chatId)
-                        .data("")
-                        .build());
-                statsService.save(StatsDto.builder()
-                        .userId(event.getChatId())
-                        .handlerCode(CODE)
-                        .requestTime(OffsetDateTime.now())
-                        .build());
+                savePreviousAndStats(chatId);
+
                 if (fileId == null) {
                     return Flux.just(sendMessage(chatId, "there are no new audios for you"));
                 }
@@ -81,5 +63,19 @@ public class PullAudioHandler extends AbstractBelkaHandler {
             return Flux.empty();
         });
         return getCompleteFuture(future, event.getChatId());
+    }
+
+    private void savePreviousAndStats(Long chatId) {
+        previousService.save(PreviousStepDto.builder()
+                .previousStep(CODE)
+                .nextStep(NEXT_HANDLER)
+                .userId(chatId)
+                .data("")
+                .build());
+        statsService.save(StatsDto.builder()
+                .userId(chatId)
+                .handlerCode(CODE)
+                .requestTime(OffsetDateTime.now())
+                .build());
     }
 }
