@@ -4,5 +4,5 @@ CREATE TABLE IF NOT EXISTS Diary
     user_id bigint,
     note    text,
     date    date,
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );

@@ -12,6 +12,6 @@ CREATE TABLE IF NOT EXISTS previous_step
     previous_step varchar,
     next_step     varchar,
     data          varchar,
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 

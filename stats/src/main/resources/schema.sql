@@ -4,5 +4,5 @@ CREATE TABLE IF NOT EXISTS stats
     user_id      bigint,
     request_time timestamptz,
     handler_code varchar,
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
