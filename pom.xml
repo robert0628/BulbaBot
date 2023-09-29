@@ -12,6 +12,7 @@
 		<module>users</module>
 		<module>stats</module>
         <module>audio</module>
+		<module>Core</module>
     </modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>
@@ -61,22 +62,6 @@
 
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>3.0.4</version>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+
 
 </project>
