@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+
+  app:
+    container_name: app-module
+    restart: always
+    build: .
+    ports:
+      - "1818:1818"
+    volumes:
+      - ./audio/audios:/Users/aleksandrborisevic/IdeaProjects/BulbaBot/ApplicationModule/audios
+    environment:
+      - SERVER_PORT=1824
+      - DB_NAME=tg-bot
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - DB_HOST=localhost
+      - DB_PORT=5432
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/tg-bot
+      - spring_kafka_consumer_bootstrap-servers=localhost:9098
+      - spring_kafka_consumer_group-id=myGroup
+      - spring_kafka_consumer_auto-offset-reset=earliest
+      - spring_kafka_consumer_key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
+      - spring_kafka_consumer_value-deserializer=org.apache.kafka.common.serialization.StringDeserializer
+      - spring_kafka_consumer_properties_spring_json_trusted.packages=*
+
+  postgres:
+    container_name: bulbabot-db
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: tg-bot
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    volumes:
+      - ./postgres_data:/Users/aleksandrborisevic/IdeaProjects/BulbaBot/postgres_data
+    ports:
+      - "4789:5432"
