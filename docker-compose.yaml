@@ -1,5 +1,9 @@
 version: '3.8'
 
+networks:
+  app-tier:
+    driver: bridge
+
 services:
 
   app:
@@ -8,22 +12,43 @@ services:
     build: .
     ports:
       - "1818:1818"
+    networks:
+      - app-tier
     volumes:
       - ./audio/audios:/Users/aleksandrborisevic/IdeaProjects/BulbaBot/ApplicationModule/audios
+    depends_on:
+      - postgres
     environment:
       - SERVER_PORT=1824
       - DB_NAME=tg-bot
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
-      - DB_HOST=localhost
+      - DB_HOST=postgres
       - DB_PORT=5432
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/tg-bot
-      - spring_kafka_consumer_bootstrap-servers=localhost:9098
-      - spring_kafka_consumer_group-id=myGroup
-      - spring_kafka_consumer_auto-offset-reset=earliest
-      - spring_kafka_consumer_key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
-      - spring_kafka_consumer_value-deserializer=org.apache.kafka.common.serialization.StringDeserializer
-      - spring_kafka_consumer_properties_spring_json_trusted.packages=*
+
+  kafka-service:
+    container_name: kafka-service
+    restart: always
+    build:
+      context: kafka-service
+    ports:
+      - "9090:9090"
+    networks:
+      - app-tier
+    environment:
+      - SERVER_PORT=9090
+      - DB_NAME=tg-bot
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/tg-bot
+      - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_ADD_TYPE_HEADERS=false
+      - SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_KAFKA_PRODUCER_KEY_SERIALIZER=org.apache.kafka.common.serialization.StringSerializer
+      - SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER=org.springframework.kafka.support.serializer.JsonSerializer
+
 
   postgres:
     container_name: bulbabot-db
@@ -37,3 +62,33 @@ services:
       - ./postgres_data:/Users/aleksandrborisevic/IdeaProjects/BulbaBot/postgres_data
     ports:
       - "4789:5432"
+    networks:
+      - app-tier
+
+  zookeeper:
+    image: docker.io/bitnami/zookeeper:3.9
+    networks:
+      - app-tier
+    ports:
+      - "2182:2181"
+    volumes:
+      - ./zookeeper_data:/bitnami
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka:
+    image: docker.io/bitnami/kafka:3.4
+    networks:
+      - app-tier
+    ports:
+      - "9092:29092"
+    volumes:
+      - ./kafka_data:/bitnami
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_LISTENERS=EXTERNAL_SAME_HOST://:29092,INTERNAL://:9092
+      - KAFKA_ADVERTISED_LISTENERS=INTERNAL://kafka:9092,EXTERNAL_SAME_HOST://localhost:29092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL_SAME_HOST:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=INTERNAL
+    depends_on:
+        - zookeeper
