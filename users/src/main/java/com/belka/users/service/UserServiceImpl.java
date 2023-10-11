@@ -52,10 +52,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<String> showSubscribes(Long userId) {
+    public Collection<String> getProducers(Long userId) {
         List<Long> producersId = subscriptionsRepository.findAllProducersID(userId);
         Collection<UserEntity> entities = userRepository.findAllById(producersId);
-        return entities.stream().map(this::getNameFromEntity).toList();
+        return entities.stream()
+                .map(entity -> entity.getFirstname() + " (" + entity.getUsername() + ")")
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<String> getFollowers(Long userId) {
+        Collection<Long> followersIdId = getFollowersId(userId);
+        Collection<UserEntity> entities = userRepository.findAllById(followersIdId);
+        return entities.stream()
+                .map(entity -> entity.getFirstname() + " (" + entity.getUsername() + ")")
+                .collect(Collectors.toList());
     }
 
     @Override

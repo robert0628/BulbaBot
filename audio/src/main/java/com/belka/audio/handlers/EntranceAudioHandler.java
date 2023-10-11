@@ -6,6 +6,8 @@ import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
 import com.belka.stats.service.StatsService;
+import com.belka.users.handler.GetSubscribersHandler;
+import com.belka.users.handler.GetSubscriptionsHandler;
 import com.belka.users.handler.SubscribeHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -29,6 +31,9 @@ public class EntranceAudioHandler extends AbstractBelkaHandler {
     final static String BUTTON_PULL = "pull new ones";
     final static String BUTTON_SUBSCRIBE = "subscribe to new people";
     final static String BUTTON_CALENDAR = "get calendar";
+    final static String BUTTON_SUBSCRIBERS = "get subscribers";
+    final static String BUTTON_SUBSCRIPTIONS = "get subscriptions";
+
 
     private final static String HEADER = "what would you like to do?";
     private final PreviousService previousService;
@@ -62,18 +67,25 @@ public class EntranceAudioHandler extends AbstractBelkaHandler {
         SendMessage message = sendMessage(chatId, HEADER);
         InlineKeyboardMarkup markupInLine = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
-        List<InlineKeyboardButton> rowInline = new ArrayList<>();
+        List<InlineKeyboardButton> rowInlineOne = new ArrayList<>();
+        List<InlineKeyboardButton> rowInlineTwo = new ArrayList<>();
 
         InlineKeyboardButton pullButton = getButton(BUTTON_PULL, PullAudioHandler.CODE);
         InlineKeyboardButton subscribeButton = getButton(BUTTON_SUBSCRIBE, SubscribeHandler.CODE);
         InlineKeyboardButton calendarButton = getButton(BUTTON_CALENDAR, CalendarAudioHandler.CODE);
+        InlineKeyboardButton subscriptionsButton = getButton(BUTTON_SUBSCRIPTIONS, GetSubscriptionsHandler.CODE);
+        InlineKeyboardButton subscribersButton = getButton(BUTTON_SUBSCRIBERS, GetSubscribersHandler.CODE);
 
-        rowInline.add(pullButton);
-        rowInline.add(subscribeButton);
-        rowInline.add(calendarButton);
-        rowsInLine.add(rowInline);
+        rowInlineOne.add(pullButton);
+        rowInlineOne.add(subscribeButton);
+        rowInlineOne.add(calendarButton);
+        rowsInLine.add(rowInlineOne);
+
+        rowInlineTwo.add(subscriptionsButton);
+        rowInlineTwo.add(subscribersButton);
+        rowsInLine.add(rowInlineTwo);
+
         markupInLine.setKeyboard(rowsInLine);
-
         message.setReplyMarkup(markupInLine);
 
         return message;

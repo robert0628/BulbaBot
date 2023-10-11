@@ -18,16 +18,16 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * show user all his subscriptions
+ * show user all his subscribers
  */
 @Component
 @AllArgsConstructor
-public class ShowSubscribesHandler extends AbstractBelkaHandler {
-    private final static String CODE = "/subscribes";
-    private final static String NEXT_HANDLER = "";
+public class GetSubscribersHandler extends AbstractBelkaHandler {
+    public final static String CODE = "/get_subscribers";
+    private final static String NEXT_HANDLER = SubscribersHandler.CODE;
     private final static String PREVIOUS_HANDLER = "";
-    private final static String ANSWER_PREFIX = "You have %d subscription by now: %s";
-    private final static String ANSWER_NO_SUBSCRIPTIONS = "You dont have any subscriptions";
+    private final static String ANSWER_PREFIX = "You have %d subscribers by now: %s";
+    private final static String ANSWER_NO_SUBSCRIPTIONS = "You don't have any subscribers";
     private final UserService userService;
     private final PreviousService previousService;
     private final StatsService statsService;
@@ -36,7 +36,8 @@ public class ShowSubscribesHandler extends AbstractBelkaHandler {
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
+            if (event.isHasText() && event.getText().equalsIgnoreCase(CODE) ||
+                    event.isHasCallbackQuery() && event.getData().equals(CODE)) {
                 Long chatId = event.getChatId();
                 previousService.save(PreviousStepDto.builder()
                         .previousStep(CODE)
@@ -56,7 +57,7 @@ public class ShowSubscribesHandler extends AbstractBelkaHandler {
     }
 
     private String getAnswer(Long chatId) {
-        Collection<String> subscribes = userService.showSubscribes(chatId);
+        Collection<String> subscribes = userService.getFollowers(chatId);
         if (subscribes.isEmpty()) {
             return ANSWER_NO_SUBSCRIPTIONS;
         }

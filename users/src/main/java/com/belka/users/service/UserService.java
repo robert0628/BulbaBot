@@ -24,12 +24,20 @@ public interface UserService {
     void toSubscribe(Long userId, Long producerId);
 
     /**
-     * get names of the people user subscribed to
+     * get names and usernames of the people user subscribed to
      *
      * @param userId {@link UserEntity user}'s id
-     * @return list of the names
+     * @return list of the names and usernames
      */
-    Collection<String> showSubscribes(Long userId);
+    Collection<String> getProducers(Long userId);
+
+    /**
+     * get names and usernames of the people who are subscribed to the user
+     *
+     * @param userId {@link UserEntity user}'s id
+     * @return list of the names and usernames
+     */
+    Collection<String> getFollowers(Long userId);
 
     /**
      * get the ID of the user's subscribers
