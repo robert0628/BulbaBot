@@ -1,4 +1,4 @@
-package com.belka.users.handler;
+package com.belka.users.handler.subscriptions;
 
 import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 @Component
 @AllArgsConstructor
 public class IncomingContactHandler extends AbstractBelkaHandler {
-    final static String CODE = "Subscription";
+    public final static String CODE = "Incoming Contact";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = SubscribeHandler.CODE;
     private final static String SUCCESSFULLY_ANSWER = "subscription is issued";

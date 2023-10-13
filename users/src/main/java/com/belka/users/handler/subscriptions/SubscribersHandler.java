@@ -1,4 +1,4 @@
-package com.belka.users.handler;
+package com.belka.users.handler.subscriptions;
 
 import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
@@ -11,8 +11,6 @@ public class SubscribersHandler extends AbstractBelkaHandler {
     public final static String CODE = "/Subscribers";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = "";
-    private final static String ANSWER = "";
-
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {

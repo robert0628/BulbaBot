@@ -2,6 +2,7 @@ package com.belka.users.service;
 
 import com.belka.users.dto.UserDto;
 import com.belka.users.entities.UserEntity;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
 
@@ -24,12 +25,20 @@ public interface UserService {
     void toSubscribe(Long userId, Long producerId);
 
     /**
+     * get names, usernames and Ids user subscribed to
+     *
+     * @param userId {@link UserEntity user}'s id
+     * @return list of the users' names, usernames and Ids
+     */
+    Collection<Pair<Long, String>> getProducersNamesAndId(Long userId);
+
+    /**
      * get names and usernames of the people user subscribed to
      *
      * @param userId {@link UserEntity user}'s id
-     * @return list of the names and usernames
+     * @return list of the users' names and usernames
      */
-    Collection<String> getProducers(Long userId);
+    Collection<String> getProducersNames(Long userId);
 
     /**
      * get names and usernames of the people who are subscribed to the user
@@ -37,7 +46,7 @@ public interface UserService {
      * @param userId {@link UserEntity user}'s id
      * @return list of the names and usernames
      */
-    Collection<String> getFollowers(Long userId);
+    Collection<String> getFollowersNames(Long userId);
 
     /**
      * get the ID of the user's subscribers

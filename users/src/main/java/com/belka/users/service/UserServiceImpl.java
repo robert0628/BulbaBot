@@ -8,10 +8,10 @@ import com.belka.users.repository.SubscriptionsRepository;
 import com.belka.users.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,19 +52,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<String> getProducers(Long userId) {
-        List<Long> producersId = subscriptionsRepository.findAllProducersID(userId);
-        Collection<UserEntity> entities = userRepository.findAllById(producersId);
-        return entities.stream()
+    public Collection<Pair<Long, String>> getProducersNamesAndId(Long userId) {
+        return userRepository.findAllProducers(userId).stream()
+                .map(entity ->
+                        Pair.of(
+                                entity.getId(),
+                                entity.getFirstname() + " (" + entity.getUsername() + ")"))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<String> getProducersNames(Long userId) {
+        return userRepository.findAllProducers(userId).stream()
                 .map(entity -> entity.getFirstname() + " (" + entity.getUsername() + ")")
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<String> getFollowers(Long userId) {
-        Collection<Long> followersIdId = getFollowersId(userId);
-        Collection<UserEntity> entities = userRepository.findAllById(followersIdId);
-        return entities.stream()
+    public Collection<String> getFollowersNames(Long userId) {
+        return userRepository.findAllFollowers(userId).stream()
                 .map(entity -> entity.getFirstname() + " (" + entity.getUsername() + ")")
                 .collect(Collectors.toList());
     }
