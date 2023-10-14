@@ -6,7 +6,6 @@ import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
 import com.belka.stats.service.StatsService;
-import com.belka.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,15 +20,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-@AllArgsConstructor
+import static com.belka.users.handler.subscriptions.UnsubscribeHandler.PREFIX_FOR_UNSUBSCRIBE_CALLBACK;
+
 @Component
-public class UnsubscribeHandler extends AbstractBelkaHandler {
-    public final static String CODE = "/unsubscribe";
+@AllArgsConstructor
+public class ChooseWhoToUnsubscribeFromHandler extends AbstractBelkaHandler {
+    public final static String CODE = "/Choose Who To Unsubscribe From";
     private final static String NEXT_HANDLER = "";
-    private final static String PREVIOUS_HANDLER = "";
-    public final static String PREFIX_FOR_UNSUBSCRIBE_CALLBACK = "delete - ";
-    private final static String HEADER = "who is already bored?";
-    private final UserService userService;
+    private final static String PREVIOUS_HANDLER = UnsubscribeHandler.CODE;
+    private final static String HEADER = "are you sure?";
+    final static String YES_BUTTON = "Yep, that's right";
+    final static String NO_BUTTON = "nope";
     private final PreviousService previousService;
     private final StatsService statsService;
 
@@ -37,7 +38,9 @@ public class UnsubscribeHandler extends AbstractBelkaHandler {
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (event.isHasCallbackQuery() && event.getData().equals(CODE)) {
+            if (event.getPrevious_step().equals(PREVIOUS_HANDLER) && event.isHasCallbackQuery() &&
+                    event.getData().startsWith(PREFIX_FOR_UNSUBSCRIBE_CALLBACK)) {
+
                 Long chatId = event.getChatId();
                 previousService.save(PreviousStepDto.builder()
                         .previousStep(CODE)
@@ -50,34 +53,34 @@ public class UnsubscribeHandler extends AbstractBelkaHandler {
                         .requestTime(OffsetDateTime.now())
                         .build());
 
-                return Flux.just(getButtons(chatId));
+                return Flux.just(editMessage(getButtons(chatId, event), HEADER));
             }
             return Flux.empty();
         });
         return getCompleteFuture(future, event.getChatId());
     }
 
-    private SendMessage getButtons(Long chatId) {
+    private SendMessage getButtons(Long chatId, BelkaEvent event) {
         SendMessage message = sendMessage(chatId, HEADER);
-        InlineKeyboardMarkup markupInLine = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInLine = makeButtons(chatId);
+        String producerId = event.getData().substring(PREFIX_FOR_UNSUBSCRIBE_CALLBACK.length());
+        message.setReplyToMessageId(event.getUpdate().getCallbackQuery().getMessage().getMessageId());
 
+        InlineKeyboardMarkup markupInLine = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
+        List<InlineKeyboardButton> rowInlineOne = new ArrayList<>();
+        List<InlineKeyboardButton> rowInlineTwo = new ArrayList<>();
+
+        InlineKeyboardButton yesButton = getButton(YES_BUTTON, PREFIX_FOR_UNSUBSCRIBE_CALLBACK + YES_BUTTON + producerId);
+        rowInlineOne.add(yesButton);
+
+        InlineKeyboardButton noButton = getButton(NO_BUTTON, PREFIX_FOR_UNSUBSCRIBE_CALLBACK + NO_BUTTON);
+        rowInlineTwo.add(noButton);
+
+        rowsInLine.add(rowInlineOne);
+        rowsInLine.add(rowInlineTwo);
         markupInLine.setKeyboard(rowsInLine);
         message.setReplyMarkup(markupInLine);
 
         return message;
-    }
-
-    private List<List<InlineKeyboardButton>> makeButtons(Long chatId) {
-        List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
-        userService.getProducersNamesAndId(chatId).forEach(pair -> {
-            List<InlineKeyboardButton> rowInline = new ArrayList<>();
-            InlineKeyboardButton button = getButton(
-                    pair.getRight(),
-                    PREFIX_FOR_UNSUBSCRIBE_CALLBACK + pair.getLeft());
-            rowInline.add(button);
-            rowsInLine.add(rowInline);
-        });
-        return rowsInLine;
     }
 }

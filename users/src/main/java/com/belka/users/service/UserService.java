@@ -17,12 +17,20 @@ public interface UserService {
     boolean existsById(Long userId);
 
     /**
-     * subscribe for users updates;
+     * subscribe for user's updates;
      *
      * @param userId     {@link UserEntity follower}'s ID
      * @param producerId {@link UserEntity producer}'s ID
      */
     void toSubscribe(Long userId, Long producerId);
+
+    /**
+     * unsubscribe for user's updates;
+     *
+     * @param userId     {@link UserEntity follower}'s ID
+     * @param producerId {@link UserEntity producer}'s ID
+     */
+    void toUnsubscribe(Long userId, Long producerId);
 
     /**
      * get names, usernames and Ids user subscribed to

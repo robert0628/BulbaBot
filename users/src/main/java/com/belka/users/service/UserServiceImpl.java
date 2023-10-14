@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -31,6 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void save(UserDto userDto) {
         userRepository.save(converterService.ConvertTo(UserEntity.class, userDto));
         log.info("user was saved");
@@ -42,6 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void toSubscribe(Long chatId, Long producerId) {
         UserEntity subscriber = userRepository.findById(chatId).orElseThrow(RuntimeException::new);
         UserEntity producer = userRepository.findById(producerId).orElseThrow(RuntimeException::new);
@@ -49,6 +52,12 @@ public class UserServiceImpl implements UserService {
                 .producer(producer)
                 .subscriber(subscriber)
                 .build());
+    }
+
+    @Override
+    @Transactional
+    public void toUnsubscribe(Long userId, Long producerId) {
+        subscriptionsRepository.deleteByProducerAndSubscriber(producerId, userId);
     }
 
     @Override
