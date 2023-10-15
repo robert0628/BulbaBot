@@ -47,7 +47,10 @@ public class CalendarAudioHandler extends AbstractBelkaHandler {
                         .handlerCode(CODE)
                         .requestTime(OffsetDateTime.now())
                         .build());
-                return Flux.just(calendarService.sendCalendarMessage(chatId, YEAR, MONTH));
+                SendMessage message = calendarService.sendCalendarMessage(chatId, YEAR, MONTH);
+                message.setReplyToMessageId(event.getUpdate().getCallbackQuery().getMessage().getMessageId());
+
+                return Flux.just(editMessage(message, HEADER));
             } else if (event.getUpdate().hasCallbackQuery() &&
                     (event.getData().startsWith(AudioCalendarService.AUDIO_CALENDAR_NEXT_MONTH) ||
                             event.getData().startsWith(AudioCalendarService.AUDIO_CALENDAR_PREV_MONTH))) {
