@@ -36,7 +36,7 @@ public class SubscriptionsHandler extends AbstractBelkaHandler {
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (event.isHasText() && event.getText().equalsIgnoreCase(CODE)) {
+            if (event.isHasCallbackQuery() && event.getData().equalsIgnoreCase(CODE)) {
                 Long chatId = event.getChatId();
 
                 previousService.save(PreviousStepDto.builder()
@@ -60,17 +60,16 @@ public class SubscriptionsHandler extends AbstractBelkaHandler {
     private SendMessage getButtons(Long chatId) {
         SendMessage message = sendMessage(chatId, HEADER);
         InlineKeyboardMarkup markupInLine = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
-        List<InlineKeyboardButton> rowInline = new ArrayList<>();
 
-        InlineKeyboardButton showSubscriptionsButton = getButton(BUTTON_SHOW_SUBSCRIPTIONS, GetSubscriptionsHandler.CODE);
-        InlineKeyboardButton subscribeToButton = getButton(BUTTON_SUBSCRIBE_TO, SubscribeHandler.CODE);
-        InlineKeyboardButton unsubscribeButton = getButton(BUTTON_UNSUBSCRIBE, UnsubscribeHandler.CODE);
+        List<InlineKeyboardButton> rowInlineOneShowSubscriptions = getRowInlineWithOneButton(BUTTON_SHOW_SUBSCRIPTIONS, GetSubscriptionsHandler.CODE);
+        List<InlineKeyboardButton> rowInlineTwoSubscribe = getRowInlineWithOneButton(BUTTON_SUBSCRIBE_TO, SubscribeHandler.CODE);
+        List<InlineKeyboardButton> rowInlineThreeUnsubscribe = getRowInlineWithOneButton(BUTTON_UNSUBSCRIBE, UnsubscribeHandler.CODE);
 
-        rowInline.add(showSubscriptionsButton);
-        rowInline.add(subscribeToButton);
-        rowInline.add(unsubscribeButton);
-        rowsInLine.add(rowInline);
+        List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>(List.of(
+                rowInlineOneShowSubscriptions,
+                rowInlineTwoSubscribe,
+                rowInlineThreeUnsubscribe)
+        );
 
         markupInLine.setKeyboard(rowsInLine);
         message.setReplyMarkup(markupInLine);

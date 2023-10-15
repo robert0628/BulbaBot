@@ -11,6 +11,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import reactor.core.publisher.Flux;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -56,6 +58,13 @@ public abstract class AbstractBelkaHandler implements BelkaHandler {
                 .text(text)
                 .callbackData(callbackData)
                 .build();
+    }
+
+    protected List<InlineKeyboardButton> getRowInlineWithOneButton(String buttonText, String buttonCallBackData){
+        InlineKeyboardButton showSubscriptionsButton = getButton(buttonText, buttonCallBackData);
+        List<InlineKeyboardButton> rowInlineOne = new ArrayList<>();
+        rowInlineOne.add(showSubscriptionsButton);
+        return rowInlineOne;
     }
 
     protected Flux<PartialBotApiMethod<?>> getCompleteFuture(CompletableFuture<Flux<PartialBotApiMethod<?>>> future, Long chatId) {
