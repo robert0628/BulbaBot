@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
@@ -56,10 +55,8 @@ public class PullAudioHandler extends AbstractBelkaHandler {
 
                 savePreviousAndStats(chatId);
 
-                if (fileId == null) {
-                    SendMessage message = sendMessage(chatId, NO_AUDIO_ANSWER);
-                    message.setReplyToMessageId(event.getUpdate().getCallbackQuery().getMessage().getMessageId());
-                    return Flux.just(editMessage(message, NO_AUDIO_ANSWER));
+                if (fileId.isEmpty()) {
+                    return Flux.just(sendMessage(chatId, NO_AUDIO_ANSWER));
                 }
                 return Flux.just(sendAudioFromLocalStorage(audioService.getPathToAudio(fileId), chatId));
 

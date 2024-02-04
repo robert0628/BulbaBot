@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.Optional;
+
 @Component
 public class UpdateToBelkaEventConverter implements BelkaConverter<Update, BelkaEvent> {
 
@@ -23,16 +25,8 @@ public class UpdateToBelkaEventConverter implements BelkaConverter<Update, Belka
         String data = null;
         Long chatId = getChatId(value);
         Integer updateId = value.getUpdateId();
-        String previousStep = "";
-        String previousStepFromDB = previousService.getPreviousStep(chatId);
-        if (previousStepFromDB != null) {
-            previousStep = previousStepFromDB;
-        }
-        String nextStep = "";
-        String nextStepFromDB = previousService.getNextStep(chatId);
-        if (nextStepFromDB != null) {
-            nextStep = nextStepFromDB;
-        }
+        String previousStep = Optional.ofNullable(previousService.getPreviousStep(chatId)).orElse("");
+        String nextStep = Optional.ofNullable(previousService.getNextStep(chatId)).orElse("");
         boolean hasMessage = value.hasMessage();
         boolean hasText = hasMessage && value.getMessage().hasText();
         boolean hasCallbackQuery = value.hasCallbackQuery();

@@ -40,6 +40,7 @@ import java.util.Optional;
 public class AudioServiceImpl implements AudioService {
     final static String OGG = ".ogg";
     final static String WAV = ".WAV";
+    private final static String EMPTY_FILE_ID = "";
     private final RestTemplate restTemplate;
     private final HttpHeaders headers;
     private final AudioRepository audioRepository;
@@ -179,7 +180,7 @@ public class AudioServiceImpl implements AudioService {
     public String getFileId(Long userId, LocalDate date) {
         Optional<String> audioIdInDB = audioRepository.getIdByDateAndUserId(date, userId);
         if (audioIdInDB.isEmpty()) {
-            throw new RuntimeException("something was wrong, there are no audio");
+            return EMPTY_FILE_ID;
         }
         return audioIdInDB.get();
     }

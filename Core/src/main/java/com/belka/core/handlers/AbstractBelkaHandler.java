@@ -1,7 +1,6 @@
 package com.belka.core.handlers;
 
 import com.belka.core.BelkaSendMessage;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,6 @@ import java.util.concurrent.TimeoutException;
 
 @Slf4j
 @Component
-@Setter
 public abstract class AbstractBelkaHandler implements BelkaHandler {
     private final static String TIMEOUT_MESSAGE = "sorry, it's tooooo long processing, try again or later";
     private final static String EXCEPTION_MESSAGE = "something was wrong and your request has been interrupted, try again or later";
@@ -60,7 +58,7 @@ public abstract class AbstractBelkaHandler implements BelkaHandler {
                 .build();
     }
 
-    protected List<InlineKeyboardButton> getRowInlineWithOneButton(String buttonText, String buttonCallBackData){
+    protected List<InlineKeyboardButton> getRowInlineWithOneButton(String buttonText, String buttonCallBackData) {
         InlineKeyboardButton showSubscriptionsButton = getButton(buttonText, buttonCallBackData);
         List<InlineKeyboardButton> rowInlineOne = new ArrayList<>();
         rowInlineOne.add(showSubscriptionsButton);
@@ -71,10 +69,10 @@ public abstract class AbstractBelkaHandler implements BelkaHandler {
         try {
             return future.get(timeout, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
-            log.info("request was interrupted with timeout");
+            log.error("request was interrupted with timeout");
             return Flux.just(sendMessage(chatId, TIMEOUT_MESSAGE));
         } catch (InterruptedException | ExecutionException e) {
-            log.info("request was interrupted");
+            log.error("request was interrupted");
             return Flux.just(sendMessage(chatId, EXCEPTION_MESSAGE));
         }
     }
