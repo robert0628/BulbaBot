@@ -26,7 +26,7 @@ public class GetSubscriptionsHandler extends AbstractBelkaHandler {
     public final static String CODE = "/get_subscriptions";
     private final static String NEXT_HANDLER = SubscriptionsHandler.CODE;
     private final static String PREVIOUS_HANDLER = "";
-    private final static String ANSWER_PREFIX = "You have %d subscription by now: %s";
+    private final static String ANSWER_PREFIX = "You have %d subscription(s) by now: %s";
     private final static String ANSWER_NO_SUBSCRIPTIONS = "You don't have any subscriptions";
     private final UserService userService;
     private final PreviousService previousService;

@@ -15,6 +15,9 @@ import reactor.core.publisher.Flux;
 import java.time.OffsetDateTime;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * a handler that handles the request when the user wants to subscribe to someone new
+ */
 @Component
 @AllArgsConstructor
 public class SubscribeHandler extends AbstractBelkaHandler {
@@ -29,23 +32,37 @@ public class SubscribeHandler extends AbstractBelkaHandler {
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (event.isHasText() && event.getText().equalsIgnoreCase(CODE) ||
-                    event.isHasCallbackQuery() && event.getData().equals(CODE)) {
+            if (isSubscribeCommand(event)) {
                 Long chatId = event.getChatId();
-                previousService.save(PreviousStepDto.builder()
-                        .previousStep(CODE)
-                        .nextStep(NEXT_HANDLER)
-                        .userId(chatId)
-                        .build());
-                statsService.save(StatsDto.builder()
-                        .userId(chatId)
-                        .handlerCode(CODE)
-                        .requestTime(OffsetDateTime.now())
-                        .build());
+                savePreviousStep(chatId);
+                recordStats(chatId);
                 return Flux.just(sendMessage(event.getChatId(), ANSWER));
             }
             return Flux.empty();
         });
         return getCompleteFuture(future, event.getChatId());
+    }
+
+    private boolean isSubscribeCommand(BelkaEvent event) {
+        return event.isHasText() && event.getText().equalsIgnoreCase(CODE) ||
+                event.isHasCallbackQuery() && event.getData().equals(CODE);
+    }
+
+    private void savePreviousStep(Long chatId) {
+        PreviousStepDto previousStepDto = PreviousStepDto.builder()
+                .previousStep(CODE)
+                .nextStep(NEXT_HANDLER)
+                .userId(chatId)
+                .build();
+        previousService.save(previousStepDto);
+    }
+
+    private void recordStats(Long chatId) {
+        StatsDto statsDto = StatsDto.builder()
+                .userId(chatId)
+                .handlerCode(CODE)
+                .requestTime(OffsetDateTime.now())
+                .build();
+        statsService.save(statsDto);
     }
 }

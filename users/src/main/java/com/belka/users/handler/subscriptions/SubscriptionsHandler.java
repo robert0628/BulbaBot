@@ -36,20 +36,10 @@ public class SubscriptionsHandler extends AbstractBelkaHandler {
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (event.isHasCallbackQuery() && event.getData().equalsIgnoreCase(CODE)) {
+            if (isSubscribeCommand(event)) {
                 Long chatId = event.getChatId();
-
-                previousService.save(PreviousStepDto.builder()
-                        .previousStep(CODE)
-                        .nextStep(NEXT_HANDLER)
-                        .userId(chatId)
-                        .data("")
-                        .build());
-                statsService.save(StatsDto.builder()
-                        .userId(event.getChatId())
-                        .handlerCode(CODE)
-                        .requestTime(OffsetDateTime.now())
-                        .build());
+                savePreviousStep(chatId);
+                recordStats(chatId);
                 return Flux.just(getButtons(event.getChatId()));
             }
             return Flux.empty();
@@ -75,5 +65,26 @@ public class SubscriptionsHandler extends AbstractBelkaHandler {
         message.setReplyMarkup(markupInLine);
 
         return message;
+    }
+
+    private boolean isSubscribeCommand(BelkaEvent event) {
+        return event.isHasCallbackQuery() && event.getData().equalsIgnoreCase(CODE);
+    }
+
+    private void savePreviousStep(Long chatId) {
+        previousService.save(PreviousStepDto.builder()
+                .previousStep(CODE)
+                .nextStep(NEXT_HANDLER)
+                .userId(chatId)
+                .data("")
+                .build());
+    }
+
+    private void recordStats(Long chatId) {
+        statsService.save(StatsDto.builder()
+                .userId(chatId)
+                .handlerCode(CODE)
+                .requestTime(OffsetDateTime.now())
+                .build());
     }
 }
