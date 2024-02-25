@@ -1,4 +1,4 @@
-package com.belka.users.handler.subscriptions;
+package com.belka.users.handler.subscribes.subscriptions;
 
 import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
@@ -6,6 +6,8 @@ import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
 import com.belka.stats.service.StatsService;
+import com.belka.users.handler.subscribes.subscriptions.subscribe.SubscribeHandler;
+import com.belka.users.handler.subscribes.subscriptions.unsubscribe.UnsubscribeHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -19,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * shows all commands that user can do with his subscriptions
+ */
 @Component
 @AllArgsConstructor
 public class SubscriptionsHandler extends AbstractBelkaHandler {
@@ -68,7 +73,8 @@ public class SubscriptionsHandler extends AbstractBelkaHandler {
     }
 
     private boolean isSubscribeCommand(BelkaEvent event) {
-        return event.isHasCallbackQuery() && event.getData().equalsIgnoreCase(CODE);
+        return event.isHasText() && event.getText().equalsIgnoreCase(CODE) ||
+                event.isHasCallbackQuery() && event.getData().equals(CODE);
     }
 
     private void savePreviousStep(Long chatId) {

@@ -1,4 +1,4 @@
-package com.belka.users.handler.subscriptions;
+package com.belka.users.handler.subscribes.subscriptions.subscribe;
 
 import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;

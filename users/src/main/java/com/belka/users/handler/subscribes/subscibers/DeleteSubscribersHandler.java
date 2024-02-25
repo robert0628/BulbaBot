@@ -1,4 +1,4 @@
-package com.belka.users.handler.subscriptions;
+package com.belka.users.handler.subscribes.subscibers;
 
 import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
@@ -6,6 +6,7 @@ import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
 import com.belka.stats.service.StatsService;
+import com.belka.users.handler.subscribes.subscriptions.unsubscribe.ChooseWhoToUnsubscribeFromHandler;
 import com.belka.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,9 +18,9 @@ import reactor.core.publisher.Flux;
 import java.time.OffsetDateTime;
 import java.util.concurrent.CompletableFuture;
 
-import static com.belka.users.handler.subscriptions.ChooseWhoToUnsubscribeFromHandler.NO_BUTTON;
-import static com.belka.users.handler.subscriptions.ChooseWhoToUnsubscribeFromHandler.YES_BUTTON;
-import static com.belka.users.handler.subscriptions.UnsubscribeHandler.PREFIX_FOR_UNSUBSCRIBE_CALLBACK;
+import static com.belka.users.handler.subscribes.subscriptions.unsubscribe.ChooseWhoToUnsubscribeFromHandler.NO_BUTTON;
+import static com.belka.users.handler.subscribes.subscriptions.unsubscribe.ChooseWhoToUnsubscribeFromHandler.YES_BUTTON;
+import static com.belka.users.handler.subscribes.subscriptions.unsubscribe.UnsubscribeHandler.PREFIX_FOR_UNSUBSCRIBE_CALLBACK;
 
 @AllArgsConstructor
 @Component

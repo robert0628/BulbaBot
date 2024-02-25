@@ -1,4 +1,4 @@
-package com.belka.users.handler.subscriptions;
+package com.belka.users.handler.subscribes.subscriptions;
 
 import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
@@ -18,16 +18,16 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * show user all his subscribers
+ * show user all his subscriptions
  */
 @Component
 @AllArgsConstructor
-public class GetSubscribersHandler extends AbstractBelkaHandler {
-    public final static String CODE = "/get_subscribers";
-    private final static String NEXT_HANDLER = SubscribersHandler.CODE;
+public class GetSubscriptionsHandler extends AbstractBelkaHandler {
+    public final static String CODE = "/get_subscriptions";
+    private final static String NEXT_HANDLER = SubscriptionsHandler.CODE;
     private final static String PREVIOUS_HANDLER = "";
-    private final static String ANSWER_PREFIX = "You have %d subscribers by now: %s";
-    private final static String ANSWER_NO_SUBSCRIPTIONS = "You don't have any subscribers";
+    private final static String ANSWER_PREFIX = "You have %d subscription(s) by now: %s";
+    private final static String ANSWER_NO_SUBSCRIPTIONS = "You don't have any subscriptions";
     private final UserService userService;
     private final PreviousService previousService;
     private final StatsService statsService;
@@ -57,7 +57,7 @@ public class GetSubscribersHandler extends AbstractBelkaHandler {
     }
 
     private String getAnswer(Long chatId) {
-        Collection<String> subscribes = userService.getFollowersNames(chatId);
+        Collection<String> subscribes = userService.getProducersNames(chatId);
         if (subscribes.isEmpty()) {
             return ANSWER_NO_SUBSCRIPTIONS;
         }

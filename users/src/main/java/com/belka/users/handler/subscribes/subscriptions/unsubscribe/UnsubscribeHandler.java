@@ -1,4 +1,4 @@
-package com.belka.users.handler.subscriptions;
+package com.belka.users.handler.subscribes.subscriptions.unsubscribe;
 
 import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
@@ -74,7 +74,9 @@ public class UnsubscribeHandler extends AbstractBelkaHandler {
             List<InlineKeyboardButton> rowInline = new ArrayList<>();
             InlineKeyboardButton button = getButton(
                     pair.getRight(),
-                    PREFIX_FOR_UNSUBSCRIBE_CALLBACK + pair.getLeft());
+                    PREFIX_FOR_UNSUBSCRIBE_CALLBACK + pair.getLeft()
+            );
+
             rowInline.add(button);
             rowsInLine.add(rowInline);
         });

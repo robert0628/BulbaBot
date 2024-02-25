@@ -1,4 +1,4 @@
-package com.belka.users.handler.subscriptions;
+package com.belka.users.handler.subscribes.subscriptions.unsubscribe;
 
 import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static com.belka.users.handler.subscriptions.UnsubscribeHandler.PREFIX_FOR_UNSUBSCRIBE_CALLBACK;
+import static com.belka.users.handler.subscribes.subscriptions.unsubscribe.UnsubscribeHandler.PREFIX_FOR_UNSUBSCRIBE_CALLBACK;
 
 @Component
 @AllArgsConstructor
@@ -29,8 +29,8 @@ public class ChooseWhoToUnsubscribeFromHandler extends AbstractBelkaHandler {
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = UnsubscribeHandler.CODE;
     private final static String HEADER = "are you sure?";
-    final static String YES_BUTTON = "Yep, that's right";
-    final static String NO_BUTTON = "nope";
+    public final static String YES_BUTTON = "Yep, that's right";
+    public final static String NO_BUTTON = "nope";
     private final PreviousService previousService;
     private final StatsService statsService;
 
