@@ -63,24 +63,45 @@ public class UserServiceImpl implements UserService {
     @Override
     public Collection<Pair<Long, String>> getProducersNamesAndId(Long userId) {
         return userRepository.findAllProducers(userId).stream()
-                .map(entity ->
-                        Pair.of(
-                                entity.getId(),
-                                entity.getFirstname() + " (" + entity.getUsername() + ")"))
+                .map(entity -> {
+                            if (entity.getUsername() == null) {
+                                return Pair.of(
+                                        entity.getId(),
+                                        entity.getFirstname());
+
+                            } else {
+                                return Pair.of(
+                                        entity.getId(),
+                                        entity.getFirstname() + " (" + entity.getUsername() + ")");
+                            }
+                        }
+                )
                 .collect(Collectors.toList());
     }
 
     @Override
     public Collection<String> getProducersNames(Long userId) {
         return userRepository.findAllProducers(userId).stream()
-                .map(entity -> entity.getFirstname() + " (" + entity.getUsername() + ")")
+                .map(entity -> {
+                    if (entity.getUsername() == null) {
+                        return entity.getFirstname();
+                    } else {
+                        return entity.getFirstname() + " (" + entity.getUsername() + ")";
+                    }
+                })
                 .collect(Collectors.toList());
     }
 
     @Override
     public Collection<String> getFollowersNames(Long userId) {
         return userRepository.findAllFollowers(userId).stream()
-                .map(entity -> entity.getFirstname() + " (" + entity.getUsername() + ")")
+                .map(entity -> {
+                    if (entity.getUsername() == null) {
+                        return entity.getFirstname();
+                    } else {
+                        return entity.getFirstname() + " (" + entity.getUsername() + ")";
+                    }
+                })
                 .collect(Collectors.toList());
     }
 
