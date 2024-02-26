@@ -1,4 +1,4 @@
-package com.belka.users.handler.subscribes.subscibers;
+package com.belka.users.handler.subscribes.subscriptions.unsubscribe;
 
 import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
@@ -6,7 +6,6 @@ import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
 import com.belka.stats.service.StatsService;
-import com.belka.users.handler.subscribes.subscriptions.unsubscribe.ChooseWhoToUnsubscribeFromHandler;
 import com.belka.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -22,9 +21,12 @@ import static com.belka.users.handler.subscribes.subscriptions.unsubscribe.Choos
 import static com.belka.users.handler.subscribes.subscriptions.unsubscribe.ChooseWhoToUnsubscribeFromHandler.YES_BUTTON;
 import static com.belka.users.handler.subscribes.subscriptions.unsubscribe.UnsubscribeHandler.PREFIX_FOR_UNSUBSCRIBE_CALLBACK;
 
+/**
+ * delete chosen user from list of subscriptions
+ */
 @AllArgsConstructor
 @Component
-public class DeleteSubscribersHandler extends AbstractBelkaHandler {
+public class DeleteSubscriptionHandler extends AbstractBelkaHandler {
     public final static String CODE = "/Choose Who To Unsubscribe From";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = ChooseWhoToUnsubscribeFromHandler.CODE;
@@ -38,9 +40,7 @@ public class DeleteSubscribersHandler extends AbstractBelkaHandler {
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (event.getPrevious_step().equals(PREVIOUS_HANDLER) && event.isHasCallbackQuery() &&
-                    event.getData().startsWith(PREFIX_FOR_UNSUBSCRIBE_CALLBACK + YES_BUTTON)) {
-
+            if (isSubscribeCommandYes(event)) {
                 Long chatId = event.getChatId();
                 savePreviousAndStats(chatId);
                 Long producerId = Long.valueOf(event.getData().substring((PREFIX_FOR_UNSUBSCRIBE_CALLBACK + YES_BUTTON).length()));
@@ -48,9 +48,7 @@ public class DeleteSubscribersHandler extends AbstractBelkaHandler {
                 SendMessage message = sendMessage(chatId, UNSUBSCRIBE_ANSWER);
                 message.setReplyToMessageId(event.getUpdate().getCallbackQuery().getMessage().getMessageId());
                 return Flux.just(editMessage(message, UNSUBSCRIBE_ANSWER));
-            } else if (event.getPrevious_step().equals(PREVIOUS_HANDLER) && event.isHasCallbackQuery() &&
-                    event.getData().startsWith(PREFIX_FOR_UNSUBSCRIBE_CALLBACK + NO_BUTTON)) {
-
+            } else if (isSubscribeCommandNo(event)) {
                 Long chatId = event.getChatId();
                 savePreviousAndStats(chatId);
                 SendMessage message = sendMessage(chatId, EVERYONE_STAYS_ANSWER);
@@ -63,11 +61,30 @@ public class DeleteSubscribersHandler extends AbstractBelkaHandler {
     }
 
     private void savePreviousAndStats(Long chatId) {
+        savePreviousStep(chatId);
+        recordStats(chatId);
+    }
+
+    private boolean isSubscribeCommandYes(BelkaEvent event) {
+        return event.getPrevious_step().equals(PREVIOUS_HANDLER) && event.isHasCallbackQuery() &&
+                event.getData().startsWith(PREFIX_FOR_UNSUBSCRIBE_CALLBACK + YES_BUTTON);
+    }
+
+    private boolean isSubscribeCommandNo(BelkaEvent event) {
+        return event.getPrevious_step().equals(PREVIOUS_HANDLER) && event.isHasCallbackQuery() &&
+                event.getData().startsWith(PREFIX_FOR_UNSUBSCRIBE_CALLBACK + NO_BUTTON);
+    }
+
+    private void savePreviousStep(Long chatId) {
         previousService.save(PreviousStepDto.builder()
                 .previousStep(CODE)
                 .nextStep(NEXT_HANDLER)
                 .userId(chatId)
+                .data("")
                 .build());
+    }
+
+    private void recordStats(Long chatId) {
         statsService.save(StatsDto.builder()
                 .userId(chatId)
                 .handlerCode(CODE)

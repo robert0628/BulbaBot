@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * shows main subscribes opportunities
+ */
 @Component
 @AllArgsConstructor
 public class SubscribesHandler extends AbstractBelkaHandler {
@@ -32,7 +35,6 @@ public class SubscribesHandler extends AbstractBelkaHandler {
     private final static String BUTTON_SUBSCRIBERS = "subscribers";
     private final PreviousService previousService;
     private final StatsService statsService;
-
 
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {

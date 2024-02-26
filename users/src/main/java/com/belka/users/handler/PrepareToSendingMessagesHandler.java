@@ -36,27 +36,36 @@ public class PrepareToSendingMessagesHandler extends AbstractBelkaHandler {
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (event.isHasText()
-                    && event.getText().equalsIgnoreCase(CODE)
-                    && userConfig.getBotOwner().equals(event.getChatId())) {
-
+            if (isSubscribeCommand(event)) {
                 Long chatId = event.getChatId();
-                previousService.save(PreviousStepDto.builder()
-                        .previousStep(CODE)
-                        .nextStep(NEXT_HANDLER)
-                        .userId(chatId)
-                        .build());
-
-                statsService.save(StatsDto.builder()
-                        .userId(chatId)
-                        .handlerCode(CODE)
-                        .requestTime(OffsetDateTime.now())
-                        .build());
-
+                savePreviousStep(chatId);
+                recordStats(chatId);
                 return Flux.just(sendMessage(chatId, HEADER));
             }
             return Flux.empty();
         });
         return getCompleteFuture(future, event.getChatId());
+    }
+
+    private boolean isSubscribeCommand(BelkaEvent event) {
+        return event.isHasText()
+                && event.getText().equalsIgnoreCase(CODE)
+                && userConfig.getBotOwner().equals(event.getChatId());
+    }
+
+    private void savePreviousStep(Long chatId) {
+        previousService.save(PreviousStepDto.builder()
+                .previousStep(CODE)
+                .nextStep(NEXT_HANDLER)
+                .userId(chatId)
+                .build());
+    }
+
+    private void recordStats(Long chatId) {
+        statsService.save(StatsDto.builder()
+                .userId(chatId)
+                .handlerCode(CODE)
+                .requestTime(OffsetDateTime.now())
+                .build());
     }
 }

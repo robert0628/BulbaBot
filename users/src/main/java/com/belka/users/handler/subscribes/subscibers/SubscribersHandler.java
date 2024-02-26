@@ -6,6 +6,7 @@ import com.belka.core.previous_step.dto.PreviousStepDto;
 import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
 import com.belka.stats.service.StatsService;
+import com.belka.users.handler.subscribes.subscriptions.unsubscribe.DeleteSubscriptionHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -30,7 +31,7 @@ public class SubscribersHandler extends AbstractBelkaHandler {
     private final static String PREVIOUS_HANDLER = "";
     private final static String HEADER = "that's your subscribers";
     private final static String BUTTON_SHOW_SUBSCRIBERS = "show all subscribers";
-    private final static String BUTTON_DELETE_SUBSCRIBER = "unsubscribe from anyone";
+    private final static String BUTTON_DELETE_SUBSCRIBER = "to block someone"; //todo button for blocking subscriber
     private final PreviousService previousService;
     private final StatsService statsService;
 
@@ -53,7 +54,7 @@ public class SubscribersHandler extends AbstractBelkaHandler {
         InlineKeyboardMarkup markupInLine = new InlineKeyboardMarkup();
 
         List<InlineKeyboardButton> rowInlineOneShowSubscribers = getRowInlineWithOneButton(BUTTON_SHOW_SUBSCRIBERS, GetSubscribersHandler.CODE);
-        List<InlineKeyboardButton> rowInlineDeleteSubscriber = getRowInlineWithOneButton(BUTTON_DELETE_SUBSCRIBER, DeleteSubscribersHandler.CODE);
+        List<InlineKeyboardButton> rowInlineDeleteSubscriber = getRowInlineWithOneButton(BUTTON_DELETE_SUBSCRIBER, DeleteSubscriptionHandler.CODE);
 
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>(List.of(
                 rowInlineOneShowSubscribers,

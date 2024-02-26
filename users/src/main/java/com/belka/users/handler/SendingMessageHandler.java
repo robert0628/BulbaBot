@@ -38,26 +38,38 @@ public class SendingMessageHandler extends AbstractBelkaHandler {
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (event.isHasText()
-                    && event.getPrevious_step().equals(PREVIOUS_HANDLER)
-                    && userConfig.getBotOwner().equals(event.getChatId())) {
+            if (isSubscribeCommand(event)) {
                 Long chatId = event.getChatId();
                 String textToSend = EmojiParser.parseToUnicode(event.getText());
-                previousService.save(PreviousStepDto.builder()
-                        .previousStep(CODE)
-                        .nextStep(NEXT_HANDLER)
-                        .userId(chatId)
-                        .build());
-                statsService.save(StatsDto.builder()
-                        .userId(event.getChatId())
-                        .handlerCode(CODE)
-                        .requestTime(OffsetDateTime.now())
-                        .build());
+                savePreviousStep(chatId);
+                recordStats(chatId);
                 return Flux.fromIterable(userService.getAll())
                         .flatMap(userDto -> Mono.just(sendMessage(userDto.getId(), textToSend)));
             }
             return Flux.empty();
         });
         return getCompleteFuture(future, event.getChatId());
+    }
+
+    private boolean isSubscribeCommand(BelkaEvent event) {
+        return event.isHasText()
+                && event.getPrevious_step().equals(PREVIOUS_HANDLER)
+                && userConfig.getBotOwner().equals(event.getChatId());
+    }
+
+    private void savePreviousStep(Long chatId) {
+        previousService.save(PreviousStepDto.builder()
+                .previousStep(CODE)
+                .nextStep(NEXT_HANDLER)
+                .userId(chatId)
+                .build());
+    }
+
+    private void recordStats(Long chatId) {
+        statsService.save(StatsDto.builder()
+                .userId(chatId)
+                .handlerCode(CODE)
+                .requestTime(OffsetDateTime.now())
+                .build());
     }
 }
