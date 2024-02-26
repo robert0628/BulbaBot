@@ -52,13 +52,13 @@ public class SubscribesHandler extends AbstractBelkaHandler {
         SendMessage message = sendMessage(chatId, HEADER);
         InlineKeyboardMarkup markupInLine = new InlineKeyboardMarkup();
 
-        List<InlineKeyboardButton> rowInlineOneShowSubscriptions = getRowInlineWithOneButton(BUTTON_SUBSCRIPTIONS, SubscriptionsHandler.CODE);
-        List<InlineKeyboardButton> rowInlineTwoSubscribe = getRowInlineWithOneButton(BUTTON_SUBSCRIBERS, SubscribersHandler.CODE);
+        List<InlineKeyboardButton> rowInlineSubscriptions = getRowInlineWithOneButton(BUTTON_SUBSCRIPTIONS, SubscriptionsHandler.CODE);
+        List<InlineKeyboardButton> rowInlineSubscribers = getRowInlineWithOneButton(BUTTON_SUBSCRIBERS, SubscribersHandler.CODE);
 
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>(
                 List.of(
-                        rowInlineOneShowSubscriptions,
-                        rowInlineTwoSubscribe
+                        rowInlineSubscriptions,
+                        rowInlineSubscribers
                 )
         );
 

@@ -30,7 +30,7 @@ public class SubscriptionsHandler extends AbstractBelkaHandler {
     public final static String CODE = "/Subscriptions";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = "";
-    private final static String HEADER = "that's what you can to do?";
+    private final static String HEADER = "that's your subscriptions";
     private final static String BUTTON_SHOW_SUBSCRIPTIONS = "show all subscriptions";
     private final static String BUTTON_SUBSCRIBE_TO = "subscribe to someone";
     private final static String BUTTON_UNSUBSCRIBE = "unsubscribe from anyone";
