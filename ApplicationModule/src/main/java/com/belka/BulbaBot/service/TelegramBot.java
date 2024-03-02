@@ -20,7 +20,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * building and sending messages, receiving and processing {@link Update updates}
@@ -34,10 +33,10 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final ExecutorService executorService;
 
     @Autowired
-    public TelegramBot(BotConfig botConfig, HandlerService handlerService) {
+    public TelegramBot(BotConfig botConfig, HandlerService handlerService, ExecutorService executorService) {
         this.botConfig = botConfig;
         this.handlerService = handlerService;
-        executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        this.executorService = executorService;
         setCommands();
     }
 

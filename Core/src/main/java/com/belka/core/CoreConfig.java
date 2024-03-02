@@ -13,6 +13,8 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Configuration
 @EntityScan("com.belka.core")
@@ -61,5 +63,10 @@ public class CoreConfig {
     @Bean
     HttpHeaders headers() {
         return new HttpHeaders();
+    }
+
+    @Bean
+    ExecutorService getExecutorService() {
+        return Executors.newFixedThreadPool(100);
     }
 }
