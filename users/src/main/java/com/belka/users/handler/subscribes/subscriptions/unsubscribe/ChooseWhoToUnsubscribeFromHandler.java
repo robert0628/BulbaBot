@@ -3,10 +3,10 @@ package com.belka.users.handler.subscribes.subscriptions.unsubscribe;
 import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.previous_step.dto.PreviousStepDto;
-import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
 import com.belka.stats.service.StatsService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -19,39 +19,33 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 
 import static com.belka.users.handler.subscribes.subscriptions.unsubscribe.UnsubscribeHandler.PREFIX_FOR_UNSUBSCRIBE_CALLBACK;
 
 @Component
 @AllArgsConstructor
+@Slf4j
 public class ChooseWhoToUnsubscribeFromHandler extends AbstractBelkaHandler {
     public final static String CODE = "/Choose Who To Unsubscribe From";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = UnsubscribeHandler.CODE;
+    private final static String CLASS_NAME = ChooseWhoToUnsubscribeFromHandler.class.getSimpleName();
     private final static String HEADER = "are you sure?";
     public final static String YES_BUTTON = "Yep, that's right";
     public final static String NO_BUTTON = "nope";
-    private final PreviousService previousService;
+    private final ExecutorService executorService;
     private final StatsService statsService;
 
     @Override
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (event.getPrevious_step().equals(PREVIOUS_HANDLER) && event.isHasCallbackQuery() &&
-                    event.getData().startsWith(PREFIX_FOR_UNSUBSCRIBE_CALLBACK)) {
+            if (isSubscribeCommand(event)) {
 
                 Long chatId = event.getChatId();
-                previousService.save(PreviousStepDto.builder()
-                        .previousStep(CODE)
-                        .nextStep(NEXT_HANDLER)
-                        .userId(chatId)
-                        .build());
-                statsService.save(StatsDto.builder()
-                        .userId(chatId)
-                        .handlerCode(CODE)
-                        .requestTime(OffsetDateTime.now())
-                        .build());
+                savePreviousStep(getPreviousStep(chatId), CLASS_NAME);
+                recordStats(getStats(chatId));
 
                 return Flux.just(editMessage(getButtons(chatId, event), HEADER));
             }
@@ -82,5 +76,35 @@ public class ChooseWhoToUnsubscribeFromHandler extends AbstractBelkaHandler {
         message.setReplyMarkup(markupInLine);
 
         return message;
+    }
+
+    private boolean isSubscribeCommand(BelkaEvent event) {
+        return event.getPrevious_step().equals(PREVIOUS_HANDLER) && event.isHasCallbackQuery() &&
+                event.getData().startsWith(PREFIX_FOR_UNSUBSCRIBE_CALLBACK);
+    }
+
+    private PreviousStepDto getPreviousStep(Long chatId) {
+        return PreviousStepDto.builder()
+                .previousStep(CODE)
+                .nextStep(NEXT_HANDLER)
+                .userId(chatId)
+                .data("")
+                .build();
+    }
+
+    private StatsDto getStats(Long chatId) {
+        return StatsDto.builder()
+                .userId(chatId)
+                .handlerCode(CODE)
+                .requestTime(OffsetDateTime.now())
+                .build();
+    }
+
+    private void recordStats(StatsDto statsDto) {
+        executorService.execute(() -> {
+                    statsService.save(statsDto);
+                    log.info("Stats from {} have been recorded", CLASS_NAME);
+                }
+        );
     }
 }

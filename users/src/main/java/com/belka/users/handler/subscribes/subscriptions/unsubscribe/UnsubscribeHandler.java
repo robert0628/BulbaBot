@@ -3,11 +3,11 @@ package com.belka.users.handler.subscribes.subscriptions.unsubscribe;
 import com.belka.core.handlers.AbstractBelkaHandler;
 import com.belka.core.handlers.BelkaEvent;
 import com.belka.core.previous_step.dto.PreviousStepDto;
-import com.belka.core.previous_step.service.PreviousService;
 import com.belka.stats.StatsDto;
 import com.belka.stats.service.StatsService;
 import com.belka.users.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -20,35 +20,30 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 
 @AllArgsConstructor
 @Component
+@Slf4j
 public class UnsubscribeHandler extends AbstractBelkaHandler {
     public final static String CODE = "/unsubscribe";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = "";
+    private final static String CLASS_NAME = UnsubscribeHandler.class.getSimpleName();
     public final static String PREFIX_FOR_UNSUBSCRIBE_CALLBACK = "delete - ";
     private final static String HEADER = "who is already bored?";
     private final UserService userService;
-    private final PreviousService previousService;
+    private final ExecutorService executorService;
     private final StatsService statsService;
 
     @Override
     @Transactional
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (event.isHasCallbackQuery() && event.getData().equals(CODE)) {
+            if (isSubscribeCommand(event, CODE)) {
                 Long chatId = event.getChatId();
-                previousService.save(PreviousStepDto.builder()
-                        .previousStep(CODE)
-                        .nextStep(NEXT_HANDLER)
-                        .userId(chatId)
-                        .build());
-                statsService.save(StatsDto.builder()
-                        .userId(chatId)
-                        .handlerCode(CODE)
-                        .requestTime(OffsetDateTime.now())
-                        .build());
+                savePreviousStep(getPreviousStep(chatId), CLASS_NAME);
+                recordStats(getStats(chatId));
 
                 return Flux.just(getButtons(chatId));
             }
@@ -81,5 +76,30 @@ public class UnsubscribeHandler extends AbstractBelkaHandler {
             rowsInLine.add(rowInline);
         });
         return rowsInLine;
+    }
+
+    private PreviousStepDto getPreviousStep(Long chatId) {
+        return PreviousStepDto.builder()
+                .previousStep(CODE)
+                .nextStep(NEXT_HANDLER)
+                .userId(chatId)
+                .data("")
+                .build();
+    }
+
+    private StatsDto getStats(Long chatId) {
+        return StatsDto.builder()
+                .userId(chatId)
+                .handlerCode(CODE)
+                .requestTime(OffsetDateTime.now())
+                .build();
+    }
+
+    private void recordStats(StatsDto statsDto) {
+        executorService.execute(() -> {
+                    statsService.save(statsDto);
+                    log.info("Stats from {} have been recorded", CLASS_NAME);
+                }
+        );
     }
 }

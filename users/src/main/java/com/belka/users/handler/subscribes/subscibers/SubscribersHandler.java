@@ -31,6 +31,7 @@ public class SubscribersHandler extends AbstractBelkaHandler {
     public final static String CODE = "/Subscribers";
     private final static String NEXT_HANDLER = "";
     private final static String PREVIOUS_HANDLER = "";
+    private final static String CLASS_NAME = SubscribersHandler.class.getSimpleName();
     private final static String HEADER = "that's your subscribers";
     private final static String BUTTON_SHOW_SUBSCRIBERS = "show all subscribers";
     private final static String BUTTON_DELETE_SUBSCRIBER = "to block someone"; //todo button for blocking subscriber
@@ -40,10 +41,10 @@ public class SubscribersHandler extends AbstractBelkaHandler {
     @Override
     public Flux<PartialBotApiMethod<?>> handle(BelkaEvent event) {
         CompletableFuture<Flux<PartialBotApiMethod<?>>> future = CompletableFuture.supplyAsync(() -> {
-            if (isSubscribeCommand(event)) {
+            if (isSubscribeCommand(event, CODE)) {
                 Long chatId = event.getChatId();
-                savePreviousStep(getPreviousStep(chatId), String.valueOf(SubscribersHandler.class));
-                recordStats(chatId);
+                savePreviousStep(getPreviousStep(chatId), CLASS_NAME);
+                recordStats(getStats(chatId));
                 return Flux.just(getButtons(event.getChatId()));
             }
             return Flux.empty();
@@ -71,11 +72,6 @@ public class SubscribersHandler extends AbstractBelkaHandler {
         );
     }
 
-    private boolean isSubscribeCommand(BelkaEvent event) {
-        return event.isHasText() && event.getText().equalsIgnoreCase(CODE) ||
-                event.isHasCallbackQuery() && event.getData().equalsIgnoreCase(CODE);
-    }
-
     private PreviousStepDto getPreviousStep(Long chatId) {
         return PreviousStepDto.builder()
                 .previousStep(CODE)
@@ -85,17 +81,21 @@ public class SubscribersHandler extends AbstractBelkaHandler {
                 .build();
     }
 
-    private void recordStats(Long chatId) {
+    private StatsDto getStats(Long chatId) {
+        return StatsDto.builder()
+                .userId(chatId)
+                .handlerCode(CODE)
+                .requestTime(OffsetDateTime.now())
+                .build();
+    }
+
+    private void recordStats(StatsDto statsDto) {
         executorService.execute(() -> {
-                    statsService.save(StatsDto.builder()
-                            .userId(chatId)
-                            .handlerCode(CODE)
-                            .requestTime(OffsetDateTime.now())
-                            .build());
-                    log.info("stats from SubscribersHandler have been recorded");
+                    statsService.save(statsDto);
+                    log.info("Stats from {} have been recorded", CLASS_NAME);
                 }
         );
     }
 }
 
-//todo make stats and previous methods are parallel
+//todo think how pass recordstats to handlers
